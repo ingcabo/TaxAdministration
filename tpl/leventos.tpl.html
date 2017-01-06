@@ -1,0 +1,30 @@
+<?php 
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+?>
+<form name="form1" method="post">
+<table width="442" border="0">
+  <tr>
+    <td width="91">Descripci&oacute;n:</td>
+    <td width="341"><input name="descripcion" type="text" onchange="this.value = this.value.toUpperCase();" value="<?=$objeto->descripcion?>" size="50">
+	<span class="errormsg" id="error_desc">*</span>
+	  <?=$validator->show("error_desc")?>   </td>
+  </tr>
+  <tr>
+    <td>Activo:</td>
+    <td><input type="checkbox" name="status" value="1" <?=compara_checked($objeto->status, 1)?> ></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><input name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

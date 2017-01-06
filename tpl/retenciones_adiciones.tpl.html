@@ -1,0 +1,138 @@
+<?
+	$sql = "SELECT MAX(id) AS max FROM finanzas.retenciones_adiciones";
+	$rs = $conn->Execute($sql);
+	$sigCodReten = $rs->fields['max'] + 1;
+?>
+
+<form name="form1" method="post">
+<table style="text-align: left; width: 587px;"
+ border="0">
+  <tbody>
+    <tr>
+      <td style="width: 162px;">
+	  <label for="id_nuevo">C&oacute;digo</label>
+	  </td>
+      <td style="width: 401px;"><input style="width: 50px;" value="<?=(empty($objeto->id) ? $sigCodReten:$objeto->id)?>" id="id_nuevo" name="id_nuevo" readonly />
+		<span class="errormsg" id="error_cod">*</span>
+		<?=$validator->show("error_cod")?>
+	  </td>
+    </tr>
+    <tr>
+      <td style="width: 162px;"><label for="abreviatura">Abreviatura</label></td>
+      <td style="width: 401px;"><input style="width: 80px;" id="abreviatura" value="<?=$objeto->abreviatura?>" name="abreviatura" />
+      <span class="errormsg" id="error_abrv">*</span>
+      <?=$validator->show("error_abrv")?>
+	  </td>
+    </tr>
+    <tr>
+      <td style="width: 162px;">
+	  <label for="descripcion">Descripci&oacute;n</label>
+	</td>
+      <td style="width: 401px;"><input style="width: 400px;" id="descripcion" value="<?=$objeto->descripcion?>" name="descripcion" />
+      <span class="errormsg" id="error_desc">*</span>
+      <?=$validator->show("error_desc")?>
+	  </td>
+    </tr>
+    <tr>
+      <td style="width: 162px;"><label for="cta_contable">Cuenta Contable</label></td>
+      <td style="width: 401px;">
+      		<input type="text" name="txtCuentaContable" id="txtCuentaContable" style="width:350px" value="<?=$objeto->desc_cuenta->descripcion.' - '.$objeto->desc_cuenta->codctaAux?>" />
+            <span class="errormsg" id="error_cc">*</span>
+			<?=$validator->show("error_cc")?> 
+            <input type="hidden" name="cta_contable" id="cta_contable" value="<?=$objeto->ctaContable?>" />
+            <span onclick="traeCuentasContables();" style="cursor:pointer; " id="bcuentas">
+                <img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar
+            </span> 
+	  </td>
+    </tr>
+    <tr>
+      <td style="width: 162px;"><label for="condicion">Condici&oacute;n</label></td>
+      <td style="width: 401px;"><input style="width: 400px;" id="condicion" value="<?=$objeto->condicion?>" name="condicion" />
+      <span class="errormsg" id="error_cond">*</span>
+      <?=$validator->show("error_cond")?>
+	  </td>
+    </tr>
+    <tr>
+      <td style="width: 162px;"><label for="porcentaje">Porcentaje (%)</label></td>
+      <td style="width: 401px;"><input value="<?=muestrafloat($objeto->porcentaje)?>" id="porcentaje" name="porcentaje" onkeypress="return(formatoNumero(this,event));" style="text-align:right" />
+       <span class="errormsg" id="error_porc">*</span>
+      <?=$validator->show("error_porc")?>
+	  </td>
+    </tr>
+	<tr>
+      <td style="width: 162px;"><label for="porcentaje">Porcentaje de Retencion (%)</label></td>
+      <td style="width: 401px;">
+			<select id="porcret" name="porcret">
+				<option value="0">Seleccione..</option>
+				<option value="75" <?=($objeto->porcRet=='75') ? 'selected':''?>>Retencion de 75%</option>
+				<option value="100" <?=($objeto->porcRet=='100') ? 'selected':''?>>Retencion de 100%</option>
+		  </select>
+       <span class="errormsg" id="error_porcret">*</span>
+      <?=$validator->show("error_porcret")?>
+	  </td>
+    </tr>
+	<tr>
+		<td>Tipo Retenci&oacute;n:</td>
+		<td><select name="es_iva" id="es_iva" >
+        		<option value="0">Seleccione..</option>
+                <option value="1" <?=($objeto->es_iva==1) ? 'selected' : ''?>>IVA</option>
+                <option value="2" <?=($objeto->es_iva==2) ? 'selected' : ''?>>ISLR</option>
+                <option value="3" <?=($objeto->es_iva==3) ? 'selected' : ''?>>Impuestos Municipales</option>
+                <option value="4" <?=($objeto->es_iva==4) ? 'selected' : ''?>>Impuestos Nacionales</option>
+            </select></td>
+	</tr>
+    <tr>
+      <td style="width: 162px;"><label for="sustraendo">Sustraendo</label></td>
+      <td style="width: 401px;"><input value="<?=muestrafloat($objeto->sustra)?>" id="sustraendo" name="sustraendo" onkeypress="return(formatoNumero(this,event));" style="text-align:right" />
+      <span class="errormsg" id="error_sust">*</span>
+      <?=$validator->show("error_sust")?>
+	  </td>
+    </tr>
+    <tr>
+      <td style="width: 162px;"><label for="expresion">Expresi&oacute;n</label></td>
+      <td style="width: 401px;"><select name="expresion" id="expresion" >
+                <option value="1" <?=($objeto->expresion==1) ? 'selected' : ''?>>Bs.</option>
+                <option value="2" <?=($objeto->expresion==2) ? 'selected' : ''?>>Unid. Tributarias</option>
+            </select>
+      <span class="errormsg" id="error_exp">*</span>
+      <?=$validator->show("error_exp")?>
+	  </td>
+    </tr>
+    <tr>
+      <td style="width: 162px;"><label for="fijavariable">Fija o Variable</label></td>
+      <td style="width: 401px;">
+      <select id="fijavariable" name="fijavariable" >
+	  	<option value="1" <?=($objeto->fijaVariable==1)? 'selected="selected"': ''?>>Fija</option>
+		<option value="2" <?=($objeto->fijaVariable==2)? 'selected="selected"': ''?>>Variable</option>
+      	<option>
+	  </select>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 162px;"><label for="tipo_persona">Tipo Persona J/N/A</label></td>
+      <td style="width: 401px;">
+      <select id="tipo_persona" name="tipo_persona">
+	  <option value="1" <?=($objeto->tipoPersona==1)? 'selected="selected"': ''?>>Juridica</option>
+	  <option value="2" <?=($objeto->tipoPersona==2)? 'selected="selected"': ''?>>Natural</option>
+	  <option value="3" <?=($objeto->tipoPersona==3)? 'selected="selected"': ''?>>Ambas</option>
+      </select>
+      </td>
+    </tr>
+    <!--tr>
+      <td style="width: 162px;"><label for="cta_presup">Cuenta
+Presupuestaria</label></td>
+      <td style="width: 401px;"><input
+ style="width: 200px;" id="cta_presup" value="<?=$objeto->ctaPresup?>" name="cta_presup">
+      <span class="errormsg" id="error_cp">*</span>
+      <?=$validator->show("error_cp")?>
+	  </td>
+    </tr-->
+  </tbody>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

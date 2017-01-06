@@ -1,0 +1,24 @@
+<form name="form1" method="post">
+<table width="310" border="0">
+  <tr>
+    <td width="90">Id:</td>
+    <td width="204"><input type="text" name="id" value="<?=$objeto->id?>" readonly="">
+	</td>
+  </tr>
+  <tr>
+    <td width="90">Descripci&oacute;n:</td>
+    <td width="204"><input type="text" name="descripcion" value="<?=$objeto->descripcion?>">
+	<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>   </td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><input name="accion" type="button" value="<?=$boton?>" onClick="<?=$validator->validate() ?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onClick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

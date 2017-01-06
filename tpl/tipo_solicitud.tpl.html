@@ -1,0 +1,33 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td colspan="3"></td>
+</tr>
+<tr>
+	<td colspan="3"></td>
+</tr>
+<tr>
+	<td colspan="3"></td>
+</tr>
+
+<tr>
+	<td>Descripcion::</td>
+	<td colspan="2"><input name="descripcion" type="text" id="descripcion" value="<?=$objeto->descripcion?>" size="40" onchange="this.value = this.value.toUpperCase();">
+	<span class="errormsg" id="error_descripcion">*</span>
+	<?=$validator->show("error_descripcion")?>	</td>
+</tr>
+
+<tr>
+	<td>Estatus:</td>
+	<td colspan="2">
+	  <input name="estatus" type="checkbox" id="estatus" value="1"  <?php if($objeto->estatus=='1'){ echo "checked";}?>>	</td>
+</tr>
+</table>
+
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

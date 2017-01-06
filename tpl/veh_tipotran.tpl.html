@@ -1,0 +1,46 @@
+<?php 
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+?>
+<form name="form1" method="post">
+<table width="310" border="0">
+  <tr>
+    <td width="90">Descripci&oacute;n:</td>
+    <td width="204"><input type="text" name="descripcion" value="<?=$objeto->descripcion?>" onchange="this.value = this.value.toUpperCase();">
+	<span class="errormsg" id="error_descripcion">*</span>
+		<?=$validator->show("error_descripcion")?>   </td>
+  </tr>
+  <tr>
+    <td>Partida Presupuestaria: </td>
+    <td width="204"><?=helpers::combo($conn, 'partidas_presupuestarias', $objeto->id_par_pre)?></td>
+  </tr>
+  <tr>
+    <td>Tipo de Transaccion: </td>
+    <td width="204"><input name="transaccion" type="text" id="transaccion" onchange="this.value = this.value.toUpperCase();" value="<?=$objeto->transaccion?>" />
+      <span class="errormsg" id="error_desc">*</span>
+      <?=$validator->show("error_transaccion")?></td>
+  </tr>
+  <tr>
+    <td>A&ntilde;o:</td>
+    <td width="204"><input name="anio" type="text" id="anio" onchange="this.value = this.value.toUpperCase();" value="<?=$objeto->anio?>" />
+      <span class="errormsg" id="error_anio">*</span>
+      <?=$validator->show("error_anio")?></td>
+  </tr>
+  <tr>
+    <td>Activo:</td>
+    <td><input type="checkbox" name="status" value="1" <?=compara_checked($objeto->status, 1)?> ></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><input name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

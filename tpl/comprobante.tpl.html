@@ -1,0 +1,251 @@
+ <?
+	if (empty($objeto->id))
+	{
+		$q = "SELECT numcom FROM contabilidad.com_enc WHERE id = (SELECT MAX(id) as max FROM contabilidad.com_enc)";
+		$rs = $conn->Execute($q);
+		$sigNumCom = sprintf("%05d", substr($rs->fields['numcom'],8)+1);
+		$fecha = date('d/m/Y');
+	}
+	else
+		$sigNumCom = $obj->numcom;
+		
+	if ($objeto->status=='A' || $objeto->origen=='OP' || $objeto->origen=='TRA')
+		$editable = false;
+	else
+		$editable = true;
+?>
+<form name="form1" id="form1" action="" method="post">
+	<table width="600" border="0">
+		<tr>
+			<td>Fecha:</td>
+			<td>
+				<input style="width:100px" type="text" name="fecha" id="fecha" value="<?=(empty($objeto->id)) ? $fecha:$objeto->fecha?>" <?=(!$editable) ? 'readonly':''?> onchange="return actualizarNumCom(this, $('numcom').value)" maxlength="10" />
+				<a href="#" id="boton_fecha" onclick="return false;" <?=(!$editable) ? 'style="display:none"':''?> >
+					<img border="0"  alt="Seleccionar Fecha" src="images/calendarA.png" width="20" height="20" />
+				</a>  
+				<script type="text/javascript">
+					new Zapatec.Calendar.setup({
+						firstDay          : 1,
+						weekNumbers       : true,
+						showOthers        : false,
+						showsTime         : false,
+						timeFormat        : "24",
+						step              : 2,
+						range             : [1900.01, 2999.12],
+						electric          : false,
+						singleClick       : true,
+						inputField        : "fecha",
+						button            : "boton_fecha",
+						ifFormat          : "%d/%m/%Y",
+						daFormat          : "%Y/%m/%d",
+						align             : "Br"
+					 });
+				</script>
+				<span class="errormsg" id="error_fecha">*</span>
+				<?=$validator->show("error_fecha")?>
+				<!--input type="hidden" id="fecha2" name="fecha2"/-->
+				<input type="hidden" name="id" id="id" value="<?=$objeto->id?>"/> 
+				<input type="hidden" name="op" id="op" value=""/>		
+			</td>
+		</tr>
+		<tr>
+			<td width="18%">Comprobante:</td>
+			 <td width="82%">
+			 	<input name="numcom" id="numcom" type="text" value="<?=!empty($objeto->id) ? $objeto->numcom:''?>" readonly />
+				<?
+				if (empty($objeto->id))
+				{
+				?>
+				<script type="text/javascript">
+					$('numcom').value = $('fecha').value.substr(6,4) + '-' + $('fecha').value.substr(3,2) + '-' + '<?=$sigNumCom?>';
+				</script>
+				<?
+				}
+				?>
+			</td>
+		</tr>
+		<tr>
+			<td>Tipo Documento:</td>
+			<td>
+				<select name="tipo_doc" id="tipo_doc" <?=(!$editable) ? 'disabled':''?> >
+					<option value="s">Seleccione</option>
+					<option value="DEP" <?=($objeto->origen=='DEP')? 'selected="selected"' : ''?>>Dep&oacute;sito</option>
+					<option value="<?=($objeto->origen) ? $objeto->origen:'TRM'?>" <?=(strpos($objeto->origen, 'TR')!==false) ? 'selected="selected"' : ''?>>Transferencia</option>
+					<option value="ND" <?=($objeto->origen=='ND')? 'selected="selected"' : ''?>>Nota D&eacute;bito</option>
+					<option value="NC" <?=($objeto->origen=='NC')? 'selected="selected"' : ''?>>Nota Cr&eacute;dito</option>
+					<option value="<?=($objeto->origen) ? $objeto->origen:'CHM'?>" <?=(strpos($objeto->origen, 'CH') !== false)? 'selected="selected"' : ''?>>Cheque</option>
+					<?
+					if (!empty($objeto->id))
+					{
+					?>
+					<option value="OP" <?=($objeto->origen=='OP')? 'selected="selected"' : ''?>>Orden Pago</option>
+					<option value="CHQ" <?=($objeto->origen=='CHQ')? 'selected="selected"' : ''?>>Cheque</option>
+					<?
+					}
+					?>
+				</select>
+				<span class="errormsg" id="error_tipo_doc">*</span>
+				<?=$validator->show("error_tipo_doc")?>
+			</td>
+		</tr>
+		<tr>
+			<td>N&ordm; Documento:</td>
+			<td>
+				<input type="text" name="num_doc" id="num_doc" <?=(!$editable) ? 'readonly':''?> value="<?=$objeto->num_doc?>" />
+				<span class="errormsg" id="error_num_doc">*</span>
+				<?=$validator->show("error_num_doc")?>
+			</td>
+		</tr>
+		<tr>
+			<td class="td_description">Estatus:</td>
+			<td align="left" valign="top">
+				<input type="text" name="estatus" id="estatus" value="<?=($objeto->status_nombre) ? $objeto->status_nombre:'Registrado'?>" readonly />
+			</td>
+		 </tr>
+		<!--tr>
+			<td class="td_description">Escenario:</td>
+			<td align="left" valign="top">
+				<?=helpers::combo_ue_cp($conn, 
+											'escenarios', 
+											$objeto->id_escenario,
+											'',
+											'',
+											'escenario',
+											'escenario',
+											'',
+											"SELECT id AS id, descripcion FROM puser.escenarios",
+											'',
+											'',
+											'')
+					?>		
+						<span class="errormsg" id="error_escenario">*</span>
+							<?=$validator->show("error_escenario")?>
+					</td>
+		 </tr-->
+		<tr>
+			<td width="18%" class="td_description">Descripci&oacute;n:</td>
+			 <td width="82%"><textarea name="descripcion" id="descripcion" rows="5" cols="35" <?=(!$editable) ? 'readonly':''?>><?=$objeto->descrip?></textarea>
+			<span class="errormsg" id="error_descripcion">*</span>
+							<?=$validator->show("error_descripcion")?></td>
+		</tr>
+		<tr>
+			<td class="td_description">Cuenta Contable:</td>
+			<td>
+				<input type="text" value="" id="cuenta" name="cuenta" <?=(!$editable) ? 'readonly':''?>>
+				<input type="button" name="buscacuenta" id="buscacuenta" value="Buscar" onclick="mostrar_ventana();" <?=(!$editable) ? 'disabled':''?> />
+				<input type="button" name="add" id="add" onclick="Agregar()" value="Agregar Cuenta" <?=(!$editable) ? 'disabled':''?> />
+				<input type="hidden" name="descripcion_cuenta" id="descripcion_cuenta" value="" />
+				<input type="hidden" id="id_cta" widgetid="id_cta" name="id_cta" />
+			</td>
+		</tr>
+	</table>
+	
+	<input type="hidden" name="json_det" id="json_det" widgetid="json_det" value=""/>
+	<div id="gridbox" width="722" height="150px"></div>
+	
+	<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+	<img onclick="close_div();" src="images/close_div.gif" /></span>
+	<br /> 
+	
+	<table width="600" border="0">
+		<tr>
+			<td width="18%">Total Debe:</td>
+			<td width="82%"><input type="text" name="total_debe" id="total_debe" value="0,00" readonly style="text-align:right" /></td>
+		</tr>
+		<tr>
+			<td>Total Haber:</td>
+			<td><input type="text" name="total_haber" id="total_haber" value="0,00" readonly style="text-align:right" /></td>
+		</tr>
+	</table>
+	<br />
+	
+	<div style="width:100%; text-align:right">
+		<input type="button" name="anular" id="anular" value="Anular" onclick="Anular()" <?=(empty($objeto->id) || $objeto->status=='A') ? 'style="display:none"':''?> />&nbsp;
+		<input name="accion" type="button" value="<?=$boton?>" onclick="GuardarDet(); " <?=(!$editable) ? 'style="display:none"':''?> />
+		<input type="hidden" name="accion" value="<?=$boton?>"  id="accion"/>
+	</div>
+</form>
+
+
+<script type="text/javascript">
+buildGrid();
+CargarGrid('<?=$objeto->id?>');
+	function buildGrid(){
+		//set grid parameters
+		mygrid = new dhtmlXGridObject('gridbox');
+		mygrid.setImagePath("js/grid/imgs/");
+		var flds = "C&oacute;digo,Descripci&oacute;n,Debe,Haber,Eliminar";
+		mygrid.setHeader(flds);
+		mygrid.delim = ";";
+		mygrid.setInitWidths("230;240;100;100;50");
+		mygrid.setColAlign("left;left;right;right;center");
+		mygrid.setColTypes("ro;ro;ed;ed;img");
+		mygrid.setColSorting("int;str;int;int;int");
+		mygrid.rowsBufferOutSize = 0;
+		mygrid.setMultiLine(false);
+		mygrid.selmultirows = "false";
+		//set values for select box in 5th column
+		//start grid
+		mygrid.init();
+		//mygrid.setOnEditCellHandler(doOnCellEdit);
+		mygrid.setOnEditCellHandler(doOnCellEdit);
+	}
+	
+	function CargarGrid(id)
+	{
+		var totalDebe = 0;
+		var totalHaber = 0;
+		var debe;
+		var haber;
+		var auxDebe;
+		var auxHaber;
+		
+		mygrid.clearSelection();
+		mygrid.clearAll();
+		var url = 'json.php';
+		var pars = 'op=detalle_comp&id='+ id;
+		var Request = new Ajax.Request
+		(
+			url,
+			{
+				method: 'get',
+				parameters: pars,
+				onLoading:function(request){Element.show('cargando');}, 
+				onComplete:function(request)
+				{
+					var JsonData = eval( '(' + request.responseText + ')');
+					if(JsonData)
+					{
+						for(var j=0;j<JsonData.length;j++)
+						{
+							debe = (JsonData[j].debe=='0') ? '0,00':muestraFloat(JsonData[j].debe);
+							haber = (JsonData[j].haber=='0') ? '0,00':muestraFloat(JsonData[j].haber);
+							mygrid.addRow(i,JsonData[j].cuenta.codcta+";"+JsonData[j].desc_cta+";"+debe+";"+haber+";images/delete.gif");
+							i++;
+							auxDebe = parseFloat(JsonData[j].debe);
+							auxHaber = parseFloat(JsonData[j].haber);
+							totalDebe += parseFloat(auxDebe.toFixed(2));
+							totalHaber += parseFloat(auxHaber.toFixed(2));
+						}
+						
+						$('total_debe').value = muestraFloat(totalDebe.toFixed(2));
+						$('total_haber').value = muestraFloat(totalHaber.toFixed(2));
+					}
+					
+					Element.hide('cargando');
+				}
+			}
+		);  
+	} 
+</script>
+
+<?
+if (!$editable)
+{
+?>
+	<script type="text/javascript">
+		mygrid.setEditable(false);
+	</script>
+<?
+}
+?>

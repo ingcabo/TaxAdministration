@@ -1,0 +1,96 @@
+<form name="form1" method="post">
+<table width="600" border="0">
+  <tr>
+    <td width="98">Producto:</td>
+    <td colspan="2"><input type="text" name="descripcion" value="<?=$objeto->descripcion?>" size="50">
+	<span class="errormsg" id="error_nombre">*</span>
+	<?=$validator->show("error_nombre")?>	</td>
+  </tr>
+  <tr>
+    <td>Tipo Producto: </td>
+    <td width="213">
+		<!--?=helpers::combo($conn, 'tipo_producto', $objeto->id_tipo_producto) ?-->
+		<?=helpers::superComboSQL($conn, 
+								'tipo_producto', 
+								$objeto->id_tipo_producto, 
+								'tipo_producto',
+								'tipo_producto',
+								'width:280px;',
+								'',
+								'id',
+								'descripcion',
+								false,
+								'',
+								'',
+								38)?>
+		<span class="errormsg" id="error_tipo">*</span>
+		<?=$validator->show("error_tipo")?>
+	</td>
+    <td width="172">Und. Medida: <input type="text" name="unidad_medida" value="<?=$objeto->unidad_medida?>" size="10" >
+	<span class="errormsg" id="error_unid_medi">*</span>
+	<?=$validator->show("error_unid_medi")?></td>
+  </tr>
+  <tr>
+  	<td>Descripci&oacute;n:</td>
+	<td colspan="2"><textarea name="desc_completa" id="desc_completa" cols="80" rows="3"><?=$objeto->desc_completa?></textarea></td>
+  </tr>
+  <tr>
+  	<td>Clasificaci&oacute;n Bienes:</td>
+	<td colspan="2"><?=helpers::superCombo($conn, "SELECT id, codigo||' - '||descripcion AS descripcion FROM puser.relacion_clasificacion_bienes ORDER BY codigo", $objeto->id_subgrupo, 'grupo','grupo','','')?></td>
+  </tr>
+  <tr>
+    <td >Cant. Min: </td>
+	<td colspan="2"><input type="text" name="ctd_minimo" value="<?=$objeto->ctd_minimo?>" size="10" onKeyPress="return(formatoNumero(this,event));"
+>
+	<span class="errormsg" id="error_minimo">*</span>
+	<?=$validator->show("error_minimo")?></td>
+  </tr>
+  <tr>
+    <td>Cant. M&aacute;x:</td>
+	<td colspan="2"> <input type="text" name="ctd_maximo" value="<?=$objeto->ctd_maximo?>" size="10" onKeyPress="return(formatoNumero(this,event));
+">
+	<span class="errormsg" id="error_maximo">*</span>
+	<?=$validator->show("error_maximo")?></td>
+  </tr>
+  <tr>
+    <td>Ubic. F&iacute;sica: </td>
+    <td colspan="2"><input type="text" name="ubic_fisica" value="<?=$objeto->ubic_fisica?>" size="45">
+	<span class="errormsg" id="error_ubicacion">*</span>
+	<?=$validator->show("error_ubicacion")?></td>
+  </tr>
+  <tr>
+    <td>Cant. Act: </td>
+    <td><input type="text" name="ctd_actual" value="<?=$objeto->ctd_actual?>" size="10" onKeyPress="return(formatoNumero(this,event));">
+	<span class="errormsg" id="error_ctd_actual">*</span>
+	<?=$validator->show("error_ctd_actual")?>
+	&nbsp;&nbsp;&nbsp;Status: 
+	<select name="activo_inactivo_producto" id="activo_inactivo_producto">
+		<option value="0">Seleccione</option>
+		<option value="1" <?php if($objeto->id_activo_inactivo_producto=='1') echo "selected"?> >Activo</option>
+		<option value="2" <?php if($objeto->id_activo_inactivo_producto=='2') echo "selected"?> >Inactivo</option>
+	</select>
+	<span class="errormsg" id="error_act_ina">*</span>
+	<?=$validator->show("error_act_ina")?>
+	</td>
+    <td>&nbsp;
+	</td>
+  </tr>
+  <tr>
+    <td>Costo Std: </td>
+    <td><input type="text" name="costo_std" value="<?=muestraFloat($objeto->costo_std)?>" size="15" onKeyPress="return(formatoNumero(this,event));">
+	&nbsp;&nbsp;Costo Prom: <input type="text" name="costo_prm" value="<?=muestraFloat($objeto->costo_prm)?>" size="15" onKeyPress="return(formatoNumero(this,event));">
+	
+	</td>
+    <td>Ultimo Costo: <input type="text" name="ultimo_costo" value="<?=muestraFloat($objeto->ultimo_costo)?>" size="15" onKeyPress="return(formatoNumero(this,event));"></td>
+  </tr>
+</table>
+<br />
+<div style="width:600px" align="right">
+<input name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+</div>
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

@@ -1,0 +1,358 @@
+<?
+$q = "SELECT * FROM rrhh.parametrossistema";
+$r = $conn->Execute($q);
+if(!$r->EOF){
+	$Enlace= $r->fields['enlace_presupuesto']=='1' ? '1' : '0';
+}else{
+	$Enlace='0';
+}
+?>
+<form name="form1" method="post">
+<table width="660px" border="0">
+	<tr>
+		<td width="100px">Codigo:</td>
+		<td colspan="2" ><input type="text" name="codigo" value="<?=$objeto->int_cod ? $objeto->conc_cod : getCorrelativo($conn, 'conc_cod', 'rrhh.concepto', 'int_cod')?>">
+			<span class="errormsg" id="error_codigo">*</span>
+			<?=$validator->show("error_codigo")?>
+		</td>
+	</tr>
+	<tr>
+		<td>Descripcion:</td>
+		<td colspan="2">
+			<input type="text" name="nombre" style="width:250px" value="<?=$objeto->conc_nom?>">
+			<span class="errormsg" id="error_desc">*</span>
+			<?=$validator->show("error_desc")?>
+		</td>
+	</tr>
+	<tr>
+		<td>Tipo:</td>
+		<td colspan="2">
+			<SELECT NAME="tipo">
+				<OPTION <?=($objeto->conc_tipo=='0') ? "selected" : "" ?> value='0'>Asignacion
+				<OPTION <?=($objeto->conc_tipo=='1') ? "selected" : "" ?> value='1'>Deduccion
+				<OPTION <?=($objeto->conc_tipo=='2') ? "selected" : "" ?> value='2'>Acumulado
+			</SELECT>
+		</td>
+	</tr>
+	<tr>
+		<td>Estatus:</td>
+		<td colspan="2">
+			<SELECT NAME="estatus" >
+				<OPTION <?=($objeto->conc_estatus=='0') ? "selected" : "" ?> value='0'>Activo
+				<OPTION <?=($objeto->conc_estatus=='1') ? "selected" : "" ?> value='1'>Inactivo
+			</SELECT>
+		</td>
+	</tr>
+	<tr>
+		<td>Retencion:</td>
+		<td colspan="2"><input type="checkbox" <?=($objeto->conc_retencion==1) ? 'checked' : '' ?> name="retencion" id="retencion"></td>
+	</tr>
+	<tr>
+		<td colspan="3" align="center"><hr /><span onClick="MostrarI()" style="cursor:pointer" class="titulo">Formula</span></td>
+	</tr>
+	<tr id="TablaI"  style="display:none ">
+		<td colspan="3">
+			<table border="0" >
+				<tr >
+					<td colspan="3" align="center" ><textarea  name="formula" rows="7" cols="100" ><?=$objeto->conc_form?></textarea></td>
+				</tr>
+				<tr >
+					<td colspan="3" align="center" ><input  type="button"  value="Validar" onClick="Validar()">&nbsp;&nbsp;&nbsp;&nbsp;<input  type="button" value="Borrar" onClick="Borrar()"><br /><br /></td>
+				</tr>
+				<tr align="center" >
+					<td width="200px" onClick="MostrarIII('FI')" style="cursor:pointer" id="TFI" >Variables</td>
+					<td width="200px" onClick="MostrarIII('FII')" style="cursor:pointer" id="TFII" >Constante</td>
+					<td width="200px" onClick="MostrarIII('FIII')" style="cursor:pointer" id="TFIII" >Variables Globales</td>
+				</tr>
+				<tr >
+					<td colspan="3" >
+						<?=helpers::combonominaII($conn, 'variable', '','width:200px; height:100px','int_cod','variable','int_cod','var_nom','variable','multiple','Vari','insertAtCursor(document.form1.formula, this.options[this.selectedIndex].text)','')?>
+						<?=helpers::combonominaII($conn, 'constante', '','width:200px; height:100px','int_cod','constante','int_cod','cons_nom','constante','multiple','Cons','insertAtCursor(document.form1.formula, this.options[this.selectedIndex].text)','')?>
+						<?=helpers::combonominaII($conn, '', '','width:600px; height:100px;display:none','int_cod','concepto','int_cod','conc_nom','concepto','multiple','Conc','insertAtCursor(document.form1.formula, this.options[this.selectedIndex].text)','SELECT int_cod, conc_nom FROM rrhh.concepto WHERE conc_tipo=2')?>
+						<SELECT  name="variableg" id="variableg" multiple style="width: 200px; height:100px" onChange="insertAtCursor(document.form1.formula, this.options[this.selectedIndex].text);" >
+							<OPTION   >[Gvar:1_Sueldo Mensual]
+							<OPTION   >[Gvar:2_Tipo de Contrato]
+							<OPTION   >[Gvar:3_Dias No Contabilizables por Ingreso y/o Egreso]
+							<OPTION   >[Gvar:4_Nro de Lunes en el Periodo de Nomina]
+							<OPTION   >[Gvar:5_Nro de Lunes en el Mes (Tomando la Fecha de Inicio de Nomina)]
+							<OPTION   >[Gvar:6_Prestamos]
+							<OPTION   >[Gvar:7_Nro de Cuota de Prestamos]
+							<OPTION   >[Gvar:8_Total de Cuotas]
+							<OPTION   >[Gvar:9_Meses de Antiguedad]
+							<OPTION   >[Gvar:10_Anos de Antiguedad]
+							<OPTION   >[Gvar:11_Anos de Antiguedad Para Vacaciones]
+							<OPTION   >[Gvar:12_Nro Dias Feriados (En periodo de Nomina)]
+							<OPTION   >[Gvar:13_Nro Sabados y Domingos (En periodo de Nomina)]
+							<OPTION   >[Gvar:14_Nro de Dias (En periodo de Nomina)]
+							<OPTION   >[Gvar:15_Sueldo Anterior al actual]
+					  	</SELECT>
+					</td>
+				</tr>
+				<tr >
+					<td colspan="2" onClick="MostrarIII('TI')" style="cursor:pointer" >Todos</td>
+					<td onClick="MostrarIII('FIV')" align="right" style="cursor:pointer" >Conceptos Acumulados</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" align="center"><hr /><span onClick="MostrarII()" style="cursor:pointer" class="titulo">Descripcion</span></td>
+	</tr>
+	<tr id="TablaII" style="display:none ">
+		<td colspan="3">
+			<table>
+				<tr>
+					<td colspan="3" align="center" ><textarea  name="desc" rows="7"  cols="100" ><?=$objeto->conc_desc?></textarea></td>
+				</tr>
+				<tr >
+					<td colspan="3" align="center" ><input  type="button" value="Borrar" onClick="Borrar2()"><br /><br /></td>
+				</tr>
+				<tr align="center" >
+					<td width="200px" onClick="MostrarIII('DI')" style="cursor:pointer" id="TDI" >Variables</td>
+					<td width="200px" onClick="MostrarIII('DII')" style="cursor:pointer" id="TDII" >Constante</td>
+					<td width="200px" onClick="MostrarIII('DIII')" style="cursor:pointer" id="TDIII" >Variables Globales</td>
+				</tr>
+				<tr align="center" >
+					<td colspan="3" >
+						<?=helpers::combonominaII($conn, 'variable', '','width:200px; height:100px','int_cod','variableD','int_cod','var_nom','variableD','multiple','Vari','insertAtCursor(document.form1.desc, this.options[this.selectedIndex].text)')?>
+						<?=helpers::combonominaII($conn, 'constante', '','width:200px; height:100px','int_cod','constanteD','int_cod','cons_nom','constanteD','multiple','Cons','insertAtCursor(document.form1.desc, this.options[this.selectedIndex].text)')?>
+						<?=helpers::combonominaII($conn, '', '','width:600px; height:100px;display:none','int_cod','conceptoD','int_cod','conc_nom','conceptoD','multiple','Conc','insertAtCursor(document.form1.desc, this.options[this.selectedIndex].text)','SELECT int_cod, conc_nom FROM rrhh.concepto WHERE conc_tipo=2')?>
+						<SELECT  name="variablegD" id="variablegD" multiple style="width: 200px; height:100px" onChange="insertAtCursor(document.form1.desc, this.options[this.selectedIndex].text);" >
+							<OPTION   >[Gvar:1_Sueldo Mensual]
+							<OPTION   >[Gvar:2_Tipo de Contrato]
+							<OPTION   >[Gvar:3_Dias No Contabilizables por Ingreso y/o Egreso]
+							<OPTION   >[Gvar:4_Lunes en Periodo de Nomina]
+							<OPTION   >[Gvar:5_Lunes en Mes (Fecha Inicio Nomina)]
+							<OPTION   >[Gvar:6_Prestamos]
+							<OPTION   >[Gvar:7_Nro de Cuota de Prestamos]
+							<OPTION   >[Gvar:8_Total de Cuotas]
+							<OPTION   >[Gvar:9_Meses de Antiguedad]
+							<OPTION   >[Gvar:10_Anos de Antiguedad]
+							<OPTION   >[Gvar:11_Anos de Antiguedad Para Vacaciones]
+							<OPTION   >[Gvar:12_Nro Dias Feriados (En periodo de Nomina)]
+							<OPTION   >[Gvar:13_Nro Sabados y Domingos (En periodo de Nomina)]
+							<OPTION   >[Gvar:14_Nro de Dias (En periodo de Nomina)]
+							<OPTION   >[Gvar:15_Sueldo Anterior al actual]
+						</SELECT>
+					</td>
+				</tr>
+				<tr >
+					<td colspan="2" onClick="MostrarIII('TII')" style="cursor:pointer" >Todos</td>
+					<td onClick="MostrarIII('DIV')" align="right" style="cursor:pointer" >Conceptos Acumulados</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" align="center"><hr /><span onClick="MostrarV()" style="cursor:pointer" class="titulo">Aporte Patronal</span></td>
+	</tr>
+	<tr id="TablaV" style="display:none ">
+		<td colspan="3">
+			<table>
+				<tr>
+					<td colspan="3" align="center" ><textarea  name="aporte" rows="7"  cols="100" ><?=$objeto->conc_aporte?></textarea></td>
+				</tr>
+				<tr >
+					<td colspan="3" align="center" ><input  type="button" value="Borrar" onClick="Borrar3()"><br /><br /></td>
+				</tr>
+				<tr align="center" >
+					<td width="200px" onClick="MostrarIII('AI')" style="cursor:pointer" id="TAI" >Variables</td>
+					<td width="200px" onClick="MostrarIII('AII')" style="cursor:pointer" id="TAII" >Constante</td>
+					<td width="200px" onClick="MostrarIII('AIII')" style="cursor:pointer" id="TAIII" >Variables Globales</td>
+				</tr>
+				<tr align="center" >
+					<td colspan="3" >
+						<?=helpers::combonominaII($conn, 'variable', '','width:200px; height:100px','int_cod','variableA','int_cod','var_nom','variableA','multiple','Vari','insertAtCursor(document.form1.aporte, this.options[this.selectedIndex].text)')?>
+						<?=helpers::combonominaII($conn, 'constante', '','width:200px; height:100px','int_cod','constanteA','int_cod','cons_nom','constanteA','multiple','Cons','insertAtCursor(document.form1.aporte, this.options[this.selectedIndex].text)')?>
+						<?=helpers::combonominaII($conn, '', '','width:600px; height:100px;display:none','int_cod','conceptoA','int_cod','conc_nom','conceptoA','multiple','Conc','insertAtCursor(document.form1.aporte, this.options[this.selectedIndex].text)','SELECT int_cod, conc_nom FROM rrhh.concepto WHERE conc_tipo=2')?>
+						<SELECT  name="variablegA" id="variablegA" multiple style="width: 200px; height:100px" onChange="insertAtCursor(document.form1.aporte, this.options[this.selectedIndex].text);" >
+							<OPTION   >[Gvar:1_Sueldo Mensual]
+							<OPTION   >[Gvar:2_Tipo de Contrato]
+							<OPTION   >[Gvar:3_Dias No Contabilizables por Ingreso y/o Egreso]
+							<OPTION   >[Gvar:4_Lunes en Periodo de Nomina]
+							<OPTION   >[Gvar:5_Lunes en Mes (Fecha Inicio Nomina)]
+							<OPTION   >[Gvar:6_Prestamos]
+							<OPTION   >[Gvar:7_Nro de Cuota de Prestamos]
+							<OPTION   >[Gvar:8_Total de Cuotas]
+							<OPTION   >[Gvar:9_Meses de Antiguedad]
+							<OPTION   >[Gvar:10_Anos de Antiguedad]
+							<OPTION   >[Gvar:11_Anos de Antiguedad Para Vacaciones]
+							<OPTION   >[Gvar:12_Nro Dias Feriados (En periodo de Nomina)]
+							<OPTION   >[Gvar:13_Nro Sabados y Domingos (En periodo de Nomina)]
+							<OPTION   >[Gvar:14_Nro de Dias (En periodo de Nomina)]
+							<OPTION   >[Gvar:15_Sueldo Anterior al actual]
+						</SELECT>
+					</td>
+				</tr>
+				<tr >
+					<td colspan="2" onClick="MostrarIII('TIII')" style="cursor:pointer" >Todos</td>
+					<td onClick="MostrarIII('AIV')" align="right" style="cursor:pointer" >Conceptos Acumulados</td>
+				</tr>
+                <tr>
+                <td width="90">Cuenta Contable:</td>
+                <td>
+                    <?
+                        $q = "SELECT id, (codcta || ' - ' || descripcion)::varchar AS descripcion FROM contabilidad.plan_cuenta WHERE id_escenario ='$escEnEje' AND movim='S'";
+                        $q.= "AND id NOT IN (SELECT COALESCE(id_cuenta_contable::int8, 0) FROM contabilidad.relacion_cc_pp WHERE id_escenario = '$escEnEje') ";
+                        $q.= "AND id NOT IN (SELECT COALESCE(id_plan_cuenta::int8, 0) FROM finanzas.cuentas_bancarias ".(!empty($objeto->plan_cuenta) ? "WHERE id_plan_cuenta <> ".$objeto->plan_cuenta:"").") ";
+                        $q.= "AND id NOT IN (SELECT COALESCE(cta_contable::int8, 0) FROM puser.proveedores) ";
+                        $q.= "AND id NOT IN (SELECT COALESCE(cuenta_contable::int8, 0) FROM finanzas.tipos_solicitud_sin_imp) ";
+                        //$q.= "AND id NOT IN (SELECT COALESCE(cuenta_contable::int8, 0) FROM rrhh.concepto) ";
+                        $q.= "AND id NOT IN (SELECT COALESCE(id_cta::int8, 0) FROM finanzas.retenciones_adiciones) ";
+                        $q.= "ORDER BY codcta::text ";
+                        //die($q);
+                        echo helpers::superComboSQL($conn, 
+                                                            '',
+                                                            $objeto->idCtaAporte,
+                                                            'idCtaAporte', 
+                                                            'idCtaAporte',
+                                                            'width:270px;',
+                                                            '',
+                                                            'id',
+                                                            'descripcion',
+                                                            false,
+                                                            '',
+                                                            $q,
+                                                            90);
+                    ?>
+                </td>
+  			</tr>
+			</table>
+		</td>
+	</tr>
+	<? if($Enlace=='1') { ?> 
+	<tr>
+		<td colspan="3" align="center"><hr /><span onClick="MostrarIV()" style="cursor:pointer" class="titulo">Enlace Presupuestario</span></td>
+	</tr>
+	<tr id="TablaIV" >
+		<td colspan="3"><br>
+			<table width="660px">
+				<tr>
+					<td >Categorias:</td>
+					<td ><?=helpers::combo_ue_cp($conn, 'puser.categorias_programaticas',$objeto->cat_cod,'','id','categorias_programaticas','categorias_programaticas','traePartidasPresupuestarias(this.value)',"SELECT id,id||' '||descripcion as descripcion FROM puser.categorias_programaticas WHERE id_escenario='$escEnEje'",'','',75)?></td>
+				</tr>
+				<tr>
+					<td >Partidas:</td>
+					<td>
+						<div id="divcombopp">
+							<select style="width:150px">
+								<option>Seleccione</option>
+							</select>
+						</div>
+						<div id="cargador_partidas" style="display:none">
+							&nbsp;<img src="images/loading2.gif" />Cargando...
+						</div>
+					</td>
+				</tr><br>
+				<tr>
+					<td align="left"><input type="button" value="Agregar" onClick="Agregar()" /></td>
+					<td></td>
+					<td align="right"><input type="button" value="Eliminar" onClick="Eliminar()" /></td>
+				</tr>
+				<tr>
+					<td colspan="3"><div id="gridbox" width="660" height="150" class="gridbox"></div></td>
+				</tr>
+			</table><br>
+		</td>
+	</tr> 
+	<tr>
+		<td colspan="3" align="center"><hr /><span onClick="MostrarVI()" style="cursor:pointer" class="titulo">Enlace Contable</span></td>
+	</tr>
+	<tr id="TablaVI" style="display:none " >
+		<td colspan="3">
+			<table width="660px">
+				<tr>
+					<td >Cuenta Contable:</td>
+					<td >
+						<?
+							$q = "SELECT id, (codcta || ' - ' || descripcion)::varchar AS descripcion FROM contabilidad.plan_cuenta WHERE id_escenario ='$escEnEje' AND movim='S'";
+							$q.= "AND id NOT IN (SELECT COALESCE(id_cuenta_contable::int8, 0) FROM contabilidad.relacion_cc_pp WHERE id_escenario = '$escEnEje') ";
+							$q.= "AND id NOT IN (SELECT COALESCE(id_plan_cuenta::int8, 0) FROM finanzas.cuentas_bancarias )";
+							$q.= "AND id NOT IN (SELECT COALESCE(cta_contable::int8, 0) FROM puser.proveedores) ";
+							//$q.= "AND id NOT IN (SELECT COALESCE(cuenta_contable::int8, 0) FROM finanzas.tipos_solicitud_sin_imp) ";
+							$q.= "AND id NOT IN (SELECT COALESCE(id_cta::int8, 0) FROM finanzas.retenciones_adiciones) ";
+							$q.= "AND id NOT IN (SELECT COALESCE(cuenta_contable::int8, 0) FROM rrhh.concepto ".(!empty($objeto->cuenta_contable) ? "WHERE cuenta_contable <> ".$objeto->cuenta_contable : '').") ";
+							$q.= "ORDER BY codcta::text ";
+							echo helpers::superComboSQL($conn, 
+																'',
+																$objeto->cuenta_contable,
+																'id_plan_cuenta', 
+																'id_plan_cuenta',
+																'width:400px;',
+																'',
+																'id',
+																'descripcion',
+																false,
+																'',
+																$q,
+																80);
+						?>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr> 
+	<? } ?> 
+	<tr>
+		<td colspan="3" align="left"><hr /><br /><input style="float:right"  name="accion" type="button" value="<?=$boton?>" onclick="Guardar();<?=$validator->validate() ?>" /></td>
+	</tr>
+</table>
+<input name="int_cod" type="hidden" value="<?=$objeto->int_cod?>" />
+<input name="Presupuesto" id="Presupuesto" type="hidden" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<? if($Enlace=='1') { ?>
+<script language="javascript">
+buildGrid()
+function buildGrid(){
+	//set grid parameters
+	mygrid = new dhtmlXGridObject('gridbox');
+	mygrid.selMultiRows = true;
+	mygrid.setImagePath("js/Grid/imgs/");
+	mygrid.setHeader("Categoria,Partida");
+	mygrid.setInitWidths("330,330");
+	mygrid.setColAlign("center,center");
+	mygrid.setColTypes("coro,coro");
+	mygrid.setColSorting("int,int");
+	mygrid.setColumnColor("white,white");
+	mygrid.rowsBufferOutSize = 0;
+	mygrid.setMultiLine(false);
+	mygrid.selmultirows="true";
+	CargarCombo();
+
+	//start grid
+	mygrid.init();
+	Element.hide('TablaIV');
+	CargarGrid();
+} 
+function CargarCombo(){
+	var Categoria= eval(<?=$objeto->BuscarCombosPresupuesto($conn, 'puser.categorias_programaticas')?>);
+	var Partida = eval(<?=$objeto->BuscarCombosPresupuesto($conn, 'puser.partidas_presupuestarias')?>);
+	if(Categoria){
+		for(j=0;j<Categoria.length;j++){
+			mygrid.getCombo(0).put(Categoria[j][0],Categoria[j][1]);
+		}
+	}
+	if(Partida){
+		for(j=0;j<Partida.length;j++){
+			mygrid.getCombo(1).put(Partida[j][0],Partida[j][1]);
+		}
+	}
+}
+function CargarGrid(){
+	mygrid.clearSelection();
+	mygrid.clearAll();
+	if("<?=$objeto->int_cod?>"){ 
+		if('<?=$objeto->presupuesto?>'){
+			var Presupuesto = eval( '(' + '<?=$objeto->presupuesto?>' + ')');
+			for(i=0;i<Presupuesto.length;i++){
+				mygrid.addRow(i,Presupuesto[i][0]+','+Presupuesto[i][1])
+			}
+		}
+	}
+}
+</script>
+<? } ?>

@@ -1,0 +1,496 @@
+<?php if ($objeto->status>1){ ?>
+	<script type="text/javascript" language="javascript">
+		ver_partpre();
+	</script>
+<?php }?>
+<form name="form1" method="post">
+<table border="0" width="100%" align="center">
+<? if(!$auxNrodoc){ ?>
+<tr>
+	<td>Numero de Documento:</td>
+	<td colspan="3">
+		<input name="nrodoc" type="text" class="Estilo2" id="nrodoc" value="<?=$objeto->nrodoc ?>" size="15" onkeypress="return onlyNumbersCI(event)" onchange="digitosMin(this, 6);" maxlength="9"/>
+		<span class="errormsg" id="error_nrodoc">*</span>
+		<?=$validator->show("error_nrodoc")?>	</td>
+	
+	<td align="right">
+	<span style="text-align:right">Fecha:</span>	</td>
+	<td>
+		<table border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td width="95px" valign="top">
+	  		<div align="left">
+	    <input name="fechadoc" type="text" class="Estilo2" id="fechadoc" value="<?=$objeto->nrodoc ? muestrafecha($objeto->fecha) : date("d/m/Y")?>" size="15" readonly />
+			</div>
+			</td>
+			<td>
+			<span class="errormsg" id="error_fechadoc">*</span>
+			<?=$validator->show("error_fechadoc")?>
+			</td>
+			<td valign="top">
+			
+			<div align="left" style="vertical-align:top">
+			&nbsp;
+		<a href="#" id="boton_fechadoc" onclick="return false;">
+					  <img  border="0" src="images/calendarA.png" width="20" height="20" />
+					 </a>  
+              <script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fechadoc",
+					button            : "boton_fechadoc",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			         </script>
+      </div></td>
+	  	</tr>
+	  	</table>
+	</td>
+</tr>
+<tr>
+	<td>Tipo de Documento:</td>
+	<td colspan="5">
+	<?=helpers::combo_ue_cp($conn, 
+															'tipdoc', 
+															$objeto->id_tipo_documento,
+															'',
+															'',
+															'',
+															'',
+															"",
+															"SELECT * FROM tipos_documentos WHERE abreviacion = 'CC' ")?>
+		<span class="errormsg" id="error_tipo_doc">*</span>
+		<?=$validator->show("error_tipo_doc")?>	</td>
+</tr>
+<? } else { ?>
+<tr>
+	<td>Tipo de Documento:</td>
+	<td>
+	<?=helpers::combo_ue_cp($conn, 
+															'tipdoc', 
+															$objeto->id_tipo_documento,
+															'',
+															'',
+															'',
+															'',
+															"",
+															"SELECT * FROM tipos_documentos WHERE abreviacion = 'CC' ")?>
+		<span class="errormsg" id="error_tipo_doc">*</span>
+		<?=$validator->show("error_tipo_doc")?>
+	</td>
+	<td align="right"><span style="text-align:right">Fecha:</span></td>
+	<td colspan="3">
+	<table border="0" cellpadding="0" cellspacing="0">
+			<tr>
+			<td width="95px" valign="top">
+	  		<div align="left">
+	    <input name="fecha" type="text" class="Estilo2" id="fecha" value="<?=empty($objeto->fecha) ? "" : muestrafecha($objeto->fecha)?>" size="15" readonly />
+			</div>
+			</td>
+			</td>
+				<span class="errormsg" id="error_fecha">*</span>
+				<?=$validator->show("error_fecha")?>	
+			<td>
+			<td valign="top">
+			
+			<div align="left" style="vertical-align:top">
+			&nbsp;
+		<a href="#" id="boton_fecha" onclick="return false;">
+					  <img  border="0" src="images/calendarA.png" width="20" height="20" />
+			  </a>  
+              <script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecha",
+					button            : "boton_fecha",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			         </script>
+      </div></td>
+	  	</tr>
+	  </table>
+<!--	<input value="<?=empty($objeto->fecha) ? date("d/m/Y") : muestrafecha($objeto->fecha)?>" readonly name="fecha" size="12 " type="text" />
+-->	</td>
+</tr>
+<? } ?>
+<tr>
+	<td>Descripci&oacute;n:</td>
+	<td colspan="5">
+		<input value="<?=$objeto->descripcion?>" name="descripcion" style="width:500px" type="text" />
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+</tr>
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td colspan="6"><span class="titulo">Referencias del Ciudadano</span></td>
+</tr>
+<tr>
+	<td>Cedula del Ciudadano:</td>
+	<td style="width:180px">
+	<input type="hidden" name="id_ciudadano" id="id_ciudadano" class="ciudadano"  <?=$disabledCiud?> value="<?=$objeto->id_ciudadano?>" size="12" />
+	<input type="text" name="rif_ciudadano" id="rif_ciudadano" class="ciudadano"  <?=$disabledCiud?> value="<?=$objeto->rif_ciudadano?>" size="12" />
+	<!--<input type="text" onchange="traeCiudadanoDesdeXML(this.value)" name="id_ciudadano" id="id_ciudadano" class="ciudadano"  <?=$disabledCiud?> value="<?=$objeto->id_ciudadano?>" size="12" />-->
+	<span onclick="mostrar_ventana(2);" id="buscadorciu" style="cursor:pointer; display:inline"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+	<span class="errormsg" id="error_ciud">*</span>
+	<?=$validator->show("error_ciud")?>
+	</td>
+	<td>Nombre del Ciudadano:
+	</td>
+	<td colspan="3"><input type="text" <?=$disabledCiud?> class="ciudadano" name="nombre_ciudadano" id="nombre_ciudadano" value="<?=$objeto->ciudadano?>" size="25" />
+	</td>
+</tr>
+<tr>
+	<td>Tel&eacute;fono:</td>
+	<td>
+		<input value="<?=$objeto->tlf_ciudadano?>" class="ciudadano" <?=$disabledCiud?> name="tlf_ciudadano" id="tlf_ciudadano" size="16 " type="text" />
+	</td>
+	<td>Direcci&oacute;n:</td>
+	<td colspan="3">
+		<input value="<?=$objeto->dir_ciudadano?>" class="ciudadano" <?=$disabledCiud?> name="dir_ciudadano" id="dir_ciudadano" size="45 " type="text" />
+	</td>
+</tr>
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td>Unidad Ejecutora:</td>
+	<td colspan="5"><?=helpers::combo_ue_cp($conn, 
+														'unidad_ejecutora', 
+														$objeto->id_unidad_ejecutora,
+														'width:250px',
+														'',
+														'',
+														'',
+														"mostrarBuscarCat(this.value);",
+														"SELECT id, (id || ' - ' || descripcion) AS descripcion FROM unidades_ejecutoras WHERE id_escenario='$escEnEje' ORDER BY id")?>
+		<span class="errormsg" id="error_ue">*</span>
+		<?=$validator->show("error_ue")?>
+	</td>
+</tr>
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+</table>
+<div id="partpreDiv" style="display:inline">
+<table border="0" width="100%" align="center" >
+<tr>
+	<td colspan="3"><span class="titulo">Partidas Presupuestarias:</span></td>
+</tr>
+<tr>
+	<td>Categoria</td>
+	<td>Partida Presupuestaria</td>
+	<td>Monto</td>
+</tr>
+<tr height="15px">
+	<td style="width:33%">
+		<table width="100%" cellpadding="0" cellspacing="0" border="0s">
+			<tr>
+				<td width="50%">
+					<input type="text" name="txtcategorias_programaticas" id="txtcategorias_programaticas" style="width:180px " />
+									<input type="hidden" name="categorias_programaticas" id="categorias_programaticas" />
+									<span onclick="traeCategoriasProgramaticas($('unidad_ejecutora').value);" style="cursor:pointer; display:none" id="bcategorias"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span> 
+				</td>
+				
+			</tr>
+		</table>
+	</td>
+	<td style="width:34%">
+		<table width="100%" cellpadding="0" cellspacing="0" border="0s">
+			<tr>
+				<td width="50%">
+					<input type="text" name="txtpartidas_presupuestarias" id="txtpartidas_presupuestarias" style="width:180px " />
+									<input type="hidden" name="partidas_presupuestarias" id="partidas_presupuestarias" />
+									<span onclick="traePartidasPresupuestarias($('categorias_programaticas').value);" style="cursor:pointer; display:none" id="bpartidas"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+				</td>
+				
+			</tr>
+		</table>
+	</td>
+	<td style="width:33%">
+		<input type="text" name="montoip" id="montoip" style="text-align:right" onkeypress="return(formatoNumero(this,event));" value="0,00" />
+	</td>
+</tr>
+<tr>
+	<td colspan=2 align="left"><input type="button" name="b_agregar_co" onclick="AgregarCC()" value="Agregar"></td>
+	<td align="right"><input type="button" name="b_eliminar_co" onclick="EliminarCC()" value="Eliminar"></td>	
+</tr>
+<tr>
+	<td colspan="3"><hr></td>
+</tr>
+</table>
+</div>
+<table border="0" width="90%" align="center">
+<tr>
+	<td colspan="5" align="center">
+	<div id="gridboxcc" style=" width:725px; height:150px; z-index:0; display:block" class="gridbox" align="center"></div></td>
+</tr>
+<tr>
+		<td width="500px" align="left">Categoria Programatica: &nbsp; <input type="text" name="nom_cat_pro" id="nom_cat_pro" readonly size="70" /> </td>
+    	<td align="right" colspan="2" ><span class="Estilo1">IVA:</span></td>
+  		<td colspan="2">
+		<input type="hidden" name="caja_chica" id="caja_chica">
+    	<input value="<?= muestraFloat($objeto->total_iva)?>" name="total_iva" id="total_iva" size="20" type="text" readonly / >
+		</td>
+  	</tr>
+  	<tr>
+		<td width="500px" align="left">Partida Presupuestaria: &nbsp;&nbsp;&nbsp; <input type="text" name="nom_par_pre" id="nom_par_pre" readonly size="70"/></td>
+    	<td height="25" valign="top" align="right" colspan="2"><span class="Estilo1">TOTAL GENERAL Bs. </span></td>
+    	<td valign="middle" colspan="2">
+		<input type="hidden" name="disponible" id="disponible">
+		<input type="hidden" name="idParCat" id="idParCat">
+		<input type="hidden" name="montoCCB" id="montoCCB">
+		 <input value="<?= muestraFloat($objeto->total_general)?>" name="montoCC" id="montoCC" size="20" type="text" readonly />
+	 	</td>
+	</tr>
+<tr>
+</table>
+<div id="facrelDiv">
+	<table width="100%" align="center">
+	<tr>
+		<td><hr /></td>
+	</tr>
+	<tr>
+		<td colspan="5">
+			<span class="titulo">Facturas Relacionadas</span>
+		</td>
+	</tr>
+	<tr>
+		<td><hr /></td>
+	</tr>
+	</table>
+
+<br />
+<table width="90%" align="center">
+<tr>
+	
+	<td colspan="2"><input name="button2" type="button" id="Agregarcp" onclick="Agregar()" value="Agregar Facturas" /></td>
+    <td colspan="2" align="right"><input name="button" type="button" onclick="Eliminar()" value="Eliminar Facturas" align="right" /></td>
+</tr>
+	<tr>
+		<td align="center" colspan="4">
+			<div id="gridboxfac" style=" width:650px; height:150px" class="gridbox" align="center"></div>
+			<input type="hidden" id="contenedor_facturas" value="" name="contenedor_facturas" />
+		</td>
+	</tr>
+</table>
+ <br />
+  <table width="90%" align="center" border="0" cellpadding="1" cellspacing="0" id="tablitaFR" style="text-align: left;">
+    <tbody>
+       <tr>
+        <td width="68%" style="text-align:right">Sub-Total:</td>
+        <td width="32%" align="left">
+          <input class="monto" style="width:100px" id="subtotal" name="subtotal" readonly />
+        </td>
+      </tr>
+	  <tr>
+        <td width="68%" style="text-align:right">Total IVA:</td>
+        <td width="32%" align="left">
+          <input class="monto" style="width:100px" id="totaliva" name="totaliva" readonly />
+        </td>
+      </tr>
+	   <tr>
+        <td width="68%" style="text-align:right">Total Facturas:</td>
+        <td width="32%" align="left">
+          <input class="monto" style="width:100px" id="total" name="total" value="<?=muestrafloat($total)?>" readonly />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+</div>
+<table border="0" width="90%" align="center">
+<tr>
+	<td  colspan="6" align="left">Observaciones:</td>
+</tr>
+<tr>
+	<td  colspan="6" align="left"><textarea name="observaciones" id="observaciones" style="width:400px"><?=$objeto->observaciones?></textarea></td>
+</tr>
+</table>
+<input type="hidden" name="status" id="status" value="<?= $objeto->status?>" />
+<input type="hidden" name="nrodoc" id="nrodoc" value="<?= $objeto->nrodoc?>" />
+<? if($boton == 'Guardar'){ ?>
+<input style="float:right; margin: 5px" name="boton" type="button" value="<?=$boton?>" onclick="buscaNroDoc(this.value);" />
+<input name="accion" id="accion" type="hidden" value="<?=$boton?>" onclick="actapr(this); buscaNroDoc(this.value);" />
+<? } if($boton == 'Actualizar'){
+	if($objeto->status=='1'){ ?>
+<input style="float:right; margin: 5px" name="botonActualizar" type="button" value="Actualizar" onclick="actapr(this); buscaNroDoc(this.value); " />
+<input style="float:right; margin: 5px" name="botonAprobar" type="button" value="Aprobar" onclick="actapr(this); buscaNroDoc(this.value); " />
+<input style="float:right; margin: 5px" name="botonAnular" type="button" value="Anular" onclick="actapr(this); buscaNroDoc(this.value);" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value=""  id="accion"/>
+<? }elseif($objeto->status=='2'){ ?>
+<input style="float:right; margin: 5px" name="botonAnular" type="button" value="Anular" onclick="actapr(this); buscaNroDoc(this.value);" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value=""  id="accion"/>
+	<? }?>
+<? } ?>
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+<br />
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<script type="text/javascript">
+
+buildGridcc();
+buildGridFAC();
+CargarGrid();
+CargarGridFact();
+sumaTotal();
+sumaTotalFacturas();
+function buildGridcc(){
+	//set grid parameters
+	mygridcc = new dhtmlXGridObject('gridboxcc');
+	mygridcc.selMultiRows = true;
+	mygridcc.setImagePath("js/Grid/imgs/");
+	mygridcc.setHeader("Categoria,Partida Presupuestaria, Base Imponible, Monto Excento, % IVA, Monto IVA, Total");
+	mygridcc.setInitWidths("150,150,100,80,50,75,115");
+	mygridcc.setColAlign("center,center,right,right,center,right,right");
+	mygridcc.setColTypes("coro,coro,ed,ed,coro,ed,ed");
+	mygridcc.setColSorting("str,str,int,int,int,int,int");
+	mygridcc.setColumnColor("white,white,white,white,white,white,white");
+	//mygridco.setEditable('fl');
+	mygridcc.rowsBufferOutSize = 0;
+	mygridcc.setMultiLine(false);
+	mygridcc.selmultirows="true";
+	mygridcc.setOnEnterPressedHandler(generaTotal);
+	mygridcc.setOnRowSelectHandler(traerPartidasSeleccionada);
+	mygridcc.delim=";";
+	
+	
+	
+	<? $iva = new iva;
+		$objiva = $iva->iva_anio($conn, $anoCurso);
+	?>
+	<?=helpers::combogrid($objiva, 4, 'porc' , 'descripcion', 'Seleccione', 'mygridcc' )?>
+	
+	//INICIA GRID//
+	mygridcc.init();
+	
+}
+
+function CargarGrid(){
+var JsonAux;
+	mygridcc.clearSelection();
+	mygridcc.clearAll();
+	if("<?=$objeto->id?>"){ 
+		if('<?=$objeto->json?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->json?>' + ')');
+			for(i=0;i<Relaciones.length;i++){
+				var monto_impuesto = (parseFloat(Relaciones[i]['monto']) - parseFloat(Relaciones[i]['monto_exc'])) * (Relaciones[i]['porc_iva']/100);
+				var total = parseFloat(Relaciones[i]['monto']) + parseFloat(monto_impuesto);
+				mygridcc.addRow(Relaciones[i]['idParCat'],Relaciones[i]['id_categoria_programatica']+";"+Relaciones[i]['id_partida_presupuestaria']+";"+Relaciones[i]['monto']+";"+Relaciones[i]['monto_exc']+";"+Relaciones[i]['porc_iva']+";"+monto_impuesto.toFixed(2)+";"+total);
+			}
+		}
+		
+	}
+}
+
+	//GRID DE FACTURAS//
+
+function buildGridFAC(){
+	//PARAMETROS DEL GRID//
+	mygridfac = new dhtmlXGridObject('gridboxfac');
+	mygridfac.selMultiRows = true;
+	mygridfac.setImagePath("js/grid/imgs/");
+	mygridfac.setHeader("N&ordm; Factura,N&ordm; Control,Fecha,Monto Doc,Descuento,Monto Exento,Iva,Base Imponible, Monto Iva");
+	mygridfac.setInitWidths("60,60,60,80,60,60,90,90,90");
+	mygridfac.setColAlign("center,center,center,center,center,center,center,center,center");
+	mygridfac.setColTypes("ed,ed,calendar,ed,ed,ed,coro,ed,ed");
+	mygridfac.setColSorting("str,str,int,int,int,int,int,int,int");
+	mygridfac.setColumnColor("white,white,white,white,white,white,white,white,white");
+	mygridfac.rowsBufferOutSize = 0;
+	mygridfac.setMultiLine(false);
+	mygridfac.selmultirows="true";
+	//mygridfac.setOnEditCellHandler(busca_ret_iva);
+	mygridfac.setOnEditCellHandler(calcularMontoBaseImp);
+	<? $iva = new iva;
+		$objiva = $iva->iva_anio($conn, $anoCurso);
+	?>
+	<?=helpers::combogrid($objiva, 6, 'porc' , 'descripcion', 'Seleccione', 'mygridfac' )?>
+	//INICIO DE GRID//
+	mygridfac.init();
+}
+
+function CargarGridFact(){
+	var JsonAux;
+	mygridfac.clearSelection();
+	mygridfac.clearAll();
+	//if("<?=$objeto->nrodoc?>"){ 
+		if('<?=$objeto->json_fact?>'){
+			var Facturas = eval( '(' + '<?=$objeto->json_fact?>' + ')');
+			
+			for(i=0;i<Facturas.length;i++){
+				mygridfac.addRow(i,Facturas[i]['nfact']+","+Facturas[i]['ncontrol']+","+Facturas[i]['fecha']+","+Facturas[i]['monto']+","+Facturas[i]['descuento']+","+Facturas[i]['monto_excento']+","+Facturas[i]['iva']+","+Facturas[i]['base_imponible']+","+Facturas[i]['monto_iva'],i);
+			}
+		}
+		sumaTotalFacturas();
+	//}
+} 
+
+
+
+
+
+
+
+
+/*function buildGridFAC(){
+	//PARAMETROS DEL GRID//
+	mygridfac = new dhtmlXGridObject('gridboxfac');
+	mygridfac.selMultiRows = true;
+	mygridfac.setImagePath("js/grid/imgs/");
+	mygridfac.setHeader("N&ordm; Factura,N&ordm; Control,Fecha,Iva, Monto");
+	mygridfac.setInitWidths("95,95,95,70,95");
+	mygridfac.setColAlign("center,center,center,center,right");
+	mygridfac.setColTypes("ed,ed,ed,ed,ed");
+	mygridfac.setColSorting("str,str,int,int,int");
+	mygridfac.setColumnColor("white,white,white,white,white");
+	mygridfac.rowsBufferOutSize = 0;
+	mygridfac.setMultiLine(false);
+	mygridfac.selmultirows="true";
+	mygridfac.setOnEnterPressedHandler(validaGrid_fact);
+	//INICIO DE GRID//
+	mygridfac.init();
+}
+
+function CargarGridFact(){
+var JsonAux;
+	mygridfac.clearSelection();
+	mygridfac.clearAll();
+	if("<?=$objeto->id?>"){
+		if('<?=$objeto->json_fact?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->json_fact?>' + ')');
+			for(ifac=0;ifac<Relaciones.length;ifac++){
+			//alert(Relaciones[0][2]);
+				mygridfac.addRow(ifac,Relaciones[ifac]['nfact']+","+Relaciones[ifac]['ncontrol']+","+Relaciones[ifac]['fecha']+","+Relaciones[ifac]['iva']+","+Relaciones[ifac]['monto'],ifac);
+			}
+		}
+		
+	}
+}*/
+
+</script>

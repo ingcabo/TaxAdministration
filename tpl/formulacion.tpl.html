@@ -1,0 +1,589 @@
+<form name="form1" method="post">
+<table width="660px" border="0">
+	<tr>
+		<td width="198" height="30" valign="top">
+			<div align="left">
+				<span class="Estilo2">
+					Escenario:<span class="errormsg" id="error_escenario">*</span>
+					<?=$validator->show("error_escenario")?>
+				</span>			
+			</div>
+			<span class="Estilo2">
+				<?=helpers::combo_ue_cp($conn, 
+										'escenarios', 
+										$objeto->id_escenario,
+										'',
+										'',
+										'escenario',
+										'escenario',
+										'traeAnioEscenarioDesdeXML(this.value); traeUnidadesEjecutoras(this.value)',
+										"SELECT id, descripcion FROM puser.escenarios WHERE id <> '$escEnEje'",
+										$objeto->disabled,
+										'',
+										'')
+				?>
+	  		</span>  	  
+	  </td>
+		<td height="30" colspan="2" valign="top">
+			<div align="left">
+				<span class="Estilo2">
+					A&ntilde;o:				
+				</span>			
+			</div>
+			<span class="Estilo2">
+				<input type="text" style="text-align:right" name="anio" id="anio" value="<?=$objeto->anio?>" size="4" readonly="readonly" />
+			</span>	  
+		</td>
+	</tr>
+	<tr>
+		<td width="198" height="30" valign="top">
+			<div align="left">
+				<span class="Estilo2">
+					Codigo:	<span class="Estilo2"><span class="errormsg" id="error_cod_ue">*</span>
+                		<?=$validator->show("error_cod_ue")?>			
+				</span>			
+			</div>
+		  <?
+		  	if(empty($objeto->id_formulacion))
+			{
+		  ?>	
+		  		<div id="divcomboescenario">
+			  		<select>
+						<option>Seleccione...</option>
+					</select> - <input type="text" style="text-align:right" name="cant_metas" id="cant_metas" value="<?=$cant_metas?>" size="4" />
+				</div> 
+		  <?
+			}
+			else
+			{
+		  ?>	
+				<input type="text" style="text-align:right" name="id_ue" id="id_ue" value="<?=$objeto->id_ue?>" size="10" readonly="readonly" />-<input type="text" style="text-align:right" name="cant_metas" id="cant_metas" value="<?=$objeto->nro_meta?>" size="4" readonly="readonly" />
+		  <?	
+		  	}
+		  ?>	
+  	  </td>
+		<td width="548" height="30" valign="top">
+			<div align="left">
+				<span class="Estilo2">
+					Unidad Ejecutora:<span class="errormsg" id="error_desc_ue">*</span>
+					<?=$validator->show("error_desc_ue")?>
+				</span>			
+			</div>
+			<span class="Estilo2">
+				<input type="text" name="desc_ue" id="desc_ue" value="<?=$objeto->desc_ue?>" size="60" readonly="readonly" />
+	  		</span>	  
+	  </td>
+	</tr>
+	<tr>
+		<td width="198" height="30" valign="top">
+			<div align="left">
+				<span class="Estilo2">
+					Organismo:				
+				</span>			
+			</div>
+			<span class="Estilo2">
+				<input type="text" name="organismo" id="organismo" value="Alcaldia Santos Michelena" readonly="readonly" />
+	  		</span>	  
+	  </td>
+		
+		<td width="548" height="30" valign="top">
+			<div align="left">
+				<span class="Estilo2">
+					Status:<span class="errormsg" id="error_status">*</span>
+					<?=$validator->show("error_status")?>
+				</span>			
+			</div>
+			<span class="Estilo2">
+				<SELECT name="status" id="status" <?=($objeto->status=='2') || ($objeto->status=='3')? 'disabled="disabled"': ''?>>
+					<OPTION value='1' <?=($objeto->status=='1')? 'selected="selected"': ''?>>Registro</OPTION>
+					<? if ($objeto->status!=''){?><OPTION value='2' <?=($objeto->status=='2') || ($objeto->status=='3')? 'selected="selected"': ''?>>Aprobado</OPTION><? }?>
+				</SELECT>
+				
+			</span>	
+  	  </td>
+		
+		
+	</tr>
+	<tr>
+		<td height="30" colspan="3" valign="top">
+			<div align="left">
+				<span class="Estilo2">
+					Objetivo General:<span class="errormsg" id="error_objetivo">*</span>
+					<?=$validator->show("error_objetivo")?>
+				</span>			
+			</div>
+			<span class="Estilo2">
+				<input type="text" name="objetivo" id="objetivo" value="<?=$objeto->objetivo_gral?>" style="width:750px"/>
+			</span>	  
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" valign="bottom">
+			<div id="tabs" style="width:750;height:250">  
+				<div id="tab1" name="tab_1">
+					<table align="center" border="0" id="grid_tabs_1">
+						<tr>
+							<td align="left">
+								<input name="button" type="button" onclick="AgregarMetas($(id_ue).value, $(cant_metas).value, $(escenario).value)" value="Agregar" />							
+							</td>
+						  	<td align="right">
+								<input name="button" type="button" onclick="EliminarMetas()" value="Eliminar" />							
+							</td>
+						</tr>
+						<tr>
+						  	<td colspan="3">
+								<div id="gridboxMetas" width=720 height=180 class="gridbox"></div>							
+							</td>
+						</tr>
+					</table> 
+				</div>  
+				<div id="tab2" name="tab_2">  
+					<table align="center" border="0" id="grid_tabs_2">
+						<tr>
+							<td align="left">
+								<input name="button" type="button" onclick="AgregarGastosDePersonal($(id_ue).value, $(cant_metas).value, $(escenario).value, 'tab2')" value="Agregar" />							
+							</td>
+						  	<td align="right">
+								<input name="button" type="button" onclick="EliminarGastosDePersonal()" value="Eliminar" />							
+							</td>
+						</tr>
+						<tr>
+						  	<td colspan="3">
+								<div id="gridboxGastosDePersonal" width=700 height=180 class="gridbox"></div>							
+							</td>
+						</tr>
+					</table> 
+				</div>  
+				<div id="tab3" name="tab_3">  
+					<table align="center" border="0" id="grid_tabs_3">
+						<tr>
+							<td align="left">
+								<input name="button" type="button" onclick="AgregarMaterialesSuministros($(id_ue).value, $(cant_metas).value, $(escenario).value, 'tab3')" value="Agregar" />							
+							</td>
+							<td align="left">
+								<input name="buscador" type="text" onchange="" />
+							</td>
+						  	<td align="right">
+								<input name="button" type="button" onclick="EliminarMaterialesSuministros()" value="Eliminar" />							
+							</td>
+						</tr>
+						<tr>
+						  	<td colspan="3">
+								<div id="gridboxMaterialesSuministros" width=720 height=180 class="gridbox"></div>							
+							</td>
+						</tr>
+					</table> 
+				</div>
+				<div id="tab4" name="tab_4">  
+					<table align="center" border="0" id="grid_tabs_4">
+						<tr>
+							<td align="left">
+								<input name="button" type="button" onclick="AgregarServiciosNoPersonales($(id_ue).value, $(cant_metas).value, $(escenario).value, 'tab4')" value="Agregar" />							
+							</td>
+						  	<td align="right">
+								<input name="button" type="button" onclick="EliminarServiciosNoPersonales()" value="Eliminar" />							
+							</td>
+						</tr>
+						<tr>
+						  	<td colspan="3">
+								<div id="gridboxServiciosNoPersonales" width=700 height=180 class="gridbox"></div>							
+							</td>
+						</tr>
+					</table>  
+				</div>
+				<div id="tab5" name="tab_5">  
+					<table align="center" border="0" id="grid_tabs_5">
+						<tr>
+							<td align="left">
+								<input name="button" type="button" onclick="AgregarActivosReales($(id_ue).value, $(cant_metas).value, $(escenario).value, 'tab5')" value="Agregar" />							
+							</td>
+						  	<td align="right">
+								<input name="button" type="button" onclick="EliminarActivosReales()" value="Eliminar" />							
+							</td>
+						</tr>
+						<tr>
+						  	<td colspan="3">
+								<div id="gridboxActivosReales" width=700 height=180 class="gridbox"></div>							
+							</td>
+						</tr>
+					</table>  
+				</div>
+				<div id="tab6" name="tab_6">  
+					<table align="center" border="0" id="grid_tabs_6">
+						<tr>
+							<td align="left">
+								<input name="button" type="button" onclick="AgregarOtros($(id_ue).value, $(cant_metas).value, $(escenario).value, 'tab6')" value="Agregar" />							
+							</td>
+						  	<td align="right">
+								<input name="button" type="button" onclick="EliminarOtros()" value="Eliminar" />							
+							</td>
+						</tr>
+						<tr>
+						  	<td colspan="3">
+								<div id="gridboxOtros" width=700 height=180 class="gridbox"></div>							
+							</td>
+						</tr>
+					</table>  
+				</div>
+				<div id="tab7" name="tab_7">  
+					<table align="center" border="0" id="grid_tabs_7">
+						<tr>
+							<td align="left">
+								<input name="button" type="button" onclick="AgregarObservaciones($(id_ue).value, $(cant_metas).value, $(escenario).value)" value="Agregar" />							
+							</td>
+						  	<td align="right">
+								<input name="button" type="button" onclick="EliminarObservaciones()" value="Eliminar" />							
+							</td>
+						</tr>
+						<tr>
+						  	<td colspan="3">
+								<div id="gridboxObservaciones" width=700 height=180 class="gridbox"></div>							
+							</td>
+						</tr>
+					</table>  
+				</div> 
+			</div>	
+		</td>
+	</tr>
+</table>
+<table width="755" border="0">
+	<tr align="right">
+		<td width="480" align="right">
+			<?
+				if(($objeto->status != '') )
+				{
+				?>
+			<input name="reporte" type="button" value="Reporte"  style="float:right" onclick="document.location.href='reporte_formulacion.pdf.php?id_formulacion=<?=$objeto->id_formulacion?>'"/>
+			<? }?>
+	  	</td>
+<?
+	if( ($objeto->status == 1) || ($objeto->status == '') )
+	{
+?>
+		<td width="265" colspan="2" align="right">
+			<input name="accion" type="button" value="<?=$boton?>"  style="float:right" onclick="GuardarMetas(); GuardarGastosDePersonal(); GuardarMaterialesSuministros(); GuardarServiciosNoPersonales(); GuardarActivosReales(); GuardarOtros(); GuardarObservaciones(); <?=$validator->validate() ?>"/>
+		</td>
+<?
+	}
+?>
+	</tr>
+</table>
+<input name="id_formulacion" type="hidden" value="<?=$objeto->id_formulacion?>" />
+<input name="metas" id="metas" type="hidden" />
+<input name="gastos_personal" id="gastos_personal" type="hidden" />
+<input name="mat_suminis" id="mat_suminis" type="hidden" />
+<input name="serv_no_personal" id="serv_no_personal" type="hidden" />
+<input name="act_reales" id="act_reales" type="hidden" />
+<input name="otros" id="otros" type="hidden" />
+<input name="observacion" id="observacion" type="hidden" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<input type="hidden" name="id_tab" id="id_tab" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+	<img onclick="close_div();" src="images/close_div.gif" />
+</span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<script>  
+	tabbar=new dhtmlXTabBar("tabs"); 
+	tabbar.setImagePath("js/tabs/imgs/"); 
+	tabbar.addTab("tab1","Metas","60px"); 
+	tabbar.addTab("tab2","Gastos de Personal","140px"); 
+	tabbar.addTab("tab3","Materiales y Suministros","140px"); 
+	tabbar.addTab("tab4","Servicios No Personales","140px"); 
+	tabbar.addTab("tab5","Activos Reales","100px"); 
+	tabbar.addTab("tab6","Otros","70px"); 
+	tabbar.addTab("tab7","Observaciones","85px"); 
+	tabbar.setContent("tab1","tab1");
+	tabbar.setContent("tab2","tab2");
+	tabbar.setContent("tab3","tab3");
+	tabbar.setContent("tab4","tab4");
+	tabbar.setContent("tab5","tab5");
+	tabbar.setContent("tab6","tab6");
+	tabbar.setContent("tab7","tab7");
+	//tabbar.setOnSelectHandler(my_func);
+					
+	buildGridMetas();
+	CargarGridMetas();
+	function buildGridMetas()
+	{
+		//set grid parameters
+		mygridMetas = new dhtmlXGridObject('gridboxMetas');
+		mygridMetas.selMultiRows = true;
+		mygridMetas.setImagePath("js/Grid/imgs/");
+		mygridMetas.setHeader("Codigo,Categoria,Descripcion,Cant. Programada,Unidad/Medida");
+		mygridMetas.setInitWidths("90,120,320,100,90");
+		mygridMetas.setColAlign("right,right,left,right,left");
+		mygridMetas.setColTypes("ro,coro,txt,ed,ed");
+		mygridMetas.setColSorting("int,int,str,int,int");
+		mygridMetas.setColumnColor("white,white,white,white,white");
+		mygridMetas.rowsBufferOutSize = 0;
+		mygridMetas.setMultiLine(false);
+		mygridMetas.selmultirows="true";
+		mygridMetas.init();
+		mygridMetas.setOnEditCellHandler(ValidarCategoriasProgramaticas);
+	}
+				
+	buildGridGastosDePersonal();
+	CargarGridGastosDePersonal();
+	function buildGridGastosDePersonal()
+	{
+		//set grid parameters
+		mygridGastosDePersonal = new dhtmlXGridObject('gridboxGastosDePersonal');
+		mygridGastosDePersonal.selMultiRows = true;
+		mygridGastosDePersonal.setImagePath("js/Grid/imgs/");
+		mygridGastosDePersonal.setHeader("Codigo,Partida,Descripcion,Monto");
+		mygridGastosDePersonal.setInitWidths("100,140,360,100");
+		mygridGastosDePersonal.setColAlign("right,right,left,right");
+		mygridGastosDePersonal.setColTypes("ro,ro,ro,ro");
+		mygridGastosDePersonal.setColSorting("int,str,str,int");
+		mygridGastosDePersonal.setColumnColor("white,white,white,white");
+		mygridGastosDePersonal.rowsBufferOutSize = 0;
+		mygridGastosDePersonal.setMultiLine(false);
+		mygridGastosDePersonal.delim=';';
+		mygridGastosDePersonal.selmultirows="true";	
+		mygridGastosDePersonal.init();
+	//	mygridGastosDePersonal.setOnEditCellHandler(ValidarGastosDePersonalPP);
+		//mygridGastosDePersonal.setEditable('fl');  No permite editar el grid una vez cargado
+	}
+			
+	buildGridMaterialesSuministros();
+	CargarGridMaterialesSuministros();
+	function buildGridMaterialesSuministros()
+	{
+		//set grid parameters
+		mygridMaterialesSuministros = new dhtmlXGridObject('gridboxMaterialesSuministros');
+		mygridMaterialesSuministros.selMultiRows = true;
+		mygridMaterialesSuministros.setImagePath("js/Grid/imgs/");
+		mygridMaterialesSuministros.setHeader("Cod. Meta, Cod. Producto, Descripcion, Partida,Cantidad, Costo U.,Monto");
+		mygridMaterialesSuministros.setInitWidths("60,80,270,80,50,80,100");
+		mygridMaterialesSuministros.setColAlign("right,right,right,right,right,left,right");
+		mygridMaterialesSuministros.setColTypes("ro,ro,ro,ro,coro,ro,ro");
+		mygridMaterialesSuministros.setColSorting("int,int,int,int,str,str,int");
+		mygridMaterialesSuministros.setColumnColor("white,white,white,white,white,white,white");
+		mygridMaterialesSuministros.rowsBufferOutSize = 0;
+		mygridMaterialesSuministros.setMultiLine(false);
+		mygridMaterialesSuministros.delim=';';
+		mygridMaterialesSuministros.selmultirows="true";	
+		mygridMaterialesSuministros.init();
+		mygridMaterialesSuministros.setOnEditCellHandler(ValidarMaterialesSuministrosPP);
+	}
+			
+	buildGridServiciosNoPersonales();
+	CargarGridServiciosNoPersonales();
+	function buildGridServiciosNoPersonales()
+	{
+		//set grid parameters
+		mygridServiciosNoPersonales = new dhtmlXGridObject('gridboxServiciosNoPersonales');
+		mygridServiciosNoPersonales.selMultiRows = true;
+		mygridServiciosNoPersonales.setImagePath("js/Grid/imgs/");
+		mygridServiciosNoPersonales.setHeader("Codigo,Partida,Descripcion,Monto");
+		mygridServiciosNoPersonales.setInitWidths("100,140,360,100");
+		mygridServiciosNoPersonales.setColAlign("right,right,left,right");
+		mygridServiciosNoPersonales.setColTypes("ro,coro,ro,ed");
+		mygridServiciosNoPersonales.setColSorting("int,str,str,int");
+		mygridServiciosNoPersonales.setColumnColor("white,white,white,white");
+		mygridServiciosNoPersonales.rowsBufferOutSize = 0;
+		mygridServiciosNoPersonales.setMultiLine(false);
+		mygridServiciosNoPersonales.delim=';';
+		mygridServiciosNoPersonales.selmultirows="true";	
+		mygridServiciosNoPersonales.init();
+		mygridServiciosNoPersonales.setOnEditCellHandler(ValidarServiciosNoPersonalesPP);
+	}
+					
+	buildGridActivosReales();
+	CargarGridActivosReales();
+	function buildGridActivosReales()
+	{
+		//set grid parameters
+		mygridActivosReales = new dhtmlXGridObject('gridboxActivosReales');
+		mygridActivosReales.selMultiRows = true;
+		mygridActivosReales.setImagePath("js/Grid/imgs/");
+		mygridActivosReales.setHeader("Codigo,Partida,Descripcion,Monto");
+		mygridActivosReales.setInitWidths("100,140,360,100");
+		mygridActivosReales.setColAlign("right,right,left,right");
+		mygridActivosReales.setColTypes("ro,coro,ro,ed");
+		mygridActivosReales.setColSorting("int,str,str,int");
+		mygridActivosReales.setColumnColor("white,white,white,white");
+		mygridActivosReales.rowsBufferOutSize = 0;
+		mygridActivosReales.setMultiLine(false);
+		mygridActivosReales.delim=';';
+		mygridActivosReales.selmultirows="true";	
+		mygridActivosReales.init();
+		mygridActivosReales.setOnEditCellHandler(ValidarActivosRealesPP);
+	}
+					
+	buildGridOtros();
+	CargarGridOtros();
+	function buildGridOtros()
+	{
+		//set grid parameters
+		mygridOtros = new dhtmlXGridObject('gridboxOtros');
+		mygridOtros.selMultiRows = true;
+		mygridOtros.setImagePath("js/Grid/imgs/");
+		mygridOtros.setHeader("Codigo,Partida,Descripcion,Monto");
+		mygridOtros.setInitWidths("100,140,360,100");
+		mygridOtros.setColAlign("right,right,left,right");
+		mygridOtros.setColTypes("ro,coro,ro,ed");
+		mygridOtros.setColSorting("int,str,str,int");
+		mygridOtros.setColumnColor("white,white,white,white");
+		mygridOtros.rowsBufferOutSize = 0;
+		mygridOtros.setMultiLine(false);
+		mygridOtros.delim=';';
+		mygridOtros.selmultirows="true";	
+		mygridOtros.init();
+		mygridOtros.setOnEditCellHandler(ValidarOtrosPP);
+	}
+				
+	buildGridObservaciones();
+	CargarGridObservaciones();
+	function buildGridObservaciones()
+	{
+		//set grid parameters
+		mygridObservaciones = new dhtmlXGridObject('gridboxObservaciones');
+		mygridObservaciones.selMultiRows = true;
+		mygridObservaciones.setImagePath("js/Grid/imgs/");
+		mygridObservaciones.setHeader("Codigo,Observacion");
+		mygridObservaciones.setInitWidths("100,600");
+		mygridObservaciones.setColAlign("right,left");
+		mygridObservaciones.setColTypes("ro,txt");
+		mygridObservaciones.setColSorting("int,str");
+		mygridObservaciones.setColumnColor("white,white");
+		mygridObservaciones.rowsBufferOutSize = 0;
+		mygridObservaciones.setMultiLine(false);
+		mygridObservaciones.selmultirows="true";	
+		mygridObservaciones.init();
+	}
+			
+	function CargarGridMetas()
+	{
+		var JsonAux;
+		mygridMetas.clearSelection();
+		mygridMetas.clearAll();
+												
+		if("<?=$objeto->id_formulacion?>")
+		{ 
+			if('<?=$objeto->metas?>')
+			{
+				var Familiar = eval( '(' + '<?=$objeto->metas?>' + ')');
+				for(i=0;i<Familiar.length;i++)
+				{
+					mygridMetas.addRow(i,Familiar[i][0]+","+Familiar[i][1]+","+Familiar[i][2]+","+Familiar[i][3]+","+Familiar[i][4],i);
+				}
+			}
+		}
+	}
+						
+	function CargarGridGastosDePersonal()
+	{
+		var JsonAux;
+		mygridGastosDePersonal.clearSelection();
+		mygridGastosDePersonal.clearAll();
+																
+		if("<?=$objeto->id_formulacion?>")
+		{
+			if('<?=$objeto->gastos_personal?>')
+			{
+				var Familiar = eval( '(' + '<?=$objeto->gastos_personal?>' + ')');
+				for(i=0;i<Familiar.length;i++)
+				{
+					mygridGastosDePersonal.addRow(i,Familiar[i][0]+";"+Familiar[i][1]+";"+Familiar[i][2]+";"+muestraFloat(Familiar[i][3]),i);
+				}
+			}
+		}
+	}
+							
+	function CargarGridMaterialesSuministros()
+	{
+		var JsonAux;
+		mygridMaterialesSuministros.clearSelection();
+		mygridMaterialesSuministros.clearAll();
+															
+		if("<?=$objeto->id_formulacion?>")
+		{		
+			if('<?=$objeto->mat_suminis?>')
+			{
+				var Familiar = eval( '(' + '<?=$objeto->mat_suminis?>' + ')');
+				for(i=0;i<Familiar.length;i++)
+				{
+					mygridMaterialesSuministros.addRow(i,Familiar[i][0]+";"+Familiar[i][1]+";"+Familiar[i][2]+";"+muestraFloat(Familiar[i][3]),i);
+				}
+			}
+		}
+	}
+								
+	function CargarGridServiciosNoPersonales()
+	{
+		var JsonAux;
+		mygridServiciosNoPersonales.clearSelection();
+		mygridServiciosNoPersonales.clearAll();
+																
+		if("<?=$objeto->id_formulacion?>")
+		{
+			if('<?=$objeto->serv_no_personal?>')
+			{
+				var Familiar = eval( '(' + '<?=$objeto->serv_no_personal?>' + ')');
+				for(i=0;i<Familiar.length;i++)
+				{
+					mygridServiciosNoPersonales.addRow(i,Familiar[i][0]+";"+Familiar[i][1]+";"+Familiar[i][2]+";"+muestraFloat(Familiar[i][3]),i);
+				}
+			}
+		}
+	}
+								
+	function CargarGridActivosReales()
+	{
+		var JsonAux;
+		mygridActivosReales.clearSelection();
+		mygridActivosReales.clearAll();
+																
+		if("<?=$objeto->id_formulacion?>")
+		{
+			if('<?=$objeto->act_reales?>')
+			{
+				var Familiar = eval( '(' + '<?=$objeto->act_reales?>' + ')');
+				for(i=0;i<Familiar.length;i++)
+				{
+					mygridActivosReales.addRow(i,Familiar[i][0]+";"+Familiar[i][1]+";"+Familiar[i][2]+";"+muestraFloat(Familiar[i][3]),i);
+				}
+			}
+		}
+	}
+								
+	function CargarGridOtros()
+	{
+		var JsonAux;
+		mygridOtros.clearSelection();
+		mygridOtros.clearAll();
+														
+		if("<?=$objeto->id_formulacion?>")
+		{
+			if('<?=$objeto->otros?>')
+			{
+				var Familiar = eval( '(' + '<?=$objeto->otros?>' + ')');
+				for(i=0;i<Familiar.length;i++)
+				{
+					mygridOtros.addRow(i,Familiar[i][0]+";"+Familiar[i][1]+";"+Familiar[i][2]+";"+muestraFloat(Familiar[i][3]),i);
+				}
+			}
+		}
+	}
+						
+	function CargarGridObservaciones()
+	{
+		var JsonAux;
+		mygridObservaciones.clearSelection();
+		mygridObservaciones.clearAll();
+															
+		if("<?=$objeto->id_formulacion?>")
+		{
+			if('<?=$objeto->observacion?>')
+			{
+				var Familiar = eval( '(' + '<?=$objeto->observacion?>' + ')');
+				for(i=0;i<Familiar.length;i++)
+				{
+					mygridObservaciones.addRow(i,Familiar[i][0]+","+Familiar[i][1],i);
+				}
+			}
+		}
+	}
+</script>

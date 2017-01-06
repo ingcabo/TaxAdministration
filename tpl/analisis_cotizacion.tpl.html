@@ -1,0 +1,104 @@
+<? $AnalisisCotizacion = new analisis_cotizacion; ?>
+<form name="form1" method="post">
+<table border="0" width="100%" align="center">
+<? if($objeto->id){ ?>
+<tr>
+	<td width="88">N&ordm; de Documento:</td>
+	<td width="310"><input type="text" name="id" id="id" value="<?=$objeto->id?>" /></td>
+	<td width="87" align="right"><span style="text-align:right">Fecha:</span></td>
+	<td colspan="3">
+	<input value="<?=empty($objeto->fecha) ? date("d/m/Y") : muestrafecha($objeto->fecha)?>" readonly name="fecha" size="12 " type="text" />
+	</td>
+
+</tr>
+<? } ?>
+<tr>
+	<td>A&ntilde;o:</td>
+	<td style="width:310px">
+		<input value="<?=$objeto->ano?>" name="ano" style="width:50px" type="text" readonly />
+	</td>
+	<td style="text-align:right">Status:</td>
+	<td colspan="3">
+		
+		<input type="status" id="status" style="width:100px" value="<?=$objeto->nom_status?>" readonly />
+		
+	</td>
+</tr>
+
+</table>
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="3"><hr /></td>
+</tr>
+<tr>
+	<td>Cotizaciones por Proveedor</td>
+</tr>
+</table>
+
+<table border="0" width="100%" align="center">
+
+<tr>
+	<td colspan="3" align="center">
+		<? $oAnaCoti = $AnalisisCotizacion->getProveedoresporRequisicion($conn, $objeto->id); 
+			foreach ($oAnaCoti as $provee){
+			$total_cotizacion = 0;
+			?>
+		<table width="600px" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td colspan="2"><? echo $provee->nombre ?></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>Producto</td>
+				<td align="center">Costo</td>
+			</tr>
+			<tr>
+				<td colspan="3"><hr></td>
+			</tr>
+				<? $oAnaCoti = $AnalisisCotizacion->getArticulosporProveedor($conn, $objeto->id, $provee->id_proveedor); 
+				foreach ($oAnaCoti as $productos){
+				?>
+				<tr>
+					<td width="30px" align="right"><li></td>
+					<td width="450px"><? echo $productos->descripcion?></td>
+					<td width="120px" align="right"><? echo muestraFloat($productos->costo)?></td>
+				</tr>
+				<? $total_cotizacion += $productos->costo;
+				 }?>
+				 <tr>
+				 	<td colspan="2"></td>
+					<td><hr></td>
+				 </tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td align="right">TOTAL:</td>
+					<td align="right"><? echo muestraFloat($total_cotizacion); ?></td>
+				</tr>
+				<tr>
+					<td colspan="2" >&nbsp;</td>
+				</tr>
+		</table>
+		<? } ?>
+
+	</td>
+</tr>
+</table>
+
+
+<input style="float:right; margin: 5px" name="botonAnalizar" type="Submit" value="Analizar" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="Analizar"  id="accion"/>
+<input type="hidden" name="status" id="status" value="<?=$objeto->status?>" />
+<input type="hidden" name="nrodoc" id="nrodoc" value="<?=$objeto->nrodoc?>" />
+
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onClick="close_div_compras();" src="images/close_div.gif" /></span>
+<br />
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<script type="text/javascript">
+
+
+
+
+</script>

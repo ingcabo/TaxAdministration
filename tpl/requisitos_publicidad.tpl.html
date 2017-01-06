@@ -1,0 +1,37 @@
+<form action="" method="post">
+  <table width="616" border="0">
+    <tr>
+      <td width="119">Tipo de Solicitud:<span class="errormsg">*</span> </td>
+      <td width="487"><?=helpers::combo($conn, 
+											'', 
+											$objeto->id_solicitud,
+											'',
+											'',
+											'id_solicitud',
+											'id_solicitud',
+											'',
+											"SELECT id AS id, descripcion FROM publicidad.tipo_solicitud")?></td>
+    </tr>
+    <tr>
+      <td>Requisito</td>
+      <td><label>
+        <input name="requisito" type="text" id="requisito" value="<?=$objeto->requisito?>" size="70" onChange="this.value = this.value.toUpperCase();"><span class="errormsg">*</span>
+		
+      </label></td>
+    </tr>
+
+    <tr>
+      <td>Estatus</td>
+      <td><label>
+        <input name="estatus" type="checkbox" id="estatus" value="1" <?php if($objeto->estatus=='1'){ echo "checked";}?> >
+      </label></td>
+    </tr>
+  </table>
+<!--<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate()?>"/>-->
+<input style="float:right" name="boton" type="submit" value="<?=$boton?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

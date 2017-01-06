@@ -1,0 +1,28 @@
+<form name="form1" method="post">
+<table width="544" border="0">
+    <td>Clasificaci&oacute;n:</td>
+    <td colspan="3"><?=helpers::superCombo($conn, 'tipo_producto_clasif', $objeto->id_tipo_producto_clasif, 'tipo_producto_clasif','tipo_producto_clasif','','validaCodigo(this.value)','id' ,'descripcion' ,'id') ?>
+	<span class="errormsg" id="error_tipo_producto_clasif">*</span>
+	<?=$validator->show("error_tipo_producto_clasif")?>	</td>
+  </tr>
+  <tr>
+    <td width="120">C&oacute;digo: </td>
+    <td width="93"><input type="text" name="codigo" id="codigo" value="<?= substr($objeto->codigo,0,1)?>" size="10" readonly="readonly"></td>
+    <td width="16">-</td>
+    <td width="297"><input type="text" name="codigo2" id="codigo2" value="<?= substr($objeto->codigo,2,2)?>" size="15" maxlength="2" /></td>
+  </tr>
+  <tr>
+    <td width="120">Descripcion: </td>
+    <td colspan="3"><input type="text" name="descripcion" value="<?=$objeto->descripcion?>" size="50">
+	<span class="errormsg" id="error_descrip">*</span>
+	<?=$validator->show("error_descrip")?></td>
+  </tr>
+</table>
+<div style="width:730px" align="right">
+<input name="boton" type="button" value="<?=$boton?>" onClick="<?= $validator->validate()?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+</div>
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onClick="close_div();" src="images/close_div.gif" /></span>
+</form>

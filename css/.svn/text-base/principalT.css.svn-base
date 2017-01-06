@@ -1,0 +1,107 @@
+/*Documento CSS */
+/* #FFF4F4=#93AFD6*/
+/* #C82619=#27226F*/
+/* #F2B88C=#575757*/
+body {
+	font: 10px arial, hevetica, sans-serif;
+	margin: 0 0 0 0px;
+	text-align: center;
+	background-color: #ffffff;
+}
+ul{
+	list-style-type: none;
+}
+#contenedor{
+	text-align: left;
+	margin: auto;
+	width: 850px;
+	border:#575757 1px solid;
+} 
+#cabecera{
+	background: url(../images/tc_banner.jpg);
+	padding: 0 0 0 0px;
+	border: #575757 1px solid;
+	width: 850px;
+	height: 106px;
+}
+#cuerpo{
+	margin: 1 0 1 0px;
+	background-color:#93AFD6; 
+	padding: 10 10 10 10px;
+	font-size:10px;
+}
+
+#pie{
+	background-color: #93AFD6;
+	padding: 3 10 3 10px;
+	text-align:right;
+	border-top: #575757 1px solid;
+}
+
+div#cuerpo a:link { color: #666666;text-decoration: none; 	font-weight: bold;}
+div#cuerpo a:visited { color: #666666;text-decoration: none;	font-weight: bold; }
+div#cuerpo a:hover { color: #666666;text-decoration: none;	font-weight: bold; }
+
+#grid{
+	width: 70%;
+	background-color:#27226F;
+	margin-left: auto; 
+	margin-right: auto;
+	font-size:10px;
+}
+#grid .cabecera{
+	background-color:#93AFD6;
+}
+#grid .filas{
+	background-color:#D9E7F4;
+}
+
+td{
+	font-size:10px;
+	font-family : Arial, Helvetica, sans-serif;
+}
+
+.titulo_maestro{
+	margin-left: 10px;
+	color:#27226F;
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	text-align:left;
+}
+
+div#msj {
+	margin-left:30%;
+	margin-right:30%;
+	border:1px solid #27226F;
+	padding:10px;
+	background-color: #ffffff;
+	text-align:center;
+	color:#27226F;
+	font-weight: bold;
+	font: 12px/18px Arial, Helvetica, sans-serif;
+}
+div#msj_login {
+	margin-left:30%;
+	margin-right:30%;
+	margin-bottom:20px;
+	padding:10px;
+	text-align:center;
+	color: #27226F;
+	font-weight: bold;
+	font: 12px/18px Arial, Helvetica, sans-serif;
+}
+.errormsg{
+	color:#27226F;
+	font-size : 12px;
+	font-family : Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+.titulo{
+	color:#000000;
+	font-size : 11px;
+	font-family : Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+
+

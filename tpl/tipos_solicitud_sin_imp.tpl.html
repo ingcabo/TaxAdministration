@@ -1,0 +1,54 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>Descripci&oacute;n:</td>
+	<td><input name="descripcion" value="<?=$objeto->descripcion?>" size="40" type="text">
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+</tr>
+<tr>
+	<td>A&ntilde;o:</td>
+	<td><input name="anio" value="<?=$objeto->anio?>" maxlength="4" style="width:50px" type="text">
+		<span class="errormsg" id="error_anio">*</span>
+		<?=$validator->show("error_anio")?>
+	</td>
+</tr>
+<tr>
+	<td>Cuenta Contable:</td>
+	<td><!--<input name="cta_contable" value="<?=$objeto->cc?>" style="width:150px" type="text">-->
+		<?
+			$q = "SELECT id, (codcta || ' - ' || descripcion)::varchar AS descripcion FROM contabilidad.plan_cuenta WHERE id_escenario ='$escEnEje' AND movim='S' ";
+			$q.= "AND id NOT IN (SELECT COALESCE(id_cuenta_contable::int8, 0) FROM contabilidad.relacion_cc_pp WHERE id_escenario = '$escEnEje') ";
+			$q.= "AND id NOT IN (SELECT COALESCE(id_plan_cuenta::int8, 0) FROM finanzas.cuentas_bancarias) ";
+			$q.= "AND id NOT IN (SELECT COALESCE(cta_contable::int8, 0) FROM puser.proveedores) ";
+			$q.= "AND id NOT IN (SELECT COALESCE(cuenta_contable::int8, 0) FROM finanzas.tipos_solicitud_sin_imp ".(!empty($objeto->id) ? "WHERE cuenta_contable <> ".$objeto->cc:"").") ";
+			$q.= "AND id NOT IN (SELECT COALESCE(id_cta::int8, 0) FROM finanzas.retenciones_adiciones) ";
+			$q.= "ORDER BY codcta::text ";
+			
+			echo helpers::superComboSQL($conn, 
+												'',
+												$objeto->cc,
+												'cta_contable', 
+												'cta_contable',
+												'',
+												'',
+												'id',
+												'descripcion',
+												false,
+												'',
+												$q,
+												80);
+		?>
+		<span class="errormsg" id="error_cc">*</span>
+		<?=$validator->show("error_cc")?>
+	</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

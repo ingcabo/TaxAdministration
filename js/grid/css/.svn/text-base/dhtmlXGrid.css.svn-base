@@ -1,0 +1,41 @@
+div.gridbox{
+	overflow:hidden;
+}
+
+div.gridbox table.hdr td {
+	font-family:arial;
+	font-size:12;
+	background-Color:#FFFFFF;
+	border: 1px solid;
+	border-color : Gray Gray Gray Gray;
+	text-align: center;
+	height:22px;
+	margin:0px;
+	padding:0px;
+	font-weight:normal;
+}
+
+div.gridbox table.obj td {
+	border: 1px solid #EAEAEA;
+	border-color:#EAEAEA;
+	font-family:arial;
+	font-size:12;
+	height:18px;
+}
+
+div.gridbox .objbox {
+		background:#FFFFFF;
+		border:1px solid;
+		border-color : Gray Gray Gray Gray;
+}
+div.gridbox table.obj td span.space, div.gridbox table.obj td img.space{
+	width:18px;
+}
+div.gridbox table.obj tr.rowselected td.cellselected, div.gridbox table.obj td.cellselected {
+	background-color:#FFFFFF;
+	color:black;
+}
+div.gridbox table.obj tr.rowselected td{
+	background-color:#FFF4F4;
+	color:black;
+}

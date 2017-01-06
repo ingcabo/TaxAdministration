@@ -1,0 +1,88 @@
+<?  // Si se a cerrado una nomina para este contrato valido que no pueda cambiar la fecha de inicio
+	if($objeto->int_cod){
+		$q = "SELECT * FROM rrhh.historial_nom WHERE cont_cod=$objeto->int_cod";
+		$r = $conn->Execute($q);
+		$inpAux= !$r->EOF ? 'disabled' : '';
+		$imgAux= !$r->EOF ? 'style="display:none"' : '';
+ }
+?>
+<form name="form1" method="post">
+<table width="600" border="0">
+  <tr>
+    <td width="100">Codigo:</td>
+    <td ><input type="text" name="codigo" value="<?=$objeto->int_cod ? $objeto->cont_cod : getCorrelativo($conn, 'cont_cod', 'rrhh.contrato', 'int_cod')?>">
+		<span class="errormsg" id="error_codigo">*</span>
+		<?=$validator->show("error_codigo")?>
+   </td>
+  </tr>
+  <tr>
+    <td>Descripcion:</td>
+    <td>
+		<input type="text" name="nombre" style="width:250px" value="<?=$objeto->cont_nom?>">
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+  </tr>
+  <tr>
+    <td>Tipo: </td>
+    <td>
+		<SELECT NAME="tipo" id="tipo" onChange="ValidarTipoContrato()" <?=$inpAux?> >
+			<OPTION <?=($objeto->cont_tipo=='0') ? "selected" : "" ?> value='0' >Semanal
+			<OPTION <?=($objeto->cont_tipo=='1') ? "selected" : "" ?> value='1'> Quincenal
+			<OPTION <?=($objeto->cont_tipo=='2') ? "selected" : "" ?> value='2'> Mensual
+			<OPTION <?=($objeto->cont_tipo=='3') ? "selected" : "" ?> value='3'> Otro
+		</SELECT>
+    </td>
+  </tr>
+  <tr>
+    <td>Fecha Inicio</td>
+    <td>
+		<table>
+			<tr>
+				<td>
+					<input value="<?=empty($objeto->cont_fec_ini) ? date("d/m/Y") : muestrafecha($objeto->cont_fec_ini)?>" name="fecha" id="fecha"  type="text" style="width:80px" onChange="ValidarTipoContrato()" <?=$inpAux?> />
+				</td>
+				<td <?=$imgAux?>>
+					<a href="#" id="boton_fecha_entrega" onclick="return false;"  >
+						<img border="0" src="images/calendarA.png" width="20" height="20" />
+					</a>  
+					<script type="text/javascript">
+						new Zapatec.Calendar.setup({
+							firstDay          : 1,
+							weekNumbers       : true,
+							showOthers        : false,
+							showsTime         : false,
+							timeFormat        : "24",
+							step              : 2,
+							range             : [1900.01, 2999.12],
+							electric          : false,
+							singleClick       : true,
+							inputField        : "fecha",
+							button            : "boton_fecha_entrega",
+							ifFormat          : "%d/%m/%Y",
+							daFormat          : "%Y/%m/%d",
+							align             : "Br"
+						});
+					</script>
+				</td>
+			</tr>
+		</table>
+	</td>
+  </tr>
+  <tr>
+	<td>Estatus:</td>
+	<td colspan="2">
+		<SELECT NAME="estatus" >
+			<OPTION <?=($objeto->cont_estatus=='0') ? "selected" : "" ?> value='0'>Activo
+			<OPTION <?=($objeto->cont_estatus=='1') ? "selected" : "" ?> value='1'>Inactivo
+		</SELECT>
+	</td>
+  </tr>
+</table>
+<input style="float:right"  name="accion" type="button" value="<?=$boton?>" onclick="if(Bandera){<?=$validator->validate() ?>}else{ alert('Parametros de Inicio de Nomina Incorrectos')}" />
+<input name="int_cod" type="hidden" value="<?=$objeto->int_cod?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p

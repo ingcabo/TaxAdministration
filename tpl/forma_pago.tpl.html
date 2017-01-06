@@ -1,0 +1,48 @@
+<?php 
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+?>
+<form name="form1" method="post">
+<table width="310" border="0">
+  <tr>
+    <td width="90">Descripci&oacute;n:</td>
+    <td width="204"><input type="text" name="descripcion" value="<?=$objeto->descripcion?>">
+	<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?></td>
+  </tr>
+  <tr>
+    <td>Efectivo </td>
+    <td>
+	<select name="efectivo">
+		<option value="S" <?php if($objeto->efectivo=='S') echo "selected"; ?> >S</option>
+		<option value="N" <?php if($objeto->efectivo=='N') echo "selected"; ?>>N</option>		
+	</select>
+	<span class="errormsg" id="error_efectivo">*</span>
+		<?=$validator->show("error_efectivo")?>
+	</td>
+  </tr>
+  <tr>
+    <td>Nombre Corto: </td>
+    <td><input type="text" name="nombre_corto" value="<?=$objeto->nombre_corto?>">
+	<span class="errormsg" id="error_nombre_corto">*</span>
+		<?=$validator->show("error_nombre_corto")?>
+	</td>
+  </tr>
+  <tr>
+    <td>Activo:</td>
+    <td><input type="checkbox" name="status" value="1" <?=compara_checked($objeto->status, 1)?> ></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td></td>
+  </tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input type="hidden" value="<?=$boton?>" name="accion" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>

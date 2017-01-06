@@ -1,0 +1,27 @@
+<form name="form1" action="" method="post">
+<table width="507" border="0">
+  <tr>
+    <td width="111">Tipo de Solicitud </td>
+    <td width="386"><select name="tipo" id="tipo">
+      <option>Seleccione...</option>
+      <option value="1" <?=$objeto->tipo==1 ? "selected" : ""?> >Publicidad</option>
+      <option value="2" <?=$objeto->tipo==2 ? "selected" : ""?> >Espectaculo</option>
+    </select></td>
+  </tr>
+  <tr>
+    <td>Descripci&oacute;n:</td>
+    <td width="386"><input type="text" name="descripcion" value="<?=$objeto->descripcion?>" size="50"></td>
+  </tr>
+  <tr>
+    <td>Activo:</td>
+    <td><input type="checkbox" name="estatus" value="1" <?=$objeto->estatus==1 ? "checked" : "" ?>></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="right"><input name="accion" type="submit" value="<?=$boton?>" /></td>
+  </tr>
+</table>
+
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="../images/close_div.gif" /></span>
+</form>

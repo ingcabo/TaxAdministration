@@ -1,0 +1,37 @@
+
+<script> <?=@$script?>  </script>
+<form name="form1" method="post">
+<table width="708" border="0" align="center">
+  <tr>
+    <td width="132">
+	<!--<input type="hidden" value="<?=$ramo?>" name="ramo" id="ramo">-->
+	
+	C&oacute;digo Inspecci&oacute;n:	</td>
+	<td width="566">
+		<input type="hidden" name="id_asignacion" id="id_asignacion" value="<?=$objeto->cod_asignacion?>">
+		<b><?=$objeto->cod_asignacion?></b>
+	</td>
+  </tr>
+  <tr>
+    <td>
+	Resultado Inspecci&oacute;n:
+	</td>
+	<td>
+		<textarea name="res_inspeccion" cols="40" rows="8"><?=$objeto->res_inspeccion?></textarea>
+	</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td align="right">
+					  <input name="accion" type="submit" value="<?=$boton?>" /></td>
+  </tr> 
+</table>
+<input name="cod_asignacion" type="hidden" value="<?=$objeto->cod_asignacion?>" />
+
+<input name="accion" type="hidden" value="<?=$boton?>" />
+
+
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<!--<p class="errormsg">(*) Campo requerido</p>-->

@@ -1,0 +1,84 @@
+<form name="form1" method="post">
+<table border="0">
+<tr>
+	<td>Escenario:</td>
+	<td colspan="2">
+	<?=helpers::combo_ue_cp($conn, 
+												'escenarios', 
+												$objeto->id_escenario, 
+												'', 
+												'descripcion', 
+												'', 
+												'id_escenario', 
+												"traeUnidadesDesdeUpdater(this.value); traeCategoriasDesdeUpdater(this.value)") ?>
+	<span class="errormsg" id="error_esc">*</span>
+	<?=$validator->show("error_esc")?>
+	</td>
+</tr>
+<tr>
+	<td>Unidad Ejecutora:</td>
+	<td colspan="2">
+		<table>
+			<tr>
+				<td>
+					<div id="cont_unidades">
+											<?=helpers::combo_ue_cp($conn, 
+											'unidades_ejecutoras', 
+											$objeto->id_unidad_ejecutora,
+											'',
+											'',
+											'',
+											'',
+											'',
+											"SELECT id, (id || ' - ' ||descripcion)::varchar AS descripcion FROM unidades_ejecutoras WHERE id_escenario = '$objeto->id_escenario' ") ?>
+											</div>
+				</td>
+				<td>
+					<span class="errormsg" id="error_ue">*</span>
+					<?=$validator->show("error_ue")?>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td>Categor&iacute;a Program&aacute;tica:</td>
+	<td colspan="2">
+		<table>
+			<tr>
+				<td>
+					<div style="width:70%" id="cont_categorias">
+											<?=helpers::combo_ue_cp($conn, 
+											'categorias_programaticas', 
+											$objeto->id_categoria_programatica,
+											'',
+											'',
+											'',
+											'',
+											'',
+											"SELECT id, (id || ' - ' || descripcion)::varchar AS descripcion	FROM categorias_programaticas WHERE id_escenario = '$objeto->id_escenario' ") ?>
+											</div>
+				</td>
+				<td>
+					<span class="errormsg" id="error_cp">*</span>
+					<?=$validator->show("error_cp")?>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td>Descripcion:</td>
+	<td colspan="2"><input name="descripcion" value="<?=$objeto->descripcion?>" size="40" type="text">
+	<span class="errormsg" id="error_desc">*</span>
+	<?=$validator->show("error_desc")?>
+	</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

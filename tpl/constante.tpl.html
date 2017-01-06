@@ -1,0 +1,31 @@
+<form name="form1" method="post">
+<table width="600" border="0">
+  <tr>
+    <td width="100">Codigo:</td>
+    <td ><input type="text" name="codigo" value="<?=$objeto->int_cod ? $objeto->cons_cod : getCorrelativo($conn, 'cons_cod', 'rrhh.constante', 'int_cod')?>">
+		<span class="errormsg" id="error_codigo">*</span>
+		<?=$validator->show("error_codigo")?>
+   </td>
+  </tr>
+  <tr>
+    <td>Descripcion:</td>
+    <td>
+		<input type="text" name="nombre" style="width:250px" value="<?=$objeto->cons_nom?>">
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+  </tr>
+  <tr>
+    <td>Valor:</td>
+    <td>
+		<input type="text" name="valor" value="<?=muestrafloat($objeto->cons_val)?>">
+	</td>
+  </tr>
+</table>
+<input style="float:right"  name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="int_cod" type="hidden" value="<?=$objeto->int_cod?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p

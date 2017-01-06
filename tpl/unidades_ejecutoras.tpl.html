@@ -1,0 +1,62 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>C&oacute;digo:</td>
+	<td>
+		<input 
+			onkeypress="return onlyNumbersCI(event)" 
+			onchange="digitosMin(this, 2);"
+			maxlength="2" 
+			name="id_nuevo" 
+			value="<?=$objeto->id?>" 
+			style="width:50px" 
+			type="text" />
+		<span class="errormsg" id="error_cod">*</span>
+		<?=$validator->show("error_cod")?>
+	</td>
+</tr>
+<tr>
+	<td>Escenario:</td>
+	<td>
+		<?=helpers::combo_ue_cp($conn, 
+										'escenarios', 
+										$objeto->id_escenario,
+										'',
+										'',
+										'escenario',
+										'escenario',
+										'',
+										"SELECT id AS id, descripcion FROM puser.escenarios",
+										'',
+										'',
+										'')
+				?>
+		<span class="errormsg" id="error_esc">*</span>
+		<?=$validator->show("error_esc")?>
+	</td>
+</tr>
+<tr>
+	<td>Descripci&oacute;n de Unidad:</td>
+	<td>
+		<input name="descripcion" size="50" type="text" value="<?=$objeto->descripcion?>">
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+</tr>
+<tr>
+<td>Funcionario Responsable:</td>
+	<td>
+		<input name="responsable" size="50" type="text" value="<?=$objeto->responsable?>">
+		<span class="errormsg" id="error_resp">*</span>
+		<?=$validator->show("error_resp")?>
+	</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="id_escenario" type="hidden" value="<?=$objeto->id_escenario?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

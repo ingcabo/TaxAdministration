@@ -1,0 +1,36 @@
+<?php 
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+?>
+<form name="form1" method="post">
+<table width="513" border="0">
+  <tr>
+    <td width="186">Nombre del Establecimiento </td>
+    <td width="334">
+	<input name="nombre" type="text" id="nombre" value="<?=$objeto->nombre?>" onchange="this.value = this.value.toUpperCase();">
+	<span class="errormsg" id="error_nombre">*</span>
+    <?=$validator->show("error_nombre")?>  </tr>
+  <tr>
+    <td>Direccion Fiscal  </td>
+    <td><input name="direccion" type="text" id="direccion" value="<?=$objeto->direccion?>" onchange="this.value = this.value.toUpperCase();">
+	<!--<span class="errormsg" id="error_nombre">*</span>-->    </td>
+  </tr>
+<tr>
+    <td>Representante Legal  </td>
+    <td><input name="representante" type="text" id="representante" value="<?=$objeto->representante?>" onchange="this.value = this.value.toUpperCase();">
+	<!--<span class="errormsg" id="error_nombre">*</span>-->    </td>
+  </tr>
+ <tr>
+    <td>&nbsp;</td>
+    <td><input name="accion" type="button" value="<?=$boton?>" onClick="<?=$validator->validate() ?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

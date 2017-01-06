@@ -1,0 +1,39 @@
+<form name="form1" method="post">
+<table> 
+<tr>
+	<td>Grupo:</td>
+		<td>
+		<? if($boton=='Guardar'){ ?>
+			<?=helpers::superCombo($conn, "SELECT id, codigo||' - '||descripcion AS descripcion FROM puser.clasificador_bienes WHERE padre = '1' ORDER BY codigo", $objeto->id_grupo, 'grupo','grupo','','buscaCorrelativoGrupo(this.value);')?>
+			
+		<? } else{ ?>
+			<input type="text" name="grupo" id="grupo" value="<?=$objeto->grupo?>" style="width:200px" readonly />
+		<? } ?>
+			<span class="errormsg" id="error_grupo">*</span>
+			<?=$validator->show("error_grupo")?>
+			</td>
+</tr>
+<tr>
+	<td>Codigo:</td>
+	<td>
+		
+		<input type="text" name="codigo" id="codigo" value="<?=$objeto->subgrupo?>" style="width:200px" readonly />
+		<span class="errormsg" id="error_codigo">*</span>
+		<?=$validator->show("error_codigo")?>
+		
+	</td>
+</tr>
+<tr>
+	<td>Descripcion:</td>
+	<td><input name="descripcion" value="<?=$objeto->descripcion?>" size="60" type="text">
+	<span class="errormsg" id="error_desc">*</span>
+	<?=$validator->show("error_desc")?>	</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

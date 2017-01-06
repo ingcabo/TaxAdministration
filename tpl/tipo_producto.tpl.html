@@ -1,0 +1,55 @@
+<form name="form1" method="post">
+<table width="544" border="0">
+  <? if ($objeto->id){ ?>
+  <tr>
+    <td width="102">Id: </td>
+    <td width="426"><input type="text" name="id" value="<?=$objeto->id?>" size="10" style="text-align:right" readonly></td>
+  </tr>
+  <? } ?>
+  <tr>
+    <td width="102">Descripcion: </td>
+    <td width="426"><input type="text" name="descripcion" value="<?=$objeto->descripcion?>" size="50">
+	<span class="errormsg" id="error_descrip">*</span>
+	<?=$validator->show("error_descrip")?></td>
+  </tr>
+  <tr>
+    <td>Clasificaci&oacute;n:</td>
+    <td><?=helpers::superCombo($conn, "SELECT id as id, (codigo || ' ' || descripcion) as descripcion FROM puser.tipo_familia", $objeto->id_familia_producto, 'tipo_familia','tipo_familia','','validaCodigo(this.value)','id' ,'descripcion' ,'id') ?>
+	<span class="errormsg" id="error_tipo_familia">*</span>
+	<?=$validator->show("error_tipo_familia")?>
+	</td>
+  </tr>
+  <tr>
+    <td width="120">C&oacute;digo: </td>
+    <td width="250"><table><td><input type="text" name="codigo" id="codigo" value="<?= $objeto->codFamiliaProd?>" size="10" readonly="readonly"></td>
+    <td width="16">-</td>
+    <td width="297"><input type="text" name="codigo2" id="codigo2" value="<?= str_pad($objeto->codigo,4,0,STR_PAD_LEFT)?>" size="15" maxlength="2" readonly="readonly" /></td> </td></table>
+  
+  </tr>
+   <tr>
+    <td valign="top">Observaci&oacute;n</td>
+    <td><textarea name="observacion" cols="55"><?=$objeto->observacion?></textarea></td>
+  </tr>
+  <tr>
+    <td>Partida Presup:</td>
+    <td><?=helpers::combo($conn, 'partidas_presupuestarias', $objeto->id_partidas_presupuestarias, 'width:350px', '', '', '', '', "SELECT id, id||' - '||descripcion AS descripcion FROM puser.partidas_presupuestarias WHERE id_escenario = $escEnEje AND (id LIKE '402%' OR id LIKE '404%') AND madre = 0 ORDER BY descripcion") ?>
+	<span class="errormsg" id="error_partidas_presupuestarias">*</span>
+	<?=$validator->show("error_partidas_presupuestarias")?>
+	</td>
+  </tr>
+  <tr>
+    <td>Grupo de Proveedores:</td>
+    <td><?=helpers::combo($conn, 'grupos_proveedores', $objeto->id_grupo_proveedor, '', '', '', '', '', "SELECT id, nombre AS descripcion FROM puser.grupos_proveedores ORDER BY descripcion") ?>
+	<span class="errormsg" id="error_grupos_proveedores">*</span>
+	<?=$validator->show("error_grupos_proveedores")?>
+	</td>
+  </tr>
+</table>
+<div style="width:730px" align="right">
+<input name="boton" type="button" value="<?=$boton?>" onclick="<?= $validator->validate()?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+</div>
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>

@@ -1,0 +1,270 @@
+<?
+	if (empty($objeto->id))
+	{
+		$editable = true;
+		$hoy = date('d/m/Y');
+	}
+?>
+<form name="form1" id="form1" method="post">
+	<span style="float:right;padding:2px;cursor:pointer;">
+		<img onclick="close_div();" src="images/close_div.gif" />
+	</span>
+	<table width="100%" border="0">
+		<tr>
+			<td width="20%">Banco:</td>
+			<td>
+				<?=helpers::superComboSQL($conn,
+												'',
+												$objeto->id_banco,
+												'bancos',
+												'bancos',
+												'',
+												'traeCuentasBancarias(this.value, "nroCtas", 0)',
+												'id',
+												'descripcion',
+												false,
+												'descripcion',
+												"SELECT * FROM public.banco",
+												'',
+												((!$editable) ? 'disabled':''));?>
+				<span id="cargando_cuentas" style="display:none; font-size:11px"><img alt="Cargando" src="images/loading2.gif" /></span>
+				<span class="errormsg" id="error_bancos">*</span>
+				<?=$validator->show("error_bancos")?>
+			</td>
+		</tr>
+		<tr>
+			<td>Nro. Cuenta:</td>
+			<td>
+				<span id="nroCtas">
+					<?
+					if (!empty($objeto->id))
+					{
+					echo helpers::superCombo($conn,
+													"SELECT A.id, (CASE WHEN B.descripcion is null THEN A.nro_cuenta ELSE A.nro_cuenta||' - '||B.descripcion END)  AS descripcion FROM finanzas.cuentas_bancarias AS A LEFT JOIN puser.clasificacion_cuenta AS B ON A.id_clasificacion_cuenta=B.id WHERE A.id_banco=".$objeto->id_banco,
+													$objeto->cta_bancaria, 
+													'nro_cuenta', 
+													'nro_cuenta',
+													'',
+													'llamarSaldo(this.value)',
+													'id',
+													'descripcion',
+													'',
+													'',
+													'disabled');
+					}
+					else
+					{
+					?>
+						<select name="nro_cuenta" id="nro_cuenta">
+							<option value="0">Seleccione</option>
+						</select>
+					<?
+					}
+					?>
+				</span>
+				<input type="hidden" name="id_cta_cont" id="id_cta_cont" />
+				<span class="errormsg" id="error_nro_cuenta">*</span>
+				<?=$validator->show("error_nro_cuenta")?>
+			</td>
+		</tr>
+		<tr>
+			<td>Fecha Desde:</td>
+			<td style="width:150">
+				<input style="width:100px"  type="text" name="fecha_desde" id="fecha_desde" onchange="if (validafecha(this)==-1){alert('Fecha Incorrecta'); this.value='';}else{traerSaldo(this.value,'D');}" value="<?=($editable) ? '':$objeto->fecha_desde?>" readonly />
+				<!--a href="#" id="boton_fecha_desde" onclick="return false;" <?=(!$editable) ? 'style="display:none"':''?> >
+					<img border="0" alt="Seleccionar Fecha" src="images/calendarA.png" width="20" height="20" />
+				</a--> 
+				<!--script type="text/javascript">
+					new Zapatec.Calendar.setup
+					({
+						firstDay          : 1,
+						weekNumbers       : true,
+						showOthers        : false,
+						showsTime         : false,
+						timeFormat        : "24",
+						step              : 2,
+						range             : [1900.01, 2999.12],
+						electric          : false,
+						singleClick       : true,
+						inputField        : "fecha_desde",
+						button            : "boton_fecha_desde",
+						ifFormat          : "%d/%m/%Y",
+						daFormat          : "%Y/%m/%d",
+						align             : "Br"
+					});
+				</script-->
+				<!--span class="errormsg" id="error_fecha_desde">*</span-->
+				<!--?=$validator->show("error_fecha_desde")?-->
+			</td>
+		</tr>
+		<tr>
+			<td>Fecha Hasta:</td>
+			<td>
+				<input style="width:100px"  type="text" name="fecha_hasta" id="fecha_hasta" onchange="if (validafecha(this)==-1){alert('Fecha Incorrecta'); this.value='';}else{traerSaldo(this.value,'H');}" value="<?=($editable) ? '':$objeto->fecha_hasta?>" readonly />
+				<!--a href="#" id="boton_fecha_hasta" onclick="return false;" <?=(!$editable) ? 'style="display:none"':''?>>
+					<img border="0" alt="Seleccionar Fecha" src="images/calendarA.png" width="20" height="20" />
+				</a-->  
+				<!--script type="text/javascript">
+					new Zapatec.Calendar.setup
+					({
+						firstDay          : 1,
+						weekNumbers       : true,
+						showOthers        : false,
+						showsTime         : false,
+						timeFormat        : "24",
+						step              : 2,
+						range             : [1900.01, 2999.12],
+						electric          : false,
+						singleClick       : true,
+						inputField        : "fecha_hasta",
+						button            : "boton_fecha_hasta",
+						ifFormat          : "%d/%m/%Y",
+						daFormat          : "%Y/%m/%d",
+						align             : "Br"
+					});
+				</script-->
+				<!--span class="errormsg" id="error_fecha_hasta">*</span-->
+				<!--?=$validator->show("error_fecha_hasta")?-->
+			</td>
+		</tr>
+		<tr>
+			<td>Saldo inicial seg&uacute;n Banco:</td>
+			<td>
+				<input type="text" name="saldo_ini_ban" id="saldo_ini_ban" onkeydown="if (formatoNumero(this, event)){calculaSaldo(1, this); return true;}else{return false;}" onblur="calculaSaldo(1,this.value)" style="text-align:right;" value="<?=empty($objeto->id) ? '0,00':muestraFloat($objeto->saldo_inicial_banco)?>"  />
+				<span class="errormsg" id="error_saldo_ini_ban">*</span>
+				<?=$validator->show("error_saldo_ini_ban")?>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><hr /></td>
+		</tr>
+		<tr>
+			<td>Tipo de Movimiento:</td>
+			<td><select name="tipo_movimiento" id="tipo_movimiento">
+					<option value="">Seleccione</option>
+					<option value="CHQ">Cheque</option>
+					<option value="CHM">Transferencia por cheque</option>
+					<option value="TRA">Transferencia</option>
+					<option value="TRM">Pago Electronico</option>
+					<option value="DEP">Deposito</option>
+					<option value="ND">Nota de Debito</option>
+					<option value="NC">Nota de Credito</option>
+				</select>
+			</td>	
+		</tr>
+		<tr>
+			<td>N&uacute;mero de Documento:</td>
+			<td><input type="text" name="num_documento" id="num_documento" style="width:115px" /></td>
+		</tr>
+		<tr>
+			<td>Fecha Transacci&oacute;n: </td>
+			<td><input type="text" name="fec_documento" id="fec_documento" style="width:115px" readonly />
+				<a href="#" id="boton_fecha" onclick="return false;" >
+					<img border="0"  alt="Seleccionar Fecha" src="images/calendarA.png" width="20" height="20" />
+				</a>  
+				<script type="text/javascript">
+					new Zapatec.Calendar.setup({
+						firstDay          : 1,
+						weekNumbers       : true,
+						showOthers        : false,
+						showsTime         : false,
+						timeFormat        : "24",
+						step              : 2,
+						range             : [1900.01, 2999.12],
+						electric          : false,
+						singleClick       : true,
+						inputField        : "fec_documento",
+						button            : "boton_fecha",
+						ifFormat          : "%d/%m/%Y",
+						daFormat          : "%Y/%m/%d",
+						align             : "Br"
+					 });
+				</script>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right"><input name="agregar" type="button" id="agregar" onclick="agregarEC()" value="Agregar Movimiento" /></td>
+			
+		</tr>
+		<tr>
+			<td colspan="2"><hr /></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center"><br /><div id="gridbox" width="640" height="200px" align="center"></div><br /></td>
+		</tr>
+	</table>
+	<table width="100%">
+		<tr>
+			<td colspan="2" align="right">Saldo final: &nbsp;&nbsp;
+			<input type="text" name="saldo_final" id="saldo_final" style="text-align:right;" value="<?=empty($objeto->id) ? '0,00':muestraFloat($objeto->saldo_final_banco)?>" readonly /></td>
+		</tr>
+	</table>
+	<br />
+	<br />
+	<input type="hidden" name="id" value="<?=$objeto->id?>" />
+	<input type="hidden" name="accion" id="accion" value="<?=$boton?>" />
+	<div align="right"><input type="button" id="boton" name="boton" value="<?=$boton?>" onclick="GuardarDet()" /></div>
+	<input type="hidden" name="json_det" id="json_det" />
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<div id="cargando_cta" style="display:none;margin-top:0px;">
+  <img alt="Cargando" src="images/loading.gif" /> Cargando...
+</div>
+
+<script type="text/javascript">
+	buildGrid(<?=$objeto->id?>);
+	CargarGrid(<?=$objeto->id?>);
+	
+	function buildGrid(id)
+	{
+		//set grid parameters
+		mygrid = new dhtmlXGridObject('gridbox');
+		mygrid.setImagePath("js/grid/imgs/");
+		var flds = "Tipo Documento,Nro. Documento,Fecha,Debitos,Creditos,Eliminar";
+		mygrid.setHeader(flds);
+		mygrid.delim = ";";
+		mygrid.setInitWidths("120;120;100;125;125;50");
+		mygrid.setColAlign("center;center;center;right;right;center");
+		mygrid.setColTypes("coro;ed;ed;ed;ed;img");			
+		mygrid.setColSorting("str;int;str;int;int;int");
+		mygrid.getCombo(0).put(0,'Seleccione');
+		mygrid.getCombo(0).put('DEP','Deposito');
+		mygrid.getCombo(0).put('CHQ','Cheque');
+		mygrid.getCombo(0).put('CHM','Transferencia por Cheque');
+		mygrid.getCombo(0).put('TRA','Pago Electronico');
+		mygrid.getCombo(0).put('TRM','Transferencia');
+		mygrid.getCombo(0).put('NC','Nota de Credito');
+		mygrid.getCombo(0).put('ND','Nota de debito');
+		mygrid.rowsBufferOutSize = 0;
+		mygrid.setMultiLine(false);
+		mygrid.selmultirows = "false";
+		//set values for select box in 5th column
+		//start grid
+		mygrid.setOnEditCellHandler(calculaMovimientos);
+		//mygrid.setOnRowSelectHandler(doOnRowSelected);
+		
+		mygrid.init();
+		
+	}
+	
+	function CargarGrid(){
+	var JsonAux;
+	mygrid.clearSelection();
+	mygrid.clearAll();
+	if("<?=$objeto->id?>"){ 
+		//alert('<?=$objeto->relacion?>');
+		if('<?=$objeto->relacion?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->relacion?>' + ')');
+			//alert(Relaciones[0][2]);
+			for(i=0;i<Relaciones.length;i++){
+				
+				var debitos = parseFloat(Relaciones[i]['debito']);
+				var creditos = parseFloat(Relaciones[i]['credito']);
+				//alert('debito ' + debitos + '  creditos: '+ creditos);
+				mygrid.addRow(Relaciones[i]['num_documento'],Relaciones[i]['tipo_movimiento']+";"+Relaciones[i]['num_documento']+";"+Relaciones[i]['fecha']+";"+muestraFloat(debitos)+";"+muestraFloat(creditos)+";images/delete.gif");
+			}
+		}
+		
+	}
+}
+</script>

@@ -1,0 +1,118 @@
+<form name="form1" method="post">
+<table width="650px">
+<tr>
+	<td colspan="3"></td>
+</tr>
+<tr>
+	<td colspan="3"></td>
+</tr>
+<tr>
+	<td colspan="3"></td>
+</tr>
+<!--<tr>
+	<td>C&oacute;digo:</td>
+	<td width="80" colspan="2"><input name="id_nuevo" value="<?=$objeto->id?>" size="10" type="text"></td>
+</tr>-->
+<tr>
+	<td>Nombre:</td>
+	<td colspan="2"><input name="nombre" value="<?=$objeto->nombre?>" size="40" type="text">
+	<span class="errormsg" id="error_nombre">*</span>
+	<?=$validator->show("error_nombre")?>
+	</td>
+</tr>
+<tr>
+	<!--para cambiar-->
+	<td>Descripcion:</td>
+	<td colspan="2"><textarea name="descripcion" cols="80" rows="8"><?=$objeto->descripcion?></textarea> 
+	<?php //if(!empty($id)){ ?>
+	<?php //} ?> 
+	<input type="hidden" name="id" id="id" value="<?=$objeto->id?>" /></td>	
+</tr>
+</table>
+<div id="list_req_provee">
+<table width="650">
+<tr>
+	<td><span class="titulo">Requisitos:</span></td>
+	<td colspan="3"><?=helpers::combo_ue_cp($conn, 
+														'requisitos', 
+														$objeto->id_requisito,
+														'width:160px',
+														'',
+														'',
+														'',
+														"",
+														"SELECT id, nombre AS descripcion FROM requisitos  ")?>
+	<span class="errormsg" id="error_requisito">*</span>													
+	</td>
+</tr>
+<tr>
+	<td align="left"><input type="button" name="b_agregar_co" onclick="AgregarRP();" value="Agregar"></td>
+	<td>&nbsp;</td>
+	<td align="right"><input type="button" name="b_eliminar_co" onclick="EliminarRP()" value="Eliminar"></td>	
+</tr>
+<tr>
+	<td colspan="3"><hr /></td>
+</tr>
+<tr>
+	<td colspan="3" align="center">
+	<!--<div style="position:absolute;top:249px; left:188px; border:0px solid; display:block; background:url(images/trans.gif) repeat;  width:300px; height:147px; z-index:2"></div>-->
+	<div id="gridboxrp" style=" width:300px; height:150px; z-index:0; display:block" class="gridbox" align="center"></div></td>
+</tr>
+</table>
+</div>
+<div align="right" style="width:650px">
+<input name="boton" type="button" value="<?=$boton?>" onclick="Guardar();" />
+<input type="hidden" name="accion" id="accion" value="<?=$boton?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="requisito" id="requisito" type="hidden" />
+</div>
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<script type="text/javascript" language="javascript">
+buildGridRP();
+CargarGrid();
+function buildGridRP(){
+	//set grid parameters
+	mygridrp = new dhtmlXGridObject('gridboxrp');
+	mygridrp.selMultiRows = true;
+	mygridrp.setImagePath("js/Grid/imgs/");
+	mygridrp.setHeader("Requisito");
+	mygridrp.setInitWidths("300");
+	mygridrp.setColAlign("left");
+	mygridrp.setColTypes("coro");
+	mygridrp.setColSorting("str");
+	mygridrp.setColumnColor("white");
+	mygridrp.rowsBufferOutSize = 0;
+	mygridrp.setEditable('fl');
+	mygridrp.setMultiLine(false);
+	mygridrp.selmultirows="true";
+	//mygridpp.setOnEnterPressedHandler(calcularMontoCausado);
+	//mygridpp.setOnEditCellHandler(validarMontoPP);
+	<? $cp = new requisitos;
+		$objcp = $cp->get_all($conn,0,100);
+	?>
+	<?=helpers::combogrid($objcp, 0, 'id' , 'nombre', 'Seleccione', 'mygridrp' )?>
+	
+	//INICIA GRID//
+	mygridrp.init();
+	
+}
+
+function CargarGrid(){
+var JsonAux;
+	mygridrp.clearSelection();
+	mygridrp.clearAll();
+	if("<?=$objeto->id?>"){ 
+		if('<?=$objeto->relacionREQPRO?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->relacionREQPRO?>' + ')');
+			//alert(Relaciones[0][2]);
+			for(i=0;i<Relaciones.length;i++){
+				mygridrp.addRow(i,Relaciones[i]['id']);
+			}
+		}
+		
+	}
+}
+</script>

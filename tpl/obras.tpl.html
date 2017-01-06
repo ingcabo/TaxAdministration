@@ -1,0 +1,315 @@
+<form name="form1" method="post">
+<table border="0" width="100%">
+<tr>
+	<td>Codigo:</td>
+	<td colspan="3"><input value="<?=$objeto->obra_cod ? $objeto->obra_cod : getCorrelativo($conn, 'obra_cod', 'puser.obras', 'obra_cod')?>" name="obra_cod" size="8" type="text">
+		<span class="errormsg" id="error_codigo">*</span>
+		<?=$validator->show("error_codigo")?>	
+	</td>
+</tr>
+<tr>
+	<td>Escenario:</td>
+	<td width="200px"><?=helpers::superCombo($conn, 'escenarios',$objeto->id_escenario,'escenario','escenario','width:160px','traeUnidadesEjecutoras(this.value);')?>
+		<span class="errormsg" id="error_escenarios">*</span>
+		<?=$validator->show("error_escenarios")?>
+	</td>
+	<td>Parroquia:</td>
+	<td ><?=helpers::combo($conn, 'parroquias', $objeto->id_parroquia, 'width:200px','','','','','SELECT id, descripcion FROM puser.parroquias WHERE id_municipio = (SELECT id FROM puser.municipios WHERE alcaldia)')?>
+		<span class="errormsg" id="error_parroquias">*</span>
+		<?=$validator->show("error_parroquias")?>
+	</td>
+
+</tr>
+<tr>
+	<? if($objeto->id) echo("<script type='text/javascript'>traeUnidadesEjecutoras('".$objeto->id_escenario."','".$objeto->id_unidad_ejecutora."');</script>"); ?>
+	<td>Unidad Ejecutora:</td>
+	<td colspan="4"><div id="divcombounidades"><select>
+												<option value="" >Seleccione</option>
+											</select></div></td>
+												
+	<!--<td colspan="4"><?=helpers::combo_ue_cp($conn, 
+														'unidad_ejecutora', 
+														$objeto->id_unidad_ejecutora,
+														'width:500px',
+														'',
+														'',
+														'',
+														"mostrarBuscarCat(); traeResponsable(this.value)",
+														"SELECT id, id || ' - ' || descripcion AS descripcion FROM unidades_ejecutoras WHERE id_escenario='$escEnEje' ORDER BY id",
+														'',
+														'',
+														'')?>-->
+		<? if ($objeto->id) echo("<script type='text/javascript'>mostrarBuscarCat2()</script>")?>
+	<td>
+		<span class="errormsg" id="error_unidad_ejecutora">*</span>
+		<?=$validator->show("error_unidad_ejecutora")?>
+		<? // if ($objeto->id) echo("<script>traeCategoriasProgramaticas('".$objeto->id_unidad_ejecutora."')</script>") ?>
+	</td>
+</tr>
+<tr>
+	<td><!--Financiadora-->Fuente de Financiamiento:</td>
+	<td><?=helpers::combo($conn, 'financiamiento', $objeto->id_financiamiento)?>
+		<span class="errormsg" id="error_financiamiento">*</span>
+		<?=$validator->show("error_financiamiento")?>
+	</td>
+	<td>A&ntilde;o:</td>
+	<td colspan="3"><input value="<?=empty($objeto->ano) ? date('Y') : $objeto->ano ?>" name="ano" size="8" type="text">
+		<span class="errormsg" id="error_ano">*</span>
+		<?=$validator->show("error_ano")?>
+	</td>
+</tr>
+<tr>
+	<td>Descripci&oacute;n:</td>
+	<td colspan="5"><input value="<?=$objeto->descripcion?>" style="width:300px" name="descripcion" type="text">
+		<span class="errormsg" id="error_descripcion">*</span>
+		<?=$validator->show("error_descripcion")?>
+	</td>
+</tr>
+<tr>
+	<td>Denominaci&oacute;n:</td>
+	<td colspan="5"><textarea name="denominacion" style="width:300px" rows="8"><?=$objeto->denominacion?></textarea>
+		<span class="errormsg" id="error_denominacion">*</span>
+		<?=$validator->show("error_denominacion")?>
+	</td>
+</tr>
+<tr>
+	<td>Funcionario Responsable:</td>
+	<td colspan="5">
+	<input style="width:300px" value="<?=$objeto->responsable?>" name="responsable" id="responsable" type="text">
+		<span class="errormsg" id="error_responsable">*</span>
+		<?=$validator->show("error_responsable")?>
+	</td>
+</tr>
+</table>
+<div id="partpreDiv" style="display:inline">
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="3"><span class="titulo">Partidas Presupuestarias:</span></td>
+</tr>
+<tr>
+	<td>Categoria</td>
+	<td>Partida Presupuestaria</td>
+	<td>Monto</td>
+</tr>
+<tr height="15px">
+	<td style="width:33%">
+		<table width="100%" cellpadding="0" cellspacing="0" border="0s">
+			<tr>
+				<td width="50%">
+					<input type="text" name="txtcategorias_programaticas" id="txtcategorias_programaticas" />
+									<input type="hidden" name="categorias_programaticas" id="categorias_programaticas" />
+									<span onclick="traeCategoriasProgramaticas($('unidad_ejecutora').value);" style="cursor:pointer; display:none" id="bcategorias"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span> 
+				</td>
+				<td>
+					<div id="cargador_categorias" style="display:none" align="left">
+						&nbsp;<img src="images/loading2.gif" />Cargando...
+					</div>
+				</td>
+			</tr>
+		</table>
+	</td>
+	<td style="width:34%">
+		<table width="100%" cellpadding="0" cellspacing="0" border="0s">
+			<tr>
+				<td width="50%">
+					<input type="text" name="txtpartidas_presupuestarias" id="txtpartidas_presupuestarias" />
+									<input type="hidden" name="partidas_presupuestarias" id="partidas_presupuestarias" />
+									<span onclick="traePartidasPresupuestarias($('categorias_programaticas').value);" style="cursor:pointer; display:none" id="bpartidas"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+				</td>
+				<td>
+					<div id="cargador_partidas" style="display:none" align="left">
+						&nbsp;<img src="images/loading2.gif" />Cargando...
+					</div>
+				</td>
+			</tr>
+		</table>
+	</td>
+	<td style="width:33%">
+		<input type="text" name="montoip" id="montoip" style="text-align:right" onkeypress="return(formatoNumero(this,event));" value="0,00" />
+	</td>
+</tr>
+<tr>
+	<td colspan=2 align="left"><input type="button" name="b_agregar_co" onclick="AgregarO()" value="Agregar"></td>
+	<td align="right"><input type="button" name="b_eliminar_co" onclick="EliminarO()" value="Eliminar"></td>	
+</tr>
+<tr>
+	<td colspan="3"><hr></td>
+</tr>
+</table>
+</div>
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="6" align="center">
+	<div id="gridboxo" style=" width:700px; height:150px; z-index:0; display:block" class="gridbox" align="center"></div></td>
+</tr>
+<tr>
+		<td colspan="6" width="500px" align="left">Categoria Programatica: &nbsp; <input type="text" name="nom_cat_pro" id="nom_cat_pro" readonly size="70" /> </td>
+  	</tr>
+  	<tr>
+		<td colspan="6" width="500px" align="left">Partida Presupuestaria: &nbsp;&nbsp;&nbsp; <input type="text" name="nom_par_pre" id="nom_par_pre" readonly size="70"/></td>
+	</tr>
+
+<tr>
+	<td align="left"><input type="hidden" name="obra" id="obra"></td>
+	<td  colspan="5" align="right">
+	<input type="hidden" name="disponible" id="disponible">
+<input type="hidden" name="idParCat" id="idParCat">
+<input type="hidden" name="montoOB" id="montoOB">
+	Monto Total: &nbsp;&nbsp;<input value="<?=$oObras->ctotal?>" name="ctotal" id="ctotal" type="text" style="text-align:right" readonly />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+</tr>
+	<!--aqui va el grid -->
+<tr>
+	<td>Comprom. A&ntilde;os Ant.:</td>
+	<td><input value="<?=muestraFloat($objeto->caa)?>" name="caa" id="caa" type="text" onkeypress="return(formatoNumero(this,event));"/></td>
+	<td>Comprom. A&ntilde;o Vig.:</td>
+	<td colspan="3"><input value="<?=muestraFloat($objeto->cav)?>" name="cav" id="cav" type="text" onkeypress="return(formatoNumero(this,event));"/>
+	</td>
+</tr>
+<tr>
+	<td>Ejecuc. A&ntilde;os Ant.:</td>
+	<td><input value="<?=muestraFloat($objeto->eaa)?>" name="eaa" id="eaa" type="text" onkeypress="return(formatoNumero(this,event));"/></td>
+	<td>Ejecuc. A&ntilde;o Vig.:</td>
+	<td colspan="3"><input value="<?=muestraFloat($objeto->eav)?>" name="eav" id="eav" type="text" onkeypress="return(formatoNumero(this,event));"/>
+	</td>
+</tr>
+<tr>
+	<td>Estimado Presup.:</td>
+	<td><input value="<?=muestraFloat($objeto->epre)?>" name="epre" id="epre" type="text" onkeypress="return(formatoNumero(this,event));"/>
+	</td>
+	<td>Estimado Post.:</td>
+	<td colspan="3"><input value="<?=muestraFloat($objeto->epos)?>" name="epos" id="epos" type="text" onkeypress="return(formatoNumero(this,event));"/>
+	</td>
+</tr>
+<tr>
+	<td>Inicio:</td>
+	<td>
+	<table>
+		<tr>
+			<td>
+			<input value="<?=$objeto->inicio?>" size="12" name="inicio" id="inicio" type="text" readonly />
+				<span class="errormsg" id="error_inicio">*</span>
+				<?=$validator->show("error_inicio")?>
+			</td>
+			<td>
+				 <a href="#" id="boton" onclick="return false;">
+				  <img border="0" src="images/calendarA.png" width="20" height="20" />
+				</a>  
+		<script type="text/javascript">
+			new Zapatec.Calendar.setup({
+				firstDay          : 1,
+				weekNumbers       : true,
+				showOthers        : false,
+				showsTime         : false,
+				timeFormat        : "24",
+				step              : 2,
+				range             : [1900.01, 2999.12],
+				electric          : false,
+				singleClick       : true,
+				inputField        : "inicio",
+				button            : "boton",
+				ifFormat          : "%d/%m/%Y",
+				daFormat          : "%Y/%m/%d",
+				align             : "Br"
+			 });
+		</script>
+			</td>
+		</tr>
+	</table>
+	</td>
+	<td>Culminac.:</td>
+	<td>
+	<table>
+		<tr>
+			<td>
+			<input value="<?=$objeto->culminacion?>" size="12" name="culminacion" readonly id="culminacion" type="text" />
+				<span class="errormsg" id="error_culminacion">*</span>
+				<?=$validator->show("error_culminacion")?>
+			</td>
+			<td>
+				 <a href="#" id="boton2" onclick="return false;">
+				  <img border="0" src="images/calendarA.png" width="20" height="20" />
+				</a>  
+				<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "culminacion",
+					button            : "boton2",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+				</script>
+			</td>
+		</tr>
+	</table>
+	</td>
+	
+	<td>Situaci&oacute;n:</td>
+	<td>
+		<?=helpers::combo($conn, 'situaciones', $objeto->id_situacion)?>
+		<span class="errormsg" id="error_situaciones">*</span>
+		<?=$validator->show("error_situaciones")?>
+	</td>
+</tr>
+</table>
+<div style="width:100%" align="right">
+<input name="boton" type="button" value="<?=$boton?>" onclick="Guardar();" />
+<input name="accion" value="<?=$boton?>" type="hidden" />
+<input name="id" value="<?=$objeto->id?>" type="hidden" />
+</div>
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+
+<script type="text/javascript">
+
+buildGrido();
+CargarGrid();
+sumaTotal();
+function buildGrido(){
+	//set grid parameters
+	mygrido = new dhtmlXGridObject('gridboxo');
+	mygrido.selMultiRows = true;
+	mygrido.setImagePath("js/grid/imgs/");
+	mygrido.setHeader("Categoria,Partida Presupuestaria, Monto");
+	mygrido.setInitWidths("248,248,199");
+	mygrido.setColAlign("left,left,right");
+	mygrido.setColTypes("coro,coro,ed");
+	mygrido.setColSorting("str,str,int");
+	mygrido.setColumnColor("white,white,white");
+	mygrido.rowsBufferOutSize = 0;
+	//mygridco.setEditable('fl');
+	mygrido.setMultiLine(false);
+	mygrido.selmultirows="true";
+	mygrido.setOnRowSelectHandler(traerPartidasSeleccionada);
+	//mygridpp.setOnEnterPressedHandler(calcularMontoCausado);
+	mygrido.setOnEditCellHandler(sumaTotal);
+	
+	//INICIA GRID//
+	mygrido.init();
+	
+}
+
+function CargarGrid(){
+var JsonAux;
+	mygrido.clearSelection();
+	mygrido.clearAll();
+	if("<?=$objeto->id?>"){
+		if('<?=$objeto->relacion?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->relacion?>' + ')');
+			for(i=0;i<Relaciones.length;i++){
+				mygrido.addRow(Relaciones[i]['idParCat'],Relaciones[i]['id_categoria_programatica']+","+Relaciones[i]['id_partida_presupuestaria']+","+Relaciones[0]['monto'],i);
+			}
+		}
+		
+	}
+}
+</script>

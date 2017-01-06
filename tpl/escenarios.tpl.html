@@ -1,0 +1,64 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>C&oacute;digo:</td>
+	<td><input 
+			name="id_nuevo" 
+			maxlength="4" 
+			value="<?=$objeto->id?>" 
+			style="width:60px" 
+			onkeypress="return onlyNumbersCI(event)" 
+			onchange="digitosMin(this, 4);"
+			type="text" />
+	<span class="errormsg" id="error_cod">*</span>
+	<?=$validator->show("error_cod")?></td>
+</tr>
+<tr>
+	<td>Escenario base:</td>
+	<td><?=helpers::combo($conn, 'escenarios', $objeto->id_base)?>
+	</td>
+</tr>
+<tr>
+	<td>A&ntilde;o:</td>
+	<td><input name="ano" maxlength="4" size="10" type="text" value="<?=$objeto->ano?>">
+	<span class="errormsg" id="error_ano">*</span>
+	<?=$validator->show("error_ano")?>
+	</td>
+</tr>
+<tr>
+	<td>Descripci&oacute;n:</td>
+	<td><input name="descripcion" size="53" type="text" value="<?=$objeto->descripcion?>">
+	<span class="errormsg" id="error_desc">*</span>
+	<?=$validator->show("error_desc")?>
+	</td>
+</tr>
+<tr>
+	<td>Detalle del Escenario:</td>
+	<td><textarea name="detalle" cols="50" rows="10"><?=$objeto->detalle?></textarea>
+	</td>
+</tr>
+<tr>
+	<td>Factor:</td>
+	<td><input style="text-align:center" name="factor" onkeypress="return(formatoNumero (this,event));" size="10" type="text" value="<?=empty($objeto->factor)?"1,00":muestrafloat($objeto->factor)?>">
+	<span class="errormsg" id="error_factor">*</span>
+	<?=$validator->show("error_factor")?>
+	</td>
+</tr>
+<tr>
+	<td></td>
+	<td><input name="formulacion" id="formulacion" type="checkbox" <?=($objeto->formulacion=='t')? 'checked="checked"': '' ?> /> <label for="formulacion">Formulaci&oacute;n</label></td>
+</tr>
+</table>
+<? if($boton == 'Actualizar'){?>
+	<input style="float:right" name="aprobar" type="button" value="Aprobar" onclick="<?=$validator->validate() ?>" />
+	<input name="accion" type="hidden" value="Aprobar" />
+<? }else{ ?>
+<input style="float:right" name="boton" type="button" value="Generar" onclick="<?=$validator->validate() ?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<? } ?>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

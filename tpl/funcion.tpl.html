@@ -1,0 +1,49 @@
+<form name="form1" method="post">
+<table width="600" border="0">
+  <tr>
+    <td width="100">Codigo:</td>
+    <td >
+		<input type="text" name="codigo" value="<?=$objeto->int_cod ? $objeto->fun_cod : getCorrelativo($conn, 'fun_cod', 'rrhh.funciones', 'int_cod')?>">
+		<span class="errormsg" id="error_codigo">*</span>
+		<?=$validator->show("error_codigo")?>
+   </td>
+  </tr>
+  <tr>
+    <td>Descripcion:</td>
+    <td>
+		<input type="text" name="nombre" style="width:250px" value="<?=$objeto->fun_nom?>">
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+  </tr>
+  <tr>
+	<td>Monto:</td>
+	<td >
+		<input type="text" name="hp" id="hp" value="<?=empty($objeto->fun_hp) ? '0,00' : $objeto->fun_hp?>" >
+		<span class="errormsg" id="error_sueldo">*</span>
+		<?=$validator->show("error_sueldo")?>
+	</td>
+  </tr>
+  <tr>
+    <td>Orden:</td>
+    <td>
+		<input type="text" name="orden" value="<?=$objeto->fun_ord?>">
+	</td>
+  </tr>
+  <tr>
+    <td>Estatus:</td>
+    <td>
+		<SELECT NAME="estatus" id="estatus">
+			<OPTION <?=($objeto->fun_estatus=='0') ? "selected" : "" ?> value='0'>Activo</OPTION>
+			<OPTION <?=($objeto->fun_estatus=='1') ? "selected" : "" ?> value='1'>Inactivo</OPTION>
+		</SELECT>
+	</td>
+  </tr> 
+</table>
+<input style="float:right"  name="accion" type="button" value="<?=$boton?>" onclick="CambiarSueldoTrabajador('<?=empty($objeto->fun_hp) ? '0,00' : $objeto->fun_hp?>',$('hp').value,this.value,'<?=$objeto->int_cod?>');<?=$validator->validate() ?>" />
+<input name="int_cod" type="hidden" value="<?=$objeto->int_cod?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p

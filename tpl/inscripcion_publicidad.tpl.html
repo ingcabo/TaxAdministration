@@ -1,0 +1,217 @@
+<? 
+	$id_usuario = $_REQUEST['id_usuario'];
+	$boton_aceptar = $_REQUEST['publicidad'];
+	$contrib = $_REQUEST['id_contribuyente'];
+	$id_inspector = $_REQUEST['cod_ins'];
+	$oInscripcion_Publicidad = new publicidad;
+	$oInscripcion_Publicidad->get($conn, $objeto->id); 
+	
+?>
+<style type="text/css">
+<!--
+	.subt 
+	{
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 14px;
+	}
+-->
+</style>
+<form name="form1" method="post">
+	<table width="100%" rules="none"frame="below">
+  		<!--DWLayoutTable-->
+  		<tr>
+    		<td height="30" colspan="3" valign="top">
+				<div align="center" class="Estilo2">
+        			<div align="left">
+						Identificaci&oacute;n del Contribuyente
+					</div>
+    			</div>
+			</td>
+			<td width="145" valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Fecha:
+					</span>
+				</div>
+			</td>
+    		<td colspan="2" valign="top">
+	  			<div align="left">
+	    			<input name="fechadoc" type="text" class="Estilo2" id="fechadoc" value="<?=muestrafecha($objeto->fecha)?>" size="15" readonly />
+      			</div>
+			</td>
+	    	<td width="90" valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Patente:
+					</span>
+				</div>
+			</td>
+		 	<td width="163" valign="top">
+				<div align="left">
+					<input name="patente" id="patente" type="text" value="<?=$objeto->patente?>">
+	           	</div>
+			</td>
+		</tr>
+  		<tr valign="top" class="filas">
+     		<td width="144" height="24" valign="top">
+				<span class="Estilo2">
+					Rif/C&eacute;dula:
+				</span>
+			</td>
+     		<td colspan="2" valign="top"><?=helpers::combo_ue_cp($conn, 
+															'contribuyente', 
+															$objeto->id_contribuyente,
+															'width:145px',
+															'',
+															'id_contribuyente',
+															'id_contribuyente',
+															"traeContribuyenteDesdeXML(this.value)",
+															"SELECT id AS id, rif AS descripcion FROM vehiculo.contribuyente ",
+															'',
+															'',
+															'22')?>
+			</td>
+    		<td valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Contribuyente:
+        			</span>
+	   			</div>
+			</td>
+    		<td colspan="2" valign="top">                          
+	 			<input name="primer_nombre" type="text" id="primer_nombre" value="<?=$objeto->nombre_contribuyente?>" size="27" maxlength="25" readonly>
+			</td>
+      		<td valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Razon Social:
+					</span>
+				</div>
+			</td>
+    		<td valign="top">
+        		<input name="razons" type="text" id="razons" value="<?=$objeto->razon_contribuyente?>" size="27" maxlength="25" readonly>
+			</td>
+  		</tr>
+		<tr valign="top" class="filas">
+    		<td height="24" valign="top">
+				<span class="Estilo2">
+					Ciudad:
+				</span>
+			</td>
+    		<td colspan="2" valign="top">
+        		<input name="ciudad" type="text" id="ciudad" value="<?=$objeto->ciudad_contribuyente?>" size="20" maxlength="20" readonly>
+    		</td>
+			<td valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Telefono:
+					</span>
+				</div>
+			</td>
+			<td colspan="2" valign="top">       
+        		<input name="telefono" type="text" id="telefono" value="<?=$objeto->telefono_contribuyente?>" size="27" maxlength="25" readonly>
+			</td>
+    		<td valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Domicilio Tributario:
+					</span>
+				</div>
+			</td>
+    		<td valign="top">
+				<input name="domicilio_fiscal" type="text" id="domicilio_fiscal" value="<?=$objeto->domiciliotrib_contribuyente?>" size="20" maxlength="20" readonly>
+			</td>
+		</tr>
+   		<!--<tr valign="top" class="filas">   </tr>-->
+	</table>
+	<table width="100%"rules="none"frame="below">
+  		<!--DWLayoutTable-->
+		<tr>
+			<td></td>
+			<td width="194" height="26" align="left" valign="middle">
+				Tipo de Solicitud:
+				<!--<span style="text-align:right">
+					<?=$validator->show("error_tipo_doc")?>
+	            </span>	-->		</td>
+			<td></td>
+			<td width="191" align="left" valign="middle">Inspector:</td>
+			<td width="29"></td>
+			<? if ($objeto->id){?>
+			<td width="230" align="left" valign="middle">Resultado Inspecci&oacute;n: </td>
+			<? }?>
+			
+		    <td width="197" align="left" valign="middle">Tipo de Publicidad:</td>
+			
+			<td></td>
+			<td></td>
+		<tr>
+  			<td width="9" height="26" align="center" valign="middle">						</td>
+			<td width="194" align="left" valign="middle">
+	  			<?=helpers::combo_publicidad($conn, 
+											'', 
+											'',
+											'',
+											'id_solicitud',
+											'id_solicitud',
+											'',
+											"SELECT id AS id, descripcion FROM publicidad.tipo_orden WHERE id >= '1' AND id < '3'")?>			
+			</td>
+    		<td width="29" align="center" valign="middle"></td>
+    		<td width="191" align="left" valign="middle">
+				<?=helpers::combo($conn, 
+								'', 
+								$objeto->cod_ins, 
+								'', 
+								'cod_ins', 
+								'cod_ins', 
+								'cod_ins', 
+								'', 
+								'SELECT cod_ins as id, cod_ins||\'::\'||apellido||\' \'||nombre as descripcion FROM publicidad.inspector')?>
+			</td>
+			<td></td>
+			<? if ($objeto->id){?>
+			<td width="230" align="left" valign="middle"><!--DWLayoutEmptyCell-->&nbsp;</td>
+			<? }?>
+			<td><?=helpers::combo_ue_cp($conn, 
+															'', 
+															'',
+															'',
+															'',
+															'cod_publicidad',
+															'cod_publicidad',											
+															'',
+															"SELECT cod_publicidad AS id, descripcion FROM publicidad.tipo_publicidad WHERE status = '1' ",
+															"enabled :",
+															$clase = "comun",
+															'22')
+					?></td>   
+			<td width="29" align="center" valign="middle"><!--DWLayoutEmptyCell-->&nbsp;</td>
+		<td width="155" align="right">
+			
+		</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table><div id="formulario_publicidad"></div><br>
+	<div align="right">
+	<td colspan="9" align="right">
+		<br />
+		<input name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+		<input name="id" type="hidden" value="<?=$objeto->id?>" />
+		<input name="accion" type="hidden" value="<?=$boton?>" />
+	</td>
+</div>
+</div>
+
+
+<span style="position:absolute;top:4px;right:3px;cursor:pointer;"><img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

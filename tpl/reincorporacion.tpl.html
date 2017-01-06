@@ -1,0 +1,133 @@
+<?  
+	$anio=date('Y');
+	$oContribuyente = new contribuyente;
+	$oContribuyente->get($conn, $objeto->id_contribuyente);
+	
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+$rm="SELECT * FROM vehiculo.ramo_imp WHERE tipo_imp='VH' AND anio=".$anio." AND status=1 ";
+$rm=$conn->Execute($rm);
+$ramo=$rm->fields['tipo_imp'];
+if(!$ramo){  $script='
+	alert("Ramo Inválido: No hay ramo establecido.");
+';
+}
+
+
+
+?>
+<script> <?=@$script?>  </script>
+<form name="form1" method="post">
+<table width="712" border="0">
+  <tr>
+    <td colspan="4" align="right">
+	<input type="hidden" value="<?=$ramo?>" name="ramo" id="ramo">
+	
+	Contribuyente: 
+	<?php 
+	if(empty($objeto->id)){
+	echo helpers::combo($conn, '', $objeto->id_contribuyente, '', 'id_contribuyente', 'id_contribuyente', '', '', 'SELECT id as id, id||\'::\'||primer_apellido||\' \'||primer_nombre as descripcion FROM vehiculo.contribuyente');
+	}else{
+	echo '<input type="hidden" name="id_contribuyente" id="id_contribuyente" value="'.$objeto->id_contribuyente.'">';
+	echo '<b>'.$oContribuyente->primer_apellido.' '.$oContribuyente->primer_nombre.'</b>';
+	} 
+	 ?>
+&nbsp;	</td>
+  </tr>
+  <tr>
+    <td width="76">
+	Placa:<br>
+	<input type="text" name="placa" value="<?=$objeto->placa?>" id="placa" size="10">
+	<?=$validator->show("error_placa")?>	</td>
+    <td width="276">
+	Serial Carrocer&iacute;a:<br>
+	<input type="text" name="serial_carroceria" id="serial_carroceria" value="<?=$objeto->serial_carroceria?>">
+	<?=$validator->show("error_serial_carroceria")?>	  </td>
+    <td width="144">
+	Serial Motor:<br>
+	<input type="text" name="serial_motor" id="serial_motor" value="<?=$objeto->serial_motor?>">
+	<?=$validator->show("error_serial_motor")?>	  </td>
+    <td width="198">
+	A&ntilde;o Modelo Veh&iacute;culo:<br>
+	<input type="text" name="anio_veh" value="<?=$objeto->anio_veh?>" id="anio_veh" size="6" maxlength="4">
+	<?=$validator->show("error_anio_veh")?></td>
+  </tr>
+  <tr>
+    <td>
+	Marca:<br><?=helpers::combo($conn, '', $objeto->cod_mar, '', 'cod_mar', 'cod_mar', '', '', 'SELECT cod_mar as id, descripcion FROM vehiculo.marca WHERE status=1')?></td>
+    <td>
+	Modelo:<br>
+	<?=helpers::combo($conn, '', $objeto->cod_mod, '', 'cod_mod', 'cod_mod', '', '', 'SELECT cod_mod as id, descripcion FROM vehiculo.modelo WHERE status=1')?>	</td>
+    <td>
+	Color:<br>
+	<?=helpers::combo($conn, '', $objeto->cod_col, '', 'cod_col', 'cod_col', '', '', 'SELECT cod_col as id, descripcion FROM vehiculo.colores WHERE status=1')?>	</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>
+	Uso:<br>
+	<?=helpers::combo($conn, '', $objeto->cod_uso, '', 'cod_uso', 'cod_uso', '', '', 'SELECT cod_uso as id, descripcion FROM vehiculo.uso WHERE status=1')?>	</td>
+    <td colspan="2">
+	Tipo de Veh&iacute;culo:<br>
+	<?=helpers::combo($conn, '', $objeto->cod_tip, '', 'cod_tip', 'cod_tip', 'tipo_vehiculo', '', 'SELECT cod_veh as id, descripcion FROM vehiculo.tipo_veh_segun_gaceta WHERE status=1')?>	</td>
+
+    <td valign="top">Peso del Veh&iacute;culo:<br>
+	<input type="text" name="peso_kg" value="<?=muestrafloat($objeto->peso_kg)?>" size="6" maxlength="8"> Kg.	
+	<?=$validator->show("error_peso_kg")?>  </td>
+  </tr>
+  <tr>
+    <!--<td valign="top">Fecha Desincorporaci&oacute;n:<br>
+	<input id="fec_desinc" value="<?=$objeto->fec_desinc?>" size="12" name="fec_desinc" readonly type="text"/>-->
+	<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fec_reinc",
+					button            : "boton1",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+				</script>	  </td>
+    <td valign="top">Fecha Reincorporaci&oacute;n:
+      <input id="fec_reinc" value="<?=muestrafecha($objeto->fec_reinc)?>" size="12" name="fec_reinc" type="text" />
+      <a href="#" id="boton1" onclick="return false;"><img border="0" src="images/calendarA.png" align="absmiddle" width="18" height="14" /></a><span class="errormsg" id="error_fec_reinc"> *</span>
+      <?=$validator->show("error_fec_reinc")?>      <br></td>
+       <td colspan="2" align="left">Reincorporar:<!--span class="errormsg" id="error_precio"-->
+         <input type="checkbox" name="reincorporado" value="reincorporado" />
+      <span class="errormsg" id="error_check_reincorporado">*</span>
+	  <?=$validator->show("error_check_reincorporado")?> </td>
+  </tr>
+  <tr>
+    <td >&nbsp;</td>
+	<td colspan="3">Observaciones:<br /><input type="text" name="observacion" value="<?=$objeto->observacion?>" size="75"></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><br />
+	</td>
+    <td align="right"><!--input name="accion1" type="button" value="Guardar" onclick="<?=$validator->validate() ?>" /-->
+					  <input name="accion" type="button" value="<?=$reincorporados?>" onclick="<?=$validator->validate() ?>" /--></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+
+<input name="accion" type="hidden" value="<?=$reincorporados ?>" />
+
+
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+

@@ -1,0 +1,395 @@
+<?php if ($objeto->status>1){ ?>
+	<script type="text/javascript" language="javascript">
+		ver_partpre();
+	</script>
+<?php }
+if ($objeto->id_tipo_fianza=='0') {
+	$hacer_b='Agregar';
+	} else {
+		$hacer_b='Actualizar';
+		}
+	?>
+<form name="form1" method="post">
+<table border="0" width="100%" align="center">
+<? if(!$auxNrodoc){ ?>
+<tr>
+	<td width="85">Numero de Documento:</td>
+	<td colspan="3">
+		<input name="nrodoc" type="text" class="Estilo2" id="nrodoc" value="<?=$objeto->nrodoc ?>" size="15" onkeypress="return onlyNumbersCI(event)" onchange="digitosMin(this, 6);" maxlength="9"/>
+		<span class="errormsg" id="error_nrodoc">*</span>
+		<?=$validator->show("error_nrodoc")?>
+	</td>
+	<td width="40" align="right">
+	<span style="text-align:right">Fecha:</span>	</td>
+	<td width="10"><td>
+		<table border="0" cellpadding="0" cellspacing="0">
+			<tr>
+			<td width="95px" valign="top">
+	  		<div align="left">
+	    <input name="fechadoc" type="text" class="Estilo2" id="fechadoc" value="<?=$objeto->nrodoc ? muestrafecha($objeto->fecha) : date("d/m/Y")?>" size="15" readonly />
+			</div>
+			</td>
+			</td>
+				<span class="errormsg" id="error_fechadoc">*</span>
+				<?=$validator->show("error_fechadoc")?>	
+			<td>
+			<td valign="top">
+			
+			<div align="left" style="vertical-align:top">
+			&nbsp;
+		<a href="#" id="boton_fechadoc" onclick="return false;">
+					  <img  border="0" src="images/calendarA.png" width="20" height="20" />
+			  </a>  
+              <script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fechadoc",
+					button            : "boton_fechadoc",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			         </script>
+      </div></td>
+	  	</tr>
+	  </table>
+	<td width="0"></td>
+</tr>
+	<tr>
+	<td>Tipo de Documento:</td>
+	<td colspan="5">
+	<select class="" onchange="" name="tipdoc" id="tipdoc">
+		<option value="011">Contrato de Obras</option>
+	</select>	
+		<span class="errormsg" id="error_tipo_doc">*</span>
+		<?=$validator->show("error_tipo_doc")?>	</td>
+<tr>
+<? } else { ?>
+<tr>
+	<td style="text-align:left">N&ordm; de Obra:</td>
+	<td width="314">
+	<!--
+		<? $ob= new obras;
+		$aOb=$ob->get_all($conn);
+		echo helpers::SuperComboObj($aOb, $objeto->id_obra, 'id_obra', 'id_obras', '', '', 'id', 'completo', false, 30);?> -->
+					<input type="text" name="id_obra" id="id_obra" value="<?=$objeto->id_obra?>" />
+								<!--	<input type="hidden" name="categorias_programaticas" id="categorias_programaticas" /> -->
+									<span onclick="traeObras();" style="cursor:pointer; " id="bobras"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span> 
+		<span class="errormsg" id="error_id_obra">*</span>
+		<?=$validator->show("error_id_obra")?>
+		
+	</td>
+	<td width="73" align="right"><span style="text-align:right">Fecha:</span></td>
+	<td>
+	<table border="0" cellpadding="0" cellspacing="0">
+			<tr>
+			<td width="95px" valign="top">
+	  		<div align="left">
+	    <input name="fecha" type="text" class="Estilo2" id="fecha" value="<?=empty($objeto->fecha) ? "" : muestrafecha($objeto->fecha)?>" size="15" readonly />
+			</div>
+			</td>
+			</td>
+				<span class="errormsg" id="error_fecha">*</span>
+				<?=$validator->show("error_fecha")?>	
+			<td>
+			<td valign="top">
+			
+			<div align="left" style="vertical-align:top">
+			&nbsp;
+		<a href="#" id="boton_fecha" onclick="return false;">
+					  <img  border="0" src="images/calendarA.png" width="20" height="20" />
+			  </a>  
+              <script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecha",
+					button            : "boton_fecha",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			         </script>
+      </div></td>
+	  	</tr>
+	  </table>
+<!--	<input value="<?=empty($objeto->fecha) ? date("d/m/Y") : muestrafecha($objeto->fecha)?>" readonly name="fecha" size="12 " type="text" />
+-->	
+</tr>
+<? } ?>
+<tr>
+	<td>Descripci&oacute;n:</td>
+	<td style="width:280px">
+		<input value="<?=$objeto->descripcion?>" name="descripcion" id="descripcion" style="width:300px" type="text" />
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+	<td width="73" align="right">Tipo de Documento:</td>
+	<td width="150">
+	<select class="" onchange="" name="tipdoc" id="tipdoc">
+		<option value="011">Contrato de Obras</option>
+	</select>	
+		<span class="errormsg" id="error_tipo_doc">*</span>
+		<?=$validator->show("error_tipo_doc")?>	</td>
+</tr>
+<!--<tr>
+	<td colspan="3">&nbsp;</td>
+	<td colspan="3" align="left"><input type="button" name="new_obra" id="new_obra" value="Nueva Obra" onclick="popup('obras.php?status=2', 'Obras', 'menubar=no, height=600, width=850, top=100, left=150, scrollbars=yes, resizable=no ');" /></td>
+</tr>-->
+</tr>
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td colspan="6"><span class="titulo">Referencias del Proveedor</span></td>
+</tr>
+<tr>
+	<td>Proveedor:
+	</td>
+ 	<td>
+	
+	<input type="text" name="nombrepro" id="nombrepro" value="<?=$objeto->nombre_proveedor?>" style="width:200px" class="proveedores" />
+		<input type="hidden" name="proveedores" value="<?=$objeto->id_proveedor?>" id="proveedores"  />													
+		<span class="errormsg" id="error_prov">*</span>
+		<?=$validator->show("error_prov")?>	
+		<span onclick="mostrar_ventana();" id="buscadorpro" style="cursor:pointer;"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+	</td>
+	<td>N&ordm; Registro Proveedor:</td>
+	<td colspan="3">
+		<input value="<?= $objeto->id_proveedor?>" readonly class="proveedores" id="id_proveedor" name="id_proveedor" size="12 " type="text" />
+		<input type="hidden" name="tipoProv" id="tipoProv" value="<?=$objeto->tipoProv?>"  />
+	</td>
+</tr>
+<tr>
+	<td>Raz&oacute;n Social:</td>
+	<td>
+		<input class="proveedores" value="<?=$objeto->nombre_proveedor?>" readonly name="nombre" id="nombre" style="width:250px"  type="text" />
+	</td>
+	<td>Direcci&oacute;n:</td>
+	<td colspan="3">
+<!--		<input class="proveedores" readonly name="direccion" id="direccion" style="width:300px " type="text" /> -->
+				<textarea readonly name="direccion" id="direccion" style="width:200px"><?=$objeto->dir_proveedor?></textarea>
+	</td>
+</tr>
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td>Unidad Ejecutora:</td>
+	<td><?=helpers::combo_ue_cp($conn, 
+														'unidad_ejecutora', 
+														$objeto->id_unidad_ejecutora,
+														'width:300px',
+														'',
+														'',
+														'',
+														"mostrarBuscarCat();",
+														"SELECT id, id || ' - ' || descripcion AS descripcion FROM unidades_ejecutoras WHERE id_escenario='$escEnEje' ORDER BY id ")?>
+	<? if ($objeto->id) echo("<script>mostrarBuscarCat2()</script>")?>
+	<span class="errormsg" id="error_ue">*</span>
+	<?=$validator->show("error_ue")?>
+	</td>
+	<? if ($objeto->id!='' && $objeto->tipoProv!='G'){ ?>
+	<td colspan="4" align="center"><input type="button" onclick="popup('fianza_pop_up.php?idcontrato=<?=$objeto->id?>&idobra=<?=$objeto->id_obra?>&idempre=<?=$objeto->id_proveedor?>&montotot=<?=muestrafloat($objeto->montotot)?>&hacer=<?=$hacer_b?>&status=<?=$objeto->status?>', 'Fianzas', 'menubar=no, height=310, width=320, top=300, left=400, scrollbars=no, resizable=no ');" value="Fianza" /></td>
+	<? } else { ?>
+		<td colspan="4">&nbsp;</td>
+	<? } ?>
+	<!--
+	<td colspan="3">
+	<?=helpers::combo_ue_cp($conn, 
+															'tipos_fianzas', 
+															$objeto->id_tipo_fianza)?>
+	<td width="1"></td>
+	-->
+</tr>
+<!--<tr>
+	<td align="left">Porcentaje de IVA:</td>
+	<td colspan="5"> 
+	<?=helpers::superCombo($conn, "SELECT porc_iva AS id, (porc_iva||'%')::varchar AS descripcion FROM finanzas.iva WHERE anio = '$anoCurso' ORDER BY id", 
+							$objeto->porc_iva, 'porc_iva', 'porc_iva', 'width:150px','calculaImp();')
+	?> 
+	<span class="errormsg" id="error_iva">*</span>
+	<?=$validator->show("error_iva")?>
+	</td>
+</tr>-->
+</table>
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="3"><hr /></td>
+</tr>
+</table>
+<div id="partpreDiv" style="display:inline">
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="3"><span class="titulo">Partidas Presupuestarias:</span></td>
+</tr>
+<tr>
+	<td>Categoria</td>
+	<td>Partida Presupuestaria</td>
+	<td>Monto</td>
+</tr>
+<tr height="15px">
+	<td style="width:33%">
+		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td width="50%">
+					<input type="text" name="txtcategorias_programaticas" id="txtcategorias_programaticas" style="width:150px;" />
+									<input type="hidden" name="categorias_programaticas" id="categorias_programaticas" />
+									<span onclick="traeCategoriasProgramaticas($('unidad_ejecutora').value);" style="cursor:pointer; display:none" id="bcategorias"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span> 
+				</td>
+				
+			</tr>
+		</table>
+	</td>
+	<td style="width:34%">
+		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td width="50%">
+					<input type="text" name="txtpartidas_presupuestarias" id="txtpartidas_presupuestarias" style="width:150px;" />
+									<input type="hidden" name="partidas_presupuestarias" id="partidas_presupuestarias" />
+									<span onclick="traePartidasPresupuestarias($('categorias_programaticas').value);" style="cursor:pointer; display:none" id="bpartidas"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+				</td>
+				
+			</tr>
+		</table>
+	</td>
+	<td style="width:33%">
+		<input type="text" name="montoip" id="montoip" style="text-align:right" onkeypress="return(formatoNumero(this,event));" value="0,00" />
+		<input type="hidden" name="disponible" id="disponible" />
+		<input type="hidden" name="idParCat" id="idParCat" />
+	</td>
+</tr>
+<tr>
+	<td colspan=2 align="left"><input type="button" name="b_agregar_co" onclick="AgregarCO()" value="Agregar"></td>
+	<td align="right"><input type="button" name="b_eliminar_co" onclick="EliminarCO()" value="Eliminar"></td>	
+</tr>
+<tr>
+	<td colspan="3"><hr></td>
+</tr>
+</table>
+</div>
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="5" align="center">
+	<div id="gridboxco" style=" width:710px; height:150px; z-index:0; display:block" class="gridbox" align="center"></div></td>
+</tr>
+<input type="hidden" name="contrato" id="contrato" />
+<tr>
+		<td width="500px" align="left">Categoria Programatica: &nbsp; <input type="text" name="nom_cat_pro" id="nom_cat_pro" readonly size="70" /> </td>
+    	<td align="right" colspan="2" ><span class="Estilo1">IVA:</span></td>
+  		<td colspan="2">
+    	<input value="<?= muestraFloat($objeto->total_iva)?>" name="total_iva" id="total_iva" size="20" type="text" readonly / >
+		</td>
+  	</tr>
+  	<tr>
+		<td width="500px" align="left">Partida Presupuestaria: &nbsp;&nbsp;&nbsp; <input type="text" name="nom_par_pre" id="nom_par_pre" readonly size="70"/></td>
+    	<td height="25" valign="top" align="right" colspan="2"><span class="Estilo1">TOTAL GENERAL Bs. </span></td>
+    	<td valign="middle" colspan="2">
+     	 <input value="<?= muestraFloat($objeto->total_general)?>" name="montoCO" id="montoCO" size="20" type="text" readonly />
+	 	</td>
+	</tr>
+
+<tr>
+	<td  colspan="5" align="left">Observaciones:</td>
+</tr>
+<tr>
+	<td  colspan="5" align="left">
+		<textarea name="observaciones" id="observaciones" style="width:400px"><?=$objeto->observaciones?></textarea>
+		<? /*<span class="errormsg" id="error_observaciones">*</span>
+		$validator->show("error_observaciones") */?>
+	</td>
+</tr>
+</table>
+<input type="hidden" name="montoCOB" id="montoCOB" />
+<?
+ if($boton == 'Guardar'){ ?>
+<input style="float:right; margin: 5px" name="boton" type="button" value="<?=$boton?>" onclick="buscaNroDoc(this.value); " />
+<input name="accion" id="accion" type="hidden" value="<?=$boton?>" />
+<? } if($boton == 'Actualizar' && $objeto->status=='1'){ ?>
+<input style="float:right; margin: 5px" name="botonActualizar" type="button" value="Actualizar" onclick=" actapr(this); buscaNroDoc(this.value);" />
+<input style="float:right; margin: 5px" name="botonAprobar" type="button" value="Aprobar" onclick="actapr(this); buscaNroDoc(this.value);" />
+<input style="float:right; margin: 5px" name="botonAnular" type="button" value="Anular" onclick="actapr(this); buscaNroDoc(this.value);" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value=""  id="accion"/>
+<? }elseif($objeto->status=='2'){ ?>
+<input style="float:right; margin: 5px" name="botonAnular" type="button" value="Anular" onclick="actapr(this); buscaNroDoc(this.value);" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value=""  id="accion"/>
+<? }?>
+<input type="hidden" name="status" id="status" value="<?=$objeto->status?>" />
+<input type="hidden" name="nrodoc" id="nrodoc" value="<?=$objeto->nrodoc?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+<br />
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<script type="text/javascript">
+
+buildGridco();
+CargarGrid();
+sumaTotal();
+function buildGridco(){
+	//set grid parameters
+	mygridco = new dhtmlXGridObject('gridboxco');
+	mygridco.selMultiRows = true;
+	mygridco.setImagePath("js/grid/imgs/");
+	mygridco.setHeader("Categoria,Partida Presupuestaria, Base Imponible, Monto Excento, % IVA, Monto IVA, Total");
+	mygridco.setInitWidths("150,150,100,80,50,75,115");
+	mygridco.setColAlign("center,center,right,right,center,right,right");
+	mygridco.setColTypes("coro,coro,ed,ed,coro,ed,ed");
+	mygridco.setColSorting("str,str,int,int,int,int,int");
+	mygridco.setColumnColor("white,white,white,white,white,white,white");
+	//mygridco.setEditable('fl');
+	mygridco.rowsBufferOutSize = 0;
+	mygridco.setMultiLine(false);
+	mygridco.selmultirows="true";
+	mygridco.delim = ';';
+	mygridco.setOnEnterPressedHandler(generaTotal);
+	mygridco.setOnRowSelectHandler(traerPartidasSeleccionada);
+	
+	
+	<? $iva = new iva;
+		$objiva = $iva->iva_anio($conn, $anoCurso);
+	?>
+	<?=helpers::combogrid($objiva, 4, 'porc' , 'descripcion', 'Seleccione', 'mygridco' )?>
+	
+	
+	//INICIA GRID//
+	mygridco.init();
+	
+}
+
+function CargarGrid(){
+var JsonAux;
+	mygridco.clearSelection();
+	mygridco.clearAll();
+	if("<?=$objeto->id?>"){ 
+		if('<?=$objeto->relacionPARCAT?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->relacionPARCAT?>' + ')');
+			//alert(Relaciones[0][2]);
+			for(i=0;i<Relaciones.length;i++){
+				var monto_impuesto = (parseFloat(Relaciones[i]['monto']) - parseFloat(Relaciones[i]['monto_exc'])) * Relaciones[i]['porc_iva']/100;
+				var total = parseFloat(Relaciones[i]['monto']) + monto_impuesto; 
+				mygridco.addRow(Relaciones[i]['idParCat'],Relaciones[i]['id_categoria_programatica']+";"+Relaciones[i]['id_partida_presupuestaria']+";"+muestraFloat(Relaciones[i]['monto'])+";"+muestraFloat(Relaciones[i]['monto_exc'])+";"+Relaciones[i]['porc_iva']+";"+muestraFloat(monto_impuesto)+";"+muestraFloat(total));
+			}
+		}
+		
+	}
+}
+
+</script>

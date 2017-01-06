@@ -1,0 +1,77 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>Nombre:</td>
+	<td><input name="nombre" value="<?=$objeto->nombre ?>" size="30" type="text">
+		<span class="errormsg" id="error_nom">*</span>
+		<?=$validator->show("error_nom")?>
+	</td>
+	<td>Apellido:</td>
+	<td><input name="apellido" value="<?=$objeto->apellido ?>" size="30" type="text">
+		<span class="errormsg" id="error_apel">*</span>
+		<?=$validator->show("error_apel")?>
+	</td>
+</tr>
+<tr>
+	<td>Login:</td>
+	<td><input name="login" value="<?=$objeto->login ?>" size="30" type="text">
+		<span class="errormsg" id="error_log">*</span>
+		<?=$validator->show("error_log")?>
+	</td>
+	<td>Password:</td>
+	<td><input name="password" value="<?=$objeto->password ?>" size="30" type="text">
+		<span class="errormsg" id="error_pass">*</span>
+		<?=$validator->show("error_pass")?>
+	</td>
+</tr>
+<tr>
+	<td>C&eacute;dula:</td>
+	<td>
+	<?=helpers::combo($conn, 'rif_letra', $objeto->ind) ?>
+	<input name="cedula" size="12" value="<?=$objeto->cedula ?>" onkeypress="return onlyNumbersCI(event)" type="text">
+		<span class="errormsg" id="error_ced">*</span>
+		<?=$validator->show("error_ced")?>
+	</td>
+	<td>Cargo:</td>
+	<td><?=helpers::superCombo($conn, 
+			'SELECT int_cod AS id, car_nom AS descripcion FROM rrhh.cargo ORDER BY descripcion', 
+			$objeto->id_cargo, 'cargos','cargos','width:180px','','id','descripcion','',70) ?>
+		<span class="errormsg" id="error_cargo">*</span>
+		<?=$validator->show("error_cargo")?>
+	</td>
+</tr>
+<tr>
+	<td>Profesi&oacute;n:</td>
+	<td><?=helpers::superCombo($conn, 'profesiones', $objeto->id_profesion, 'profesiones', 'profesiones') ?>
+		<span class="errormsg" id="error_prof">*</span>
+		<?=$validator->show("error_prof")?>
+	</td>
+	<td>Unidad Ejecutora:</td>
+	<td><?=helpers::superCombo($conn, 
+										"SELECT * FROM unidades_ejecutoras WHERE id_escenario='$escEnEje'", 
+										$objeto->id_unidad_ejecutora,
+										'unidades_ejecutoras',
+										'unidades_ejecutoras',
+										'width:180px',
+										'',
+										'id',
+										'descripcion',
+										'',
+										70)?>
+	</td>
+</tr>
+<tr>
+	<td>Estatus:</td>
+	<td colspan="3"><?=helpers::superCombo($conn, 'puser.status', $objeto->status, 'status', 'status') ?>
+		<span class="errormsg" id="error_st">*</span>
+		<?=$validator->show("error_st")?>
+	</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

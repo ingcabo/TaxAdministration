@@ -1,0 +1,155 @@
+<?
+//	var_dump($objeto);echo "<br />";
+?>
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>Escenario:</td>
+	<td>
+		<?=helpers::superCombo($conn, 
+									'escenarios', 
+									$objeto->id_escenario, 
+									'escenarios', 
+									'id_escenario', 
+									'', 
+									'traeCategoriasDesdeUpdater(this.value);traeParPreDesdeUpdater(this.value);',
+									'id',
+									'descripcion',
+									'descripcion') ?>
+		<span class="errormsg" id="error_esc">*</span>
+		<?=$validator->show("error_esc")?>
+	</td>
+</tr>
+<tr>
+	<td width="130">Categor&iacute;a Program&aacute;tica:</td>
+	<td>
+		<span id="cont_categorias">
+			<?=helpers::superCombo($conn, 
+											"SELECT id, (id || ' - ' || descripcion)::varchar AS descripcion FROM categorias_programaticas WHERE id_escenario ='$objeto->id_escenario' ORDER BY id", 
+											$objeto->id_categoria_programatica,
+											'categorias_programaticas',
+											'categorias_programaticas',
+											'',
+											'traeParPreDesdeUpdater(this.value);',
+											'id',
+											'descripcion',
+											'',
+											80) ?>
+		</span>
+		<span class="errormsg" id="error_catpro">*</span>
+		<?=$validator->show("error_catpro")?>
+	</td>
+</tr>
+<tr>
+	<td>Partida Presupuestaria:</td>
+	<td>
+		<span id="cont_partidas">
+			<?=helpers::superCombo($conn, 
+											"SELECT id, (id || ' - ' || descripcion)::varchar AS descripcion FROM puser.partidas_presupuestarias WHERE id NOT LIKE '30%' AND id_escenario = '$objeto->id_escenario' ORDER BY id",
+											$objeto->id_partida_presupuestaria,
+											'partidas_presupuestarias',
+											'partidas_presupuestarias',
+											'',
+											'',
+											'id',
+											'descripcion',
+											'',
+											80) ?>
+		</span>
+		<span class="errormsg" id="error_parpre">*</span>
+		<?=$validator->show("error_parpre")?>
+	</td>
+</tr>
+<tr>
+	<td colspan="4">
+	<table>
+	<tr>
+		<td>Ppto. Original:</td>
+		<td colspan="5">
+		<input 
+			class="monto" 
+			onkeypress="return formatoNumero(this, event)" 
+			name="presupuesto_original" 
+			id="presupuesto_original"
+			value="<?=empty($objeto->presupuesto_original) ? "0,00" : muestrafloat($objeto->presupuesto_original)?>" 
+			size="15" 
+			onblur="$('disponible').value = this.value "
+			type="text" />
+		<span class="errormsg" id="error_ppto">*</span>
+		<?=$validator->show("error_ppto")?>
+		</td>
+	</tr>
+	<tr>
+		<td>Comprometido:</td>
+		<td><input 
+				class="monto" 
+				name="compromisos" 
+				value="<?=empty($objeto->compromisos) ? "0,00" : muestrafloat($objeto->compromisos) ?>" 
+				readonly="readonly"
+				type="text" />
+		</td>
+		<td>Aumento:</td>
+		<td><input 
+				class="monto" 
+				name="aumentos" 
+				id ="aumentos" 
+				onkeypress="return formatoNumero(this, event)"
+				value="<?=empty($objeto->aumentos) ? "0,00" : muestrafloat($objeto->aumentos) ?>" 
+				onblur="sumaTotal(); "
+				type="text" readonly="readonly" />
+		</td>
+		<td>Asignaci&oacute;n:</td>
+		<td><?=helpers::combo($conn, 'asignaciones', $objeto->id_asignacion) ?></td>
+	</tr>
+	<tr>
+		<td>Causado:</td>
+		<td><input 
+				class="monto" 
+				name="causados"
+				value="<?=empty($objeto->causados) ? "0,00" : muestrafloat($objeto->causados)?>" 
+				readonly="readonly"
+				type="text" />
+		</td>
+		<td>Disminuciones:</td>
+		<td colspan="3"><input 
+								class="monto" 
+								name="disminuciones"
+								id="disminuciones" 
+								onkeypress="return formatoNumero(this, event)"
+								value="<?=empty($objeto->disminuciones) ? "0,00" : muestrafloat($objeto->disminuciones) ?>" 
+								onblur="sumaTotal(); "
+								type="text" readonly="readonly" />
+		</td>
+	</tr>
+	<tr>
+		<td>Pagado:</td>
+		<td><input 
+			class="monto" 
+				name="pagados" 
+				value="<?=empty($objeto->pagados) ? "0,00" : muestrafloat($objeto->pagados) ?>" 
+				readonly="readonly"
+				type="text" />
+		</td>
+		<td>Disponibilidad:</td>
+		<td colspan="3">
+		<input 
+			class="monto" 
+			name="disponible" 
+			id="disponible" 
+			value="<?=empty($objeto->disponible) ? "0,00" : muestrafloat($objeto->disponible) ?>" 
+			readonly="readonly"
+			type="text" />
+			</td>
+	</tr>
+	</table>
+	</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+

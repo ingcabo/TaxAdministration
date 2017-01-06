@@ -1,0 +1,52 @@
+
+<form name="form1" method="post">
+<table width="710" border="0">
+  <tr>
+    <td width="90">Partida Presupuestaria:</td>
+    <td width="204">
+	<? $pp = new partidas_presupuestarias;
+		$arr = $pp->get_all($conn);
+	?>
+	<?=helpers::superComboObj($arr, $objeto->cod_partida,'idpartida', 'idpartida', 'width:400px', '', 'id', 'descripcion', false, 57)?>
+	<span class="errormsg" id="error_partida">*</span>
+		<?=$validator->show("error_partida")?>   </td>
+  </tr>
+  <tr>
+    <td>Iva</td>
+    <td>
+		<select name="iva" id="iva">
+			<option value="1" <?=($objeto->iva =="1")? 'selected=\"selected\"': ''?>>Si</option>
+			<option value="2" <?=($objeto->iva =="2")? 'selected=\"selected\"': ''?>>No</option>
+		</select>
+      <span class="errormsg" id="error_iva">*</span>
+	<?=$validator->show("error_iva")?>  
+  </tr>
+  <tr>
+    <td>Retenciones</td>
+    <td>
+		<select name="retencion" id="retencion">
+			<option value="1" <?=($objeto->retencion =="1")? 'selected=\"selected\"': ''?>>Si</option>
+			<option value="2" <?=($objeto->retencion =="2")? 'selected=\"selected\"': ''?>>No</option>
+		</select>
+      <span class="errormsg" id="error_retencion">*</span>
+	<?=$validator->show("error_retencion")?>  
+  </tr>
+  <tr>
+    <td>a&ntilde;o</td>
+    <td>
+		<input type="text" name="anio" id="anio" value="<?=($objeto->anio)?>" >
+      <span class="errormsg" id="error_anio">*</span>
+	<?=$validator->show("error_anio")?>  
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td></td>
+  </tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

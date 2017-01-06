@@ -1,0 +1,756 @@
+<?	$disabled= ($objeto->status == 2 || $objeto->status == 3) ? 'disabled' : ''; ?>
+<form name="form1" method="post">
+<table style="text-align: left; width: 100%;"
+ border="0" cellpadding="1" cellspacing="1">
+  <tbody>
+    <tr>
+      <td><label for="nrodoc">N&ordm; de Orden:</label></td>
+      <td><input class="nrodoc" id="nrodoc"
+ name="nrodoc" value="<?=$objeto->nrodoc?>" readonly /></td>
+      <td><label for="nroref">N&ordm; de
+Documento:</label></td>
+      <td style="width:200px">
+	<input  type="text" name="nroref" id="nroref" value="<?=$objeto->nroref?>" /> <span id="buscadorsp" onclick="mostrar_ventana()" style="cursor:pointer"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" />Buscar</span>
+	</td>
+      <td colspan="2">
+	  	<table border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td>
+	  			<label for="fecha">Fecha:&nbsp;&nbsp;</label></td>
+      		<td><input id="fecha" class="campoFecha"
+ readonly="readonly" name="fecha" value="<?=muestraFecha($objeto->fecha)?>" /></td>
+ 				<td><div align="left" style="vertical-align:top">
+			&nbsp;
+		<a href="#" id="boton_fecha" onclick="return false;">
+					  <img  border="0" src="images/calendarA.png" width="20" height="20" />
+					 </a>  
+              <script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecha",
+					button            : "boton_fecha",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			         </script>
+      </div></td>
+    </tr>
+	</table>
+	<input type="hidden" name="nrorefcomp" id="nrorefcomp" value="<?=$objeto->nrorefcomp?>" />
+	
+	</td>
+</tr>
+	<tr>
+		<td><label for="descripcion">Descripci&oacute;n:</label></td>
+      <td colspan="5">
+		<input id="descripcion" class="textDesc" name="descripcion" value="<?=$objeto->descripcion?>" style="width:500px"  />
+      </td>
+   </tr>
+    <tr>
+		<td>Unidad Ejecutora:</td>
+		<td colspan="5"><?=helpers::combo_ue_cp($conn, 
+														'unidad_ejecutora', 
+														$objeto->id_unidad_ejecutora,
+														'width:500px',
+														'',
+														'unidad_ejecutora',
+														'unidad_ejecutora',
+														"",
+														"SELECT DISTINCT ON (id) id, id || '-' || descripcion AS descripcion FROM puser.unidades_ejecutoras " ) ?>
+														<!-- "SELECT id, id || '-' || descripcion AS descripcion FROM puser.unidades_ejecutoras WHERE id_escenario='$escEnEje' ")?> -->
+							
+							<span class="errormsg" id="error_unidad_ejecutora">*</span>
+		<?=$validator->show("error_nroref")?>							
+							</td>
+	</tr>
+	<tr>
+	
+		<td colspan="6"><?
+		
+		$nrodoc = $objeto->nrodoc;
+		$oMovPre = new movimientos_presupuestarios;
+		$oMovPre->get($conn, $nrodoc, 1);
+		/*$porcret = ($oMovPre->tipo_contribuyente == 'ORDINARIO') ? '75' : '100';*/
+		$porcret = '100';
+		?>
+		<input name="porcret" id="porcret" type="hidden" value="<?=$porcret?>"  /></td>
+	</tr>
+    <tr>
+      <td><label for="proveedor">Benef./Prove.:</label></td>
+      <td colspan="3">
+		<input id="proveedor" readonly="readonly" style="width:150px" name="proveedor" value="<?=$objeto->proveedor?>" />
+		<input type="hidden" value="<?=$objeto->id_proveedor?>" name="proveedores" id="proveedores"  />
+      	<span onclick="mostrar_ventana_prov();" id="buscadorpro" style="cursor:pointer;"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+	  </td>
+      <td><label for="tipo_contrib">Tipo de Contribuyente:</label></td>
+      <td>
+      <input id="tipo_contribuyente" readonly="readonly" name="tipo_contribuyente" value="<?=$objeto->tipo_contribuyente?>" />
+      </td>
+	</tr>
+	<tr>
+      <td><label for="ingreso_periodo_fiscal">Ingreso
+Per&iacute;odo Fiscal:</label></td>
+      <td>
+		<input id="ingreso_periodo_fiscal" readonly="readonly" class="monto" name="ingreso_periodo_fiscal" value="<?=muestrafloat($objeto->ingreso_periodo_fiscal)?>" />
+      </td>
+      <td><label for="status"></label></td>
+      <td colspan="5">&nbsp;</td>
+    </tr>
+    <tr>
+      <td><label for="cond_pago">Condici&oacute;n
+de Pago:</label></td>
+      <td colspan="5" rowspan="1">
+		<?=helpers::superComboSQL($conn, 'finanzas.condiciones_pago', $objeto->id_condicion_pago,'cond_pago','cond_pago')?>
+		<span class="errormsg" id="error_cpago">*</span>
+		<?=$validator->show("error_cpago")?>
+      </td>
+    </tr>
+    <tr>
+      <td>Banco</td>
+				<td>
+					
+					<?	$bn = new banco;
+						$oBancos = $bn->get_all($conn);
+						$div = "'divnrocuenta'";
+						echo helpers::superComboObj($oBancos, $objeto->id_banco, 'banco', 'banco','width:150px',"traeCuentasBancarias(this.value,$div,'','')",'id','descripcion', false, 20,$disabled);
+						
+					?>
+					<? if(!empty($objeto->nrodoc)){ 
+							echo "<script type='text/javascript'>traeCuentasBancarias($objeto->id_banco, $div, $objeto->id_nro_cuenta,'$disabled');</script>";
+					 } ?>				
+				</td>
+    </tr>
+    <tr>
+				<td>Nro. de Cuenta</td>
+				<td>
+					<table width="100%" cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td width="28%">
+							<div id="divnrocuenta" style="width:155px">
+								<select name="nro_cuenta" id="nro_cuenta" style="width:150px">
+									<option value="0">Seleccione</option>
+								</select>
+							</div>						</td>
+						<td width="72%">
+							<div id="cargando_cuentas" style="display:none; font-size:11px"><img alt="Cargando" src="images/loading2.gif" />&nbsp;Cargando N&uacute;meros de Cuentas del Banco</div></td>
+					</tr>
+					</table>				</td>
+			</tr>
+    <tr>
+      <td><label for="tipsol">Fuentes de Financiamiento:</label></td>
+      <td colspan="5" rowspan="1">
+      <?=helpers::superComboSQL($conn, 'puser.financiamiento', $objeto->id_tipo_solicitud,'finan','finan')?>
+			<span class="errormsg" id="error_finan">*</span>
+		<?=$validator->show("error_tipsol")?>
+      </td>
+    </tr>
+    <tr>
+      <td><label for="tipsol_si">S/I</label></td>
+      <td colspan="5" rowspan="1">
+      <?=helpers::superComboSQL($conn, 'finanzas.tipos_solicitud_sin_imp', $objeto->id_tipo_solicitud_si,'tipsol_si','tipsol_si','','muestraRetAnt();')?>
+		
+      </td>
+    </tr>
+<tr>
+	<td colspan="6">
+		<hr />
+	</td>
+<tr>
+	<td colspan="5">
+		<span class="titulo">Partidas Presupuestarias:</span>
+	</td>
+	<td><div style="display:none;" id="cargador_partidas"><table><tr><td><img alt="Cargando" src="images/loading.gif" align="middle" /> </td><td style="color:#FF0000; font-weight:bold">Cargando Data</td></tr></table></div></td>
+</tr>
+<tr>
+	<td colspan="6">	
+	</td>
+</tr>
+<tr>
+	<td colspan="6" align="center">
+		<hr />
+		<div id="gridboxpp" style=" width:728px; height:150px" class="gridbox" align="center"></div>
+		<input type="hidden" id="idParCat" value="0" />
+		<input type="hidden" id="hCausados" value="0" />
+		<input  type="hidden" id="contenedor_partidas" value="" name="contenedor_partidas" />
+		
+		</td>
+</tr>
+<tr height="10px">
+	<td colspan="6"><hr /></td>	
+</tr>
+<tr>
+	<td colspan="5" align="right">Total a Comprometer:  </td>
+	<td><input type="text" name="monto_causar" id="monto_causar" style="text-align:right" readonly /></td>
+</tr>
+    <tr>
+      <td colspan="3"><label for="monto_si">Monto
+de la orden
+s&oacute;lo si
+&eacute;sta no tiene Imputaci&oacute;n Presupuestaria</label></td>
+      <td colspan="3" rowspan="1">
+      <input class="monto" id="monto_si"
+ name="monto_si" value="<?=($objeto->monto_si =="")? '0': muestraFloat($objeto->monto_si)?>" onkeypress="return(formatoNumero(this,event))" onblur="total_sol();" /></td>
+    </tr>
+    <tr>
+      <td><label for="compromiso">Compromiso:</label></td>
+      <td>
+	  <? $comprometido = round($comprometido,2); ?>
+	  <input class="monto" id="compromiso"
+ readonly="readonly" name="compromiso" value="<?=$comprometido?>" /></td>
+      <td><label for="causado">Causado:</label></td>
+      <td>
+      <input id="causado" class="monto"
+ readonly="readonly" name="causado" value="<?=($causado=="" || $causado==0)? '0': $causado?>" /></td>
+ 
+      <td><label for="disponibilidad">Disponibilidad:</label></td>
+      <td>
+	  <? $disponible = $comprometido - $causado;
+	  $disponible = round($disponible,2);    ?>
+	  <input id="disponibilidad" class="monto"
+ readonly="readonly" name="disponibilidad" value="<?=$disponible?>" /></td>
+    </tr>
+	<tr>
+		<td>Monto Pendiente por Causar:</td>
+		<td colspan="5"><input type="text" name="transito" id="transito" readonly style="text-align:right" />
+			<input type="hidden" name="baseImp" id="baseImp" />
+			<input type="hidden" name="montoImp" id="montoImp" />
+		</td>
+		
+	</tr>
+	
+    <tr>
+	  <td colspan="6" >
+		<span style="float:right">
+		<input style="margin-right:2px;" onclick="muestraRet();" name="boton" type="button" value="Retenciones" title="Retenciones y Adiciones" id="retad" />
+		<input name="boton" style="margin-left:2px; margin-right:2px;" type="button" value="Facturas" id="facrel" 
+		onclick="muestraFacrel();" />
+		
+			
+		</span>
+	</td>
+    </tr>
+
+  </tbody>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+<div id="facrelDiv">
+	<table width="100%">
+	<tr>
+		<td><hr />
+	</td>
+	<tr>
+		<td colspan="5">
+			<span class="titulo">Facturas Relacionadas</span>
+		</td>
+	</tr>
+	<tr>
+		<td><hr />
+	</td>
+	</table>
+
+<br />
+<table width="100%" >
+<div id="agrFact">
+<tr>
+	<td><input name="button2" type="button" id="Agregarcp" onclick="Agregar()" value="Agregar Facturas" /></td>
+    <td align="right"><input name="button" type="button" onclick="Eliminar()" value="Eliminar Facturas" align="right" /></td>
+    </tr></div>
+	<tr>
+		<td align="center" colspan="2">
+			<div id="gridboxfac" style=" width:728px; height:150px" class="gridbox" align="center"></div>
+			<input type="hidden" id="contenedor_facturas" value="" name="contenedor_facturas" />
+		</td>
+	</tr>
+</table>
+ <br />
+  <table width="95%" align="center" border="0" cellpadding="1" cellspacing="0" id="tablitaFR" style="text-align: left;">
+    <tbody>
+        <tr>
+			<td width="75%" style="text-align:right">Total Iva:</td>
+        	<td width="25%" style="text-align:right"><span style="text-align:right">
+          		<input class="monto" style="width:150px" id="iva" name="iva" value="<?=muestrafloat($total)?>" readonly />
+			</span></td>
+		</tr>
+		<tr>
+			<td width="75%" style="text-align:right">Total Iva Retenido:</td>
+        	<td width="25%" style="text-align:right"><span style="text-align:right">
+          		<input class="monto" style="width:150px" id="ivaRet" name="ivaRet" value="<?=muestrafloat($total)?>" readonly />
+			</span></td>
+		</tr>
+		<tr>
+        <td width="75%" style="text-align:right">Total a Facturar:</td>
+        <td width="25%" style="text-align:right"><span style="text-align:right">
+          <input class="monto" style="width:150px" id="total" name="total" value="<?=muestrafloat($total)?>" readonly />
+        </span></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+</div>
+<br />
+<div id="RAdiv">
+<table width="100%">
+	<tr>
+		<td><hr />
+	</td>
+	<tr>
+		<td colspan="5">
+			<span class="titulo">Retenciones</span>		</td>
+	</tr>
+	<tr>
+		<td><hr />
+	</td>
+	</table>
+<table width="100%" >
+	<tr>
+		<td><input name="button2" type="button" id="Agregarcp" onclick="AgregarRET()" value="Agregar Retenciones" /></td>
+    	<td align="right"><input name="button" type="button" onclick="EliminarRET()" value="Eliminar Retenciones" align="right" /></td>
+    </tr>
+	<tr>
+		<td align="center" colspan="2">
+			<div id="gridboxret" style=" width:728px; height:150px" class="gridbox" align="center"></div>
+			<input type="hidden" id="contenedor_retenciones" value="" name="contenedor_retenciones" />
+		</td>
+	</tr>
+	<tr>
+		<td width="80%" align="right">
+		Total Retenciones :&nbsp;		</td>
+		<td width="15%" align="right">
+			<input type="text" name="totalrafac" id="totalrafac" style="text-align:right" value="<?=muestrafloat($totalre)?>" readonly  />		</td>
+	</tr>
+</table>
+<br />
+<div id="retNomina" >
+<table width="100%" >
+	<tr>
+		<td colspan="2"><hr /></td>
+	</tr>
+	<tr>
+		<td colspan="2"><span class="titulo">Retenciones Nomina:</span></td>
+    </tr>
+	<tr>
+		<td colspan="2"><hr /></td>
+	</tr>
+	<tr>
+		<td align="center" colspan="2">
+			<div id="gridboxretno" style=" width:400px; height:150px" class="gridbox" align="center"></div>
+		</td>
+	</tr>
+	<tr>
+		<td width="80%" align="right">
+		Total
+				Retenciones Nomina :&nbsp;		</td>
+		<td width="15%" align="right">
+			<input type="text" name="totalranom" id="totalranom" style="text-align:right" value="<?=muestrafloat($totalreno)?>" readonly  />		</td>
+	</tr>
+	<tr>
+		<td width="80%" align="right">
+		Total
+				Aportes Nomina :&nbsp;		</td>
+		<td width="15%" align="right">
+			<input type="text" name="aporteNomina" id="aporteNomina" style="text-align:right"  readonly  />		</td>
+	</tr>
+	<tr>
+		<td colspan="2"><hr /></td>
+	</tr>
+</table>
+<br />
+</div>
+<div id="anticipo" style="display:none">
+<table width="100%" >
+	<tr>
+		<td colspan="2"><span class="titulo">Deducci&oacute;n Anticipo Contratista:</span></td>
+    </tr>
+	<tr>
+		<td colspan="2"><hr /></td>
+	</tr>
+	<?
+		$q = "SELECT pc.id, pc.descripcion FROM contabilidad.plan_cuenta pc ";
+		$q.= "INNER JOIN finanzas.tipos_solicitud_sin_imp si ON (pc.id = si.cuenta_contable) ";
+		$q.= !empty($objeto->cuenta_anticipo) ? "WHERE pc.id = $objeto->cuenta_anticipo " : ""; 
+		$q.= "ORDER BY descripcion ";
+		//echo $q."<br />";
+	?>
+	<tr>
+		<td>Cuenta Contable: &nbsp;<? echo helpers::superComboSQL($conn, 
+												'',
+												$objeto->cuenta_anticipo,
+												'id_plan_cuenta', 
+												'id_plan_cuenta',
+												'width:250px;',
+												'',
+												'id',
+												'descripcion',
+												false,
+												'',
+												$q,
+												80);
+		?></td>
+		<td>Monto: &nbsp;<input type="text" name="montoAnticipo" id="montoAnticipo" onkeypress="return(formatoNumero(this,event))" value="<?=muestraFloat($objeto->montoanticipo)?>" style="text-align:right" /> </td>
+	</tr>
+	
+	<tr>
+		<td colspan="2"><hr /></td>
+	</tr>
+</table>
+<br />
+</div>  
+  <table width="95%" align="center" border="0" cellpadding="1" cellspacing="0" id="tablitaAR" style="text-align: left;">
+	<tr>
+		<td width="80%" align="right">
+		Total
+				Retenciones/Aportes :&nbsp;		</td>
+		<td width="15%" align="right">
+			<input type="text" name="totalra" id="totalra" style="text-align:right" value="<?=muestrafloat($totalre)?>" readonly  />		</td>
+	</tr>
+	<tr>
+		<td width="80%" align="right">
+			Total a Pagar: &nbsp;
+		</td>
+		<td width="15%" align="right">
+			<input type="text" name="total_soli" id="total_soli" style="text-align:right" value="<?=muestrafloat($totalre)?>" readonly  />		</td>
+	</tr>
+	<tr>
+		<td colspan="2">Motivo de Anulaci&oacute;n:</td>
+	</tr>
+	<tr>
+		<td colspan="2"><textarea name="motivo" id="motivo" cols="70" rows="5"><?=$objeto->motivo?></textarea></td>
+	</tr>
+  </table>
+<br/>
+</div>
+<table border="0" cellpadding="0" cellspacing="0" width="750px">
+<tr>
+	<td align="right">
+	<? if(($boton=='Guardar') AND ($objeto->cerrado != 'S')){ ?>
+		<input name="boton" type="button" style="margin-left:2px;" value="<?=$boton?>" onclick="GuardarPP(); GuardarFAC(); GuardarRET(); actapr(this);" /> <!--actapr(this);-->
+		<input type="hidden" name="status" id="status" value="<?=($boton=='Guardar' || $boton=='Actualizar' )? '1' : '2'?>" />
+	<? } elseif($boton == 'Actualizar' && $objeto->status=='1' AND ($objeto->cerrado != 'S')) { ?>
+		<input style="float:right; margin: 5px" name="botonActualizar" type="button" value="Actualizar" onclick="GuardarPP(); GuardarFAC(); GuardarRET(); actapr(this);" /> 
+		<input style="float:right; margin: 5px" name="botonAprobar" type="button" value="Aprobar" onclick="GuardarPP(); actapr(this);" />
+		<input style="float:right; margin: 5px" name="botonAnular" type="button" value="Anular" onclick="Motivo(this);" />
+	<?} elseif($boton == 'Actualizar' && $objeto->status=='2' AND ($objeto->cerrado != 'S')){ ?>
+		<input style="float:right; margin: 5px" name="botonAnular" type="button" value="Anular" onclick="Motivo(this);" />
+	<? } ?>
+	<input name="accion" type="hidden" value=""  id="accion"/>
+	<input type="hidden" name="status_old" id="status_old" value="<?= $objeto->status?>" />
+	<input type="hidden" name="nrodoccomp" id="nrodoccomp" />
+	</td>
+</tr>
+</table>
+<br />
+<p class="errormsg">(*) Campo requerido</p>
+</form>
+<script language="javascript" type="text/javascript">
+<? if($boton=='Guardar'){ ?>
+buildGridPP();
+buildGridFAC();
+<? }else{?>
+buildGridPP();
+buildGridFAC();
+CargarGridPPInicial('<?=$objeto->nrodoc?>','<?=$objeto->nrorefcomp?>');
+getMonto();
+<? }?>
+buildGridRET();
+buildGridRETNO();
+CargarGridFAC();
+CargarGridRET();
+CargarGridRETNO();
+Effect.toggle('retNomina', 'blind');
+//GRID DE PARTIDAS PRESUPUESTARIAS//
+function buildGridPP(){
+	//set grid parameters
+	mygridpp = new dhtmlXGridObject('gridboxpp');
+	mygridpp.selMultiRows = true;
+	mygridpp.setImagePath("js/grid/imgs/");
+	mygridpp.setHeader("Categoria,Partida Presupuestaria,Monto Por Causar");
+	mygridpp.setInitWidths("250,250,200");
+	mygridpp.setColAlign("center,center,center");
+	mygridpp.setColTypes("coro,coro,ed");
+	mygridpp.setColSorting("str,str,int");
+	mygridpp.setColumnColor("white,white,white");
+	mygridpp.rowsBufferOutSize = 0;
+	mygridpp.setMultiLine(false);
+	mygridpp.selmultirows="true";
+	//mygridpp.setOnEnterPressedHandler(calcularMontoCausado);
+	mygridpp.delim=';';
+	mygridpp.setOnEditCellHandler(validarMontoPP);
+	
+	//INICIA GRID//
+	mygridpp.init();
+	
+	}
+
+//CARGA DEL GRID DE PARTIDA PREUPUESTARIA//
+function CargarGridPPInicial(id,nroref){
+	mygridpp.clearSelection();
+	mygridpp.clearAll();
+	//var idpc_iva = <?= $idpc_iva?>;
+	var url = 'json.php';
+	var pars = 'op=pp_orden&id='+ id;
+	var Request = new Ajax.Request(
+		url,
+		{
+			method: 'get',
+			parameters: pars,
+			onLoading:function(request){}, 
+			onComplete:function(request){
+				var IdParCat = new Array;
+				var baseImp=0;
+				var montoImp=0;
+				var monto_causar=0;
+				var JsonData = eval( '(' + request.responseText + ')');
+				if(JsonData){
+					for(var j=0;j<JsonData.length;j++){
+						IdParCat[j] = new Array;
+						mygridpp.getCombo(0).put(JsonData[j]['id_categoria_programatica'],JsonData[j]['categoria_programatica']);
+						mygridpp.getCombo(1).put(JsonData[j]['id_partida_presupuestaria'],JsonData[j]['partida_presupuestaria']);
+						mygridpp.addRow(JsonData[j]['idParCat'],JsonData[j]['id_categoria_programatica']+";"+JsonData[j]['id_partida_presupuestaria']+";"+muestraFloat(JsonData[j]['monto']));
+						IdParCat[j][0] = JsonData[j]['idParCat'];
+						
+						if(JsonData[j]['id_partida_presupuestaria']!='4031801000000') 
+							baseImp = baseImp + parseFloat(JsonData[j]['monto']);
+						else
+							montoImp = montoImp + parseFloat(JsonData[j]['monto']);
+						monto_causar = monto_causar + parseFloat(JsonData[j]['monto']);
+						
+											
+					}
+					
+					$('monto_causar').value = muestraFloat(monto_causar);
+					$('baseImp').value = muestraFloat(baseImp);
+					$('montoImp').value = muestraFloat(montoImp);	
+					
+											  
+				}
+			}
+		}
+	);
+	
+	var url = 'json.php';
+	var pars = 'op=ordenpagototales&id='+ nroref;
+	var Request = new Ajax.Request(
+		url,
+		{
+			method: 'get',
+			parameters: pars,
+			onLoading:function(request){}, 
+			onComplete:function(request){
+			var j =0;	
+				var JsonData = eval( '(' + request.responseText + ')');
+				var IdParCat = new Array;
+				var transito = (JsonData[j]['totTransito'] - JsonData[j]['totCausado']);
+				
+				if(JsonData){
+					for(var j=0;j<JsonData.length;j++){
+						$('compromiso').value = muestraFloat(JsonData[j]['totCompromiso']);
+						$('causado').value = muestraFloat(JsonData[j]['totCausado']);
+						$('disponibilidad').value = muestraFloat(JsonData[j]['totCompromiso']-JsonData[j]['totCausado']); 	
+						$('transito').value = muestraFloat(transito.toFixed(2));
+						
+						
+					}
+					
+						
+				}
+			}
+		}
+	); 
+	
+	var url = 'json.php';
+	var pars = 'op=aportesNomina&id='+ nroref;
+	var Request = new Ajax.Request(
+		url,
+		{
+			method: 'get',
+			parameters: pars,
+			onLoading: function(request){},
+			onComplete: function(request){
+				var JsonData = eval( '(' + request.responseText + ')');
+				if(JsonData){
+					$('aporteNomina').value = muestraFloat(JsonData);
+					Effect.toggle('retNomina', 'blind');
+				}else{
+					$('aporteNomina').value = '0,00';
+				}
+			}
+		}
+	);
+	
+	if(usaFloat($('montoAnticipo').value)>0)
+		 Effect.toggle('anticipo', 'blind');
+} 
+
+//GRID DE FACTURAS//
+function buildGridFAC(){
+	//PARAMETROS DEL GRID//
+	mygridfac = new dhtmlXGridObject('gridboxfac');
+	mygridfac.selMultiRows = true;
+	mygridfac.setImagePath("js/grid/imgs/");
+	mygridfac.setHeader("N&ordm; Factura,N&ordm; Control,Fecha,Monto Doc,Descuento,Monto Exento,Iva, %, Base Imponible, Monto Iva, Iva Retenido");
+	mygridfac.setInitWidths("60,60,60,80,60,60,90,28,80,80,80");
+	mygridfac.setColAlign("center,center,center,center,center,center,center,center,center,center,center");
+	mygridfac.setColTypes("ed,ed,calendar,ed,ed,ed,coro,ed,ed,ed,ed");
+	mygridfac.setColSorting("str,str,int,int,int,int,int,int,int,int,int");
+	mygridfac.setColumnColor("white,white,white,white,white,white,white,white,white,white,white");
+	mygridfac.rowsBufferOutSize = 0;
+	mygridfac.setMultiLine(false);
+	mygridfac.selmultirows="true";
+	mygridfac.setOnEditCellHandler(busca_ret_iva);
+	//mygridfac.setOnEnterPressedHandler(calcularMontoBaseImp);
+	<? //$iva = new iva;
+		//$objiva = $iva->iva_anio($conn, $anoCurso);
+		$iva = new retenciones_adiciones;
+		
+		$objiva = $iva->get_retencion_iva($conn);
+		//die(var_dump($objiva));
+	?>
+	<?=helpers::combogrid($objiva, 6, 'id' , 'descripcion', 'Seleccione', 'mygridfac' )?>
+	//INICIO DE GRID//
+	mygridfac.init();
+}
+
+function buildGridRET(){
+	//PARAMETROS DEL GRID//
+	mygridret = new dhtmlXGridObject('gridboxret');
+	mygridret.selMultiRows = true;
+	mygridret.setImagePath("js/grid/imgs/");
+	mygridret.setHeader("N&ordm; Factura,Descripci&oacute;n, Porc.(%),Monto Base,Sustraendo,Aplicar,Monto Retenciones");
+	mygridret.setInitWidths("65,290,40,120,60,40,115");
+	mygridret.setColAlign("center,center,center,center,center,center,center");
+	mygridret.setColTypes("coro,coro,ed,ed,ed,ch,ed");
+	mygridret.setColSorting("str,str,int,int,int,int,int");
+	mygridret.setColumnColor("white,white,white,white,white,white,white");
+	mygridret.rowsBufferOutSize = 0;
+	mygridret.setMultiLine(false);
+	mygridret.delim=';';
+	mygridret.selmultirows="true";
+	<? $bn = new retenciones_adiciones;
+		$arr = $bn->getAll($conn,'id',1);
+	?>
+	<?=helpers::combogrid($arr, 1, 'id' , 'descripcion', 'Seleccionar..', 'mygridret')?>
+	mygridret.setOnEditCellHandler(busca_porc_ret);
+	mygridret.setOnCheckHandler(checkSustraendo);
+	mygridret.getCombo(0).put('0','Seleccione');
+	//mygridret.setOnEnterPressedHandler(calcularMontoRetenciones);
+	
+	//INICIO DE GRID//
+	mygridret.init();
+}
+
+function CargarGridFAC(){
+	var JsonAux;
+	mygridfac.clearSelection();
+	mygridfac.clearAll();
+	if("<?=$objeto->nrodoc?>"){ 
+		if('<?=$objeto->relacionFacturas?>'){
+			var Facturas = eval( '(' + '<?=$objeto->relacionFacturas?>' + ')');
+			
+			for(i=0;i<Facturas.length;i++){
+				mygridfac.addRow(i,Facturas[i]['nrofac']+","+Facturas[i]['nrocontrol']+","+Facturas[i]['fechafac']+","+Facturas[i]['montofac']+","+Facturas[i]['descuento']+","+Facturas[i]['monto_excento']+","+Facturas[i]['id_retencion']+","+Facturas[i]['iva']+","+Facturas[i]['base_imponible']+","+Facturas[i]['monto_iva']+","+Facturas[i]['iva_retenido'],i);
+				mygridret.getCombo(0).put(Facturas[i]['nrofac'],Facturas[i]['nrofac']);
+			}
+		}
+		sumaTotalFacturas();
+	}
+}
+
+
+
+function CargarGridRET(){
+	var JsonAux;
+	mygridret.clearSelection();
+	mygridret.clearAll();
+	if("<?=$objeto->nrodoc?>"){ 
+		if('<?=$objeto->relacionRetenciones?>'){
+			var Retenciones = eval( '(' + '<?=$objeto->relacionRetenciones?>' + ')');
+			
+			for(iret=0;iret<Retenciones.length;iret++){
+				
+				mygridret.addRow(iret,Retenciones[iret]['nrofactura']+";"+Retenciones[iret]['codigoretencion']+";"+Retenciones[iret]['porcentaje']+";"+muestraFloat(Retenciones[iret]['montobase'])+";;"+Retenciones[iret]['aplico_sust']+";"+Retenciones[iret]['montoretencion']);
+				
+			}
+			sumaMontoTotalRetenciones();
+		}
+		
+	}
+}
+
+function buildGridRETNO(){
+	//PARAMETROS DEL GRID//
+	mygridretno = new dhtmlXGridObject('gridboxretno');
+	mygridretno.selMultiRows = true;
+	mygridretno.setImagePath("js/grid/imgs/");
+	mygridretno.setHeader("Descripci&oacute;n, Monto");
+	mygridretno.setInitWidths("250,150");
+	mygridretno.setColAlign("left,right");
+	mygridretno.setColTypes("coro,ed");
+	mygridretno.setColSorting("str,int");
+	mygridretno.setColumnColor("white,white");
+	mygridretno.rowsBufferOutSize = 0;
+	mygridretno.setMultiLine(false);
+	mygridretno.delim=';';
+	mygridretno.selmultirows="true";
+	mygridretno.setEditable(false);
+	<? $bn = new concepto;
+		$arr = $bn->get_conceptos_retenciones($conn);
+	?>
+	<?=helpers::combogrid($arr, 0, 'id' , 'descripcion', 'Seleccionar..', 'mygridretno')?>
+	//INICIO DE GRID//
+	mygridretno.init();
+}
+
+	function CargarGridRETNO(){
+	var JsonAux;
+	mygridretno.clearSelection();
+	mygridretno.clearAll();
+	if("<?=$objeto->nrodoc?>"){ 
+		if('<?=$objeto->relacionRetencionesNom?>'){
+			var Retencionesnom = eval( '(' + '<?=$objeto->relacionRetencionesNom?>' + ')');
+			
+			for(iret=0;iret<Retencionesnom.length;iret++){
+				mygridretno.addRow(iret,Retencionesnom[iret]['id']+";"+muestraFloat(Retencionesnom[iret]['monto']));
+				
+			}
+			sumaMontoTotalRetencionesNom();
+			
+		}
+		
+	}
+}
+
+var t;
+function buscador(keyCode)
+	{
+		if ((keyCode>=65 && keyCode<=90) || (keyCode>=48 && keyCode<=57) || (keyCode>=96 && keyCode<=105) || keyCode==8 || keyCode==46)
+		{
+			
+			if(usaFloat($('montoAnticipo').value)>usaFloat($('monto_causar').value)){
+				alert('El monto a retener no puede ser mayor que el monto a causar');
+				$('montoAnticipo').value = '0,00';
+			}
+			clearTimeout(t);
+			t = setTimeout("total_sol()", 800);
+		}
+	}
+
+Event.observe('montoAnticipo', "keyup", function (evt) { 
+	buscador(evt.keyCode)
+});
+
+	
+ 
+
+</script>

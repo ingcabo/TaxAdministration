@@ -1,0 +1,150 @@
+<?
+	if (empty($objeto->id))
+	{
+		/*$q = "SELECT numcom FROM contabilidad.com_enc WHERE id = (SELECT MAX(id) as max FROM contabilidad.com_enc)";
+		$rs = $conn->Execute($q);
+		$sigNumCom = sprintf("%04d", substr($rs->fields['numcom'],8)+1);*/
+		$fecha = date('d/m/Y');
+	}
+	else
+		$sigNumCom = $obj->numcom;
+		
+	if ($objeto->origen=='TRM' || $objeto->origen=='CHM')
+		$editable = false;
+	else
+		$editable = true;
+?>
+<form name="form1" id="form1" action="" method="post">
+	<table width="600" border="0">
+		<tr>
+			<td>Fecha:</td>
+			<td>
+				<input style="width:100px" type="text" name="fecha" id="fecha" value="<?=(empty($objeto->id)) ? $fecha:$objeto->fecha?>" <?=(!$editable) ? 'readonly':''?> maxlength="10" />
+				<a href="#" id="boton_fecha" onclick="return false;" <?=(!$editable) ? 'style="display:none"':''?> >
+					<img border="0"  alt="Seleccionar Fecha" src="images/calendarA.png" width="20" height="20" />
+				</a>  
+				<script type="text/javascript">
+					new Zapatec.Calendar.setup({
+						firstDay          : 1,
+						weekNumbers       : true,
+						showOthers        : false,
+						showsTime         : false,
+						timeFormat        : "24",
+						step              : 2,
+						range             : [1900.01, 2999.12],
+						electric          : false,
+						singleClick       : true,
+						inputField        : "fecha",
+						button            : "boton_fecha",
+						ifFormat          : "%d/%m/%Y",
+						daFormat          : "%Y/%m/%d",
+						align             : "Br"
+					 });
+				</script>
+				<span class="errormsg" id="error_fecha">*</span>
+				<?=$validator->show("error_fecha")?>
+				<!--input type="hidden" id="fecha2" name="fecha2"/-->
+				<input type="hidden" name="id" id="id" value="<?=$objeto->id?>"/> 
+				<input type="hidden" name="op" id="op" value=""/>		
+			</td>
+		</tr>		
+		<tr>
+			<td>N&ordm; Documento:</td>
+			<td>
+				<input type="text" name="num_doc" id="num_doc" <?=(!$editable) ? 'readonly':''?> value="<?=$objeto->nrodoc?>" />
+				<span class="errormsg" id="error_num_doc">*</span>
+				<?=$validator->show("error_num_doc")?>
+			</td>
+		</tr>
+		<tr>
+			<td>Tipo Documento:</td>
+			<td>
+				<select name="tipo_doc" id="tipo_doc" <?=(!$editable) ? 'disabled':''?> >
+					<option value="-1">Seleccione</option>
+					<option value="<?=($objeto->origen) ? $objeto->origen:'TRM'?>" <?=(strpos($objeto->origen, 'TR')!==false) ? 'selected="selected"' : ''?>>Transferencia</option>
+					<option value="<?=($objeto->origen) ? $objeto->origen:'CHM'?>" <?=(strpos($objeto->origen, 'CH') !== false)? 'selected="selected"' : ''?>>Cheque</option>
+				</select>
+				<span class="errormsg" id="error_tipo_doc">*</span>
+				<?=$validator->show("error_tipo_doc")?>
+			</td>
+		</tr>
+		<tr>
+			<td class="td_description">Estatus:</td>
+			<td align="left" valign="top">
+				<input type="text" name="estatus" id="estatus" value="<?=($objeto->status_nombre) ? $objeto->status_nombre:'Registrado'?>" readonly />
+			</td>
+		 </tr>
+		<tr>
+			<td width="18%" class="td_description">Descripci&oacute;n:</td>
+			 <td width="82%"><textarea name="descripcion" id="descripcion" rows="5" cols="35" <?=(!$editable) ? 'readonly':''?>><?=$objeto->descripcion?></textarea>
+			<span class="errormsg" id="error_descripcion">*</span>
+							<?=$validator->show("error_descripcion")?></td>
+		</tr>
+		<tr>
+			<td class="td_description">Cta. Cedente:</td>
+			<td align="left" valign="top">		
+				<?=helpers::superComboSQL($conn, 
+												'', 
+												$objeto->id_cuenta_cedente,
+												'id_cuenta_cedente',
+												'id_cuenta_cedente',
+												'width:400px;',
+												'traeReceptora(this.value);',
+												'id',
+												'descripcion',
+												false,
+												'',
+												"SELECT cb.id, (b.descripcion || ' - ' || cb.nro_cuenta)::varchar as descripcion FROM finanzas.cuentas_bancarias as cb 
+												INNER JOIN public.banco as b ON cb.id_banco=b.id order by descripcion",
+												80);?>
+				<span class="errormsg" id="error_cedente">*</span>
+				<?=$validator->show("error_cedente")?>
+			</td>
+		 </tr>
+		<tr>
+			<td class="td_description">Cta. Receptora:</td>
+			<td align="left" valign="top">
+				<? if(empty($objeto->id_cuenta_receptora)){ ?>
+					<div id="divctareceptora">
+						<select name="id_cuenta_receptora" id="id_cuenta_receptora" style="width:400px">
+							<option value = "-1" >Seleccione</option>
+						</select>
+					</div>
+				<? } else { ?>
+					<?=helpers::superComboSQL($conn, 
+											'',
+											$objeto->id_cuenta_receptora, 
+											'id_cuenta_receptora',
+											'id_cuenta_receptora',
+											'width:400px', 
+											'',
+											'id',
+											'descripcion',
+											false,
+											'',
+											"SELECT cb.id, (b.descripcion || ' - ' || cb.nro_cuenta)::varchar as descripcion FROM finanzas.cuentas_bancarias as cb 
+											INNER JOIN public.banco as b ON cb.id_banco=b.id  order by descripcion",
+											80);?>
+				<? } ?>
+				<span class="errormsg" id="error_receptora">*</span>
+				<?=$validator->show("error_receptora")?>
+			</td>
+		 </tr>
+		 <tr>
+			<td class="td_monto">Monto:</td>
+			<td align="left" valign="top">
+				<input type="text" name="monto" id="monto" value="<?=($objeto->monto) ? $objeto->monto:'0,00'?>" onkeypress="return(formatoNumero(this,event));"/>
+			</td>			
+		 </tr>
+	</table>
+	<br /> 
+	
+	<div style="width:100%; text-align:right">
+		<input type="button" name="anular" id="anular" value="Anular" onclick="Anular();" <?=(empty($objeto->id) || $objeto->status=='1') ? 'style="display:none"':''?> />&nbsp;
+		<input name="accion" type="button" value="<?=$boton?>" onclick="validate();" <?=($objeto->status=='1') ? 'style="display:none"':''?>/>
+		<input type="hidden" name="accion" value="<?=$boton?>"  id="accion"/>
+	</div>
+</form>
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+	<img onclick="close_div();" src="images/close_div.gif" />
+</div>

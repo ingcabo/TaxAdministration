@@ -1,0 +1,42 @@
+<form name="form1" method="post">
+<table width="600" border="0">
+  <tr>
+    <td width="100">Codigo:</td>
+    <td ><input type="text" name="codigo" value="<?=$objeto->int_cod ? $objeto->var_cod : getCorrelativo($conn, 'var_cod', 'rrhh.variable', 'int_cod')?>">
+		<span class="errormsg" id="error_codigo">*</span>
+		<?=$validator->show("error_codigo")?>
+   </td>
+  </tr>
+  <tr>
+    <td>Descripcion:</td>
+    <td><input type="text" style="width:250px" name="nombre" value="<?=$objeto->var_nom?>">
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+  </tr>
+  <tr>
+    <td>Tipo: </td>
+    <td>
+		<SELECT NAME="tipo"  >
+			<OPTION <?=($objeto->var_tipo=='0') ? "selected" : "" ?> value='0' >Fija
+			<OPTION <?=($objeto->var_tipo=='1') ? "selected" : "" ?> value='1'> No Fija
+		</SELECT>
+    </td>
+  </tr>
+  <tr>
+    <td>Estatus:</td>
+    <td>
+		<SELECT NAME="estatus" id="estatus">
+			<OPTION <?=($objeto->var_estatus=='0') ? "selected" : "" ?> value='0'>Activo</OPTION>
+			<OPTION <?=($objeto->var_estatus=='1') ? "selected" : "" ?> value='1'>Inactivo</OPTION>
+		</SELECT>
+	</td>
+  </tr>
+</table>
+<input style="float:right"  name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="int_cod" type="hidden" value="<?=$objeto->int_cod?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p

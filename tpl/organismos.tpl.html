@@ -1,0 +1,31 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>C&oacute;digo:</td>
+	<td><input name="id_nuevo" maxlength="4" value="<?=$objeto->id?>" size="10" type="text">
+	<span class="errormsg" id="error_cod">*</span>
+	<?=$validator->show("error_cod")?>
+	</td>
+</tr>
+<tr>
+<td>Escenario:</td>
+<td><?=helpers::combo($conn, 'escenarios', $objeto->id_escenario) ?>
+	<span class="errormsg" id="error_esc">*</span>
+	<?=$validator->show("error_esc")?>
+</td>
+</tr>
+<tr>
+<td>Descripcion:</td>
+<td><input name="descripcion" value="<?=$objeto->descripcion ?>" size="40" type="text">
+	<span class="errormsg" id="error_desc">*</span>
+	<?=$validator->show("error_desc")?>
+</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

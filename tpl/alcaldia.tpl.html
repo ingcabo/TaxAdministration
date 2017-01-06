@@ -1,0 +1,134 @@
+<form name="form1" method="post">
+<table>
+<tr>
+<td>Cod. Alcald&iacute;a:</td>
+<td colspan="3">
+<input name="id_nuevo" maxlength="4" size="8" value="<?=$objeto->id ?>" type="text"> 
+<span class="errormsg" id="error_cod">*</span>
+<?=$validator->show("error_cod")?>
+</td>
+</tr>
+<tr>
+	<td>Nombre:</td>
+	<td colspan="3"><input name="descripcion" value="<?=$objeto->descripcion ?>" size="81" type="text">
+	<span class="errormsg" id="error_nom">*</span>
+	<?=$validator->show("error_nom")?>
+	</td>
+</tr>
+<tr>
+	<td>Raz&oacute;n Social:</td>
+	<td colspan="3"><input name="razon" size="81" value="<?=$objeto->razon ?>" type="text">
+	<span class="errormsg" id="error_raz">*</span>
+	<?=$validator->show("error_raz")?>
+	</td>
+</tr>
+<tr>
+	<td>Domicilio Legal:</td>
+	<td colspan="3"><input name="domicilio" size="81" value="<?=$objeto->domicilio ?>" type="text">
+	<span class="errormsg" id="error_dom">*</span>
+	<?=$validator->show("error_dom")?>
+	</td>
+</tr>
+<tr>
+	<td>Fecha de Creaci&oacute;n:</td>
+	<td colspan="3">
+	
+		<table>
+		<tr>
+			<td>
+			<input size="12" name="fecha_creacion" id="fecha_creacion" value="<?=$objeto->fecha_creacion ?>" type="text" readonly />
+			</td>
+			<td>
+				 <a href="#" id="boton" onclick="return false;">
+				  <img border="0" src="images/calendarA.png" width="20" height="20" />
+				</a>  
+		<script type="text/javascript">
+			new Zapatec.Calendar.setup({
+				firstDay          : 1,
+				weekNumbers       : true,
+				showOthers        : false,
+				showsTime         : false,
+				timeFormat        : "24",
+				step              : 2,
+				range             : [1900.01, 2999.12],
+				electric          : false,
+				singleClick       : true,
+				inputField        : "fecha_creacion",
+				button            : "boton",
+				ifFormat          : "%d/%m/%Y",
+				daFormat          : "%Y/%m/%d",
+				align             : "Br"
+			 });
+		</script>
+		<span class="errormsg" id="error_fechac">*</span>
+		<?=$validator->show("error_fechac")?>
+			</td>
+		</tr>
+	</table>
+	
+	</td>
+</tr>
+<tr>
+	<td>Ciudad:</td>
+	<td><input name="ciudad" size="20" value="<?=$objeto->ciudad ?>" type="text">
+	<span class="errormsg" id="error_cdad">*</span>
+	<?=$validator->show("error_cdad")?>
+	</td>
+	<td>Estado:</td>
+	<td><input name="estado" size="20" value="<?=$objeto->estado ?>" type="text">
+	<span class="errormsg" id="error_edo">*</span>
+	<?=$validator->show("error_edo")?>
+	</td>
+</tr>
+<tr>
+	<td>Tel&eacute;fono:</td>
+	<td><input name="telefono" size="20" value="<?=$objeto->telefono ?>" type="text">
+	<span class="errormsg" id="error_tlf">*</span>
+	<?=$validator->show("error_tlf")?>
+	</td>
+	<td>Fax:</td>
+	<td><input name="fax" size="20" value="<?=$objeto->fax ?>" type="text">
+	</td>
+</tr>
+<tr>
+	<td>Dir. Internet:</td>
+	<td><input name="web_site" size="40" value="<?=$objeto->web_site ?>" type="text">
+	</td>
+	<td>C&oacute;digo Postal:</td>
+	<td><input name="cpostal" size="8" value="<?=$objeto->cpostal ?>" type="text">
+	<span class="errormsg" id="error_postal">*</span>
+	<?=$validator->show("error_postal")?>
+	</td>
+</tr>
+<tr>
+	<td>Nombre Alcalde:</td>
+	<td colspan="3">
+	<input name="alcalde" size="40" value="<?=$objeto->alcalde ?>" type="text">
+	<span class="errormsg" id="error_alcalde">*</span>
+	<?=$validator->show("error_alcalde")?>
+	</td>
+</tr>
+<tr>
+	<td>Personal:</td>
+	<td colspan="3">
+	<textarea name="personal" rows="8" style="width:420px"><?=$objeto->personal ?></textarea>
+	<span class="errormsg" id="error_personal">*</span>
+	<?=$validator->show("error_personal")?>
+	</td>
+</tr>
+<tr>
+	<td>Concejales:</td>
+	<td colspan="3">
+	<textarea name="concejales" rows="6" style="width:420px"><?=$objeto->concejales ?></textarea>
+	<!--<span class="errormsg" id="error_concejales">*</span>
+	<?=$validator->show("error_concejales")?>-->
+	</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

@@ -1,0 +1,84 @@
+<?
+	$q = "SELECT id_cuenta_contable FROM contabilidad.relacion_cc_pp WHERE id_cuenta_contable = $objeto->id";
+	$r = $conn->Execute($q);
+	if (empty($objeto->id) || $r->EOF || $objeto->id_escenario!=$escEnEje)
+		$actualizar = true;
+	else
+		$actualizar = false;
+?>
+
+<form name="form1" method="post">
+	<span style="float:right;padding:2px;cursor:pointer;">
+		<img onclick="close_div();" src="images/close_div.gif" />
+	</span>
+	<table width="100%" border="0">
+		<tr>
+			<td width="20%">Codigo: </td>
+			<td >
+				<input type="text" name="codcta" value="<?=$objeto->codctaAux?>" maxlength="19" onkeydown="return onlyNumbersCI(event)"  size="21" <?=(!$actualizar) ? "readonly":""?> />
+				<input type="hidden" name="id" id="id" value="<?=$objeto->id?>"	/>
+				<span class="errormsg" id="error_codcta">*</span>
+				<?=$validator->show("error_codcta")?>
+			</td>
+		</tr>
+		<tr>
+			<td>Descripci&oacute;n:</td>
+			<td>
+				<input type="text" name="descripcion" size="60" value="<?=$objeto->descripcion?>" />
+				<span class="errormsg" id="error_desc">*</span>
+				<?=$validator->show("error_desc")?>
+			</td>
+		</tr>
+		<!--tr>
+			<td>Escenario:</td>
+			<td>
+				<?=helpers::superComboSQL($conn, 'escenarios', $objeto->id_escenario, '', '', '', '', 'id', 'descripcion', false, '', '', '', (!$actualizar) ? "disabled":"")?>
+				<span class="errormsg" id="error_esc">*</span>
+				<?=$validator->show("error_esc")?>
+			</td>
+		</tr-->
+		<tr>
+			<td>Saldo Inicial: </td>
+			<td>
+				<input type="text" name="saldo_inicial" onkeypress="if (formatoNumero(this, event)){return true;}else{return false;}" style="text-align:right;" value="<?=muestrafloat($objeto->saldo_inicial)?>" />
+				<span class="errormsg" id="error_saldo_inicial">*</span>
+				<?=$validator->show("error_saldo_inicial")?>
+			</td>
+		</tr>
+		<tr>
+			<td>Cuenta Nominal:</td>
+			<td>
+				<input type="radio" name="nominal" id="nominal_S" value="S" <?=($objeto->nominal=='S')? 'checked': ''?> />S&iacute;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="radio" name="nominal" id="nominal_N" value="N" <?=($objeto->nominal=='N')? 'checked': ''?> />No&nbsp;&nbsp;
+				<span class="errormsg" id="error_nominal">*</span>
+				<?=$validator->show("error_nominal")?>
+			</td>
+		</tr>
+		<tr>
+			<td>La Cuenta es de Movimiento:</td>
+			<td>
+				<input type="radio" name="movim" id="movim_S" value="S" <?=($objeto->movim=='S')? 'checked': ''?> <?=(!$actualizar) ? "disabled":""?> />S&iacute;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="radio" name="movim" id="movim_N" value="N" <?=($objeto->movim=='N')? 'checked': ''?> <?=(!$actualizar) ? "disabled":""?> />No&nbsp;&nbsp;
+				<span class="errormsg" id="error_movim">*</span>
+				<?=$validator->show("error_movim")?>
+			</td>
+		</tr>
+		<tr>
+			<td>Naturaleza de la Cuenta:</td>
+			<td>
+				<input type="radio" name="naturaleza" id="naturaleza_D" value="D" <?=($objeto->naturaleza=='D')? 'checked': ''?> />Deudora&nbsp;&nbsp;
+				<input type="radio" name="naturaleza" id="naturaleza_A" value="A" <?=($objeto->naturaleza=='A')? 'checked': ''?> />Acreedora&nbsp;&nbsp;
+				<span class="errormsg" id="error_natu">*</span>
+				<?=$validator->show("error_natu")?>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+				<input name="accion" type="button" value="<?=$boton?>" onclick="$('movim_S').disabled=false;$('movim_N').disabled=false;<?=$validator->validate() ?>" />
+			</td>
+		</tr>
+	</table>
+	<input name="id" type="hidden" value="<?=$objeto->id?>" />
+	<input name="accion" type="hidden" value="<?=$boton?>" /> 
+</form>
+<p class="errormsg">(*) Campo requerido</p>

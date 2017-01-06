@@ -1,0 +1,38 @@
+<?
+session_cache_limiter('private'); // CEPV.070906 permite abrir los reportes pdf en el IE... 
+session_start();
+/*
+ * VARIABLES DE CONFIGURACION:
+ * appRoot: 		Ubicacion fisica de la aplicacion
+ * webRoot: 	Ubicacion HTTP de la aplicacion
+ * DBuser:			Nombre de usuario de la base de datos
+ * DBpass:			Password del usuario de la base de datos
+ * DBname:			Nombre de la base de datos
+ * DBserver:		Nombre del servidor de bases de datos
+ */
+
+// este archivo es necesario ya que contiene las funciones appRoot() y webRoot()
+require("lib/ini.func.php");
+$appRoot = appRoot();
+$webRoot = webRoot();
+
+// Parametros necesarios para conectarse a la BD
+/*$DBuser = "puser";
+$DBpass = "allibcarser";
+$DBserver="192.168.0.1";
+$DBname = "libertador";*/
+
+$DBuser = "puser";
+$DBpass = "123";
+$DBserver="192.168.0.252";  
+$DBname = "libertador";
+
+// Establecemos el encoding por defecto del sistema, debe ser el mismo de la BD
+header("Content-Type: text/html; charset=UTF-8");
+
+// hago la conex a la BD
+include($appRoot . "/lib/conn.php");
+
+// Incluyo las librerias
+include($appRoot . "/lib/core.lib.php");
+?>

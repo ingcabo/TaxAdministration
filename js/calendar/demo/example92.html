@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+
+		<title>Zapatec DHTML Calendar</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<link rel="stylesheet" type="text/css" media="all" href="../themes/winxp.css" title="winxp" >
+		<link href="../doc/css/zpcal.css" rel="stylesheet" type="text/css">
+		<link href="../doc/css/template.css" rel="stylesheet" type="text/css">
+		<link rel="SHORTCUT ICON" href="http://www.zapatec.com/website/main/favicon.ico">
+
+
+		<!-- import the calendar script -->
+		<script type="text/javascript" src="../src/utils.js"></script>
+		<script type="text/javascript" src="../src/calendar.js"></script>
+
+		<!-- import the language module -->
+		<script type="text/javascript" src="../lang/calendar-en.js"></script>
+
+		<!-- other languages might be available in the lang directory; please check
+		your distribution archive. -->
+
+		<!-- import the calendar setup script -->
+		<script type="text/javascript" src="../src/calendar-setup.js"></script>
+	</head>
+	<body>
+		<table class='zpStandard' width='800'> 
+			<tr>
+				<td>
+					<div class="topMenuHeader">
+						<div class="logo">
+							<a href='http://www.zapatec.com'><img src='../doc/images/logoNew.gif' alt='Zapatec logo' border='0'></a>
+						</div>
+						<div class="btn1">
+							<a href="https://www.zapatec.com/zadmin/buy.jsp"><img src="../doc/images/buttonBuy.png" alt='My Account' border="0"></a>                                                                                                                                                                 </div>
+						<div class="btn1">
+							<a href="http://www.zapatec.com/website/main/pricing.jsp"><img src="../doc/images/buttonPricing.png" alt='My Account' border="0"></a>
+						</div>
+					</div>
+
+				</div>
+
+			<a href='example91.html' style='float:left; margin-left:2em; margin-top:.5em;'> <img border='0' src='previous.gif' alt='previous Javascript Calendar Example'></a>
+			<a href='example93.html' style='float:right; margin-right:2em; margin-top:.5em;'><img border='0' src='next.gif' alt='previous Javascript Calendar Example'></a>
+<div class='zpCalSubheader' style='text-align:center'> Limit time as well as day choice</div>
+<div class='zpCalDemoText'>
+	<ol>
+		<li> Click on the '...' button to display the calendar. Notice that you can choose the time at the bottom of the calendar.</li>
+		<li> You cannot choose Sunday</li>
+		<li> Choose any Friday of the month. </li>
+		<li> Notice that on Fridays you cannot choose times less than 08:00 and greater then 21:45</li>
+		<li> On Saturday you can only choose times between 11:00 and 17:00</li>
+		<li> Choose any day of the month except Friday, Saturday or Sunday.</li>
+		<li> Notice that you can choose any time you want. </li>
+		<li> Choose 23:00, and change the day to a Satuday. Notice that the time
+		automatically scrolls past 11:00 since that's the first valid time for that
+		day.</li>
+	</ol>
+</div>
+<b>Date #9:</b> 
+<input type="text" name="date9" id="sel9" size="30">
+<input type="reset" value=" ... " id='button9' onclick="setActiveStyleSheet(this, 'win2k-1');">
+<script type="text/javascript">
+	<!--  to hide script contents from old browsers
+	
+	function timeOutOfRange(date, year, month, day, hours, minutes) {
+		if (date.getDay() == 0) { //No Sunday
+			return true;
+		}
+		if (typeof(hours) != "undefined") {
+			if (date.getDay() == 6) {
+				//only allow 11AM to 5PM on Saturday
+				if (hours < 17 && hours >= 11) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+
+			//on saturdays allow
+			if (date.getDay() == 5) {
+				//only allow 8AM to 9:45PM on Friday
+				if (hours > 21 || hours < 8) {
+					return true; //not within the hours
+				}
+
+				if (hours != 21) {
+					return false; //within the hours
+				}
+
+				//hours = 21
+				if (minutes <= 45) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+
+		}
+		return false;
+	}
+
+	Zapatec.Calendar.setup({
+		inputField     :    "sel9",     // id of the input field
+		singleClick    :     false,     // require two clicks to submit
+		ifFormat       :    '%a, %b %e, %Y [%H:%M]',     // format of the input field
+		ampm           :     false,
+		showsTime      :     true,     // show time as well as date
+		button         :    "button9",  // trigger button 
+		dateStatusFunc :    timeOutOfRange,
+		floating			 : 	  true
+		});
+	// end hiding contents from old browsers  -->
+</script>
+<noscript>
+	<br/>
+	This page uses a <a href='http://www.zapatec.com/website/main/products/prod1/'> Javascript Calendar </a>, but
+	your browser does not support Javascript. 
+	<br/>
+	Either enable Javascript in your Browser or upgrade to
+	a newer version.
+</noscript>
+
+	<div class="footer" style='text-align:center; margin-top:2em'>
+		<br/>
+		&copy; 2004 <strong> <a href='http://www.zapatec.com/'>Zapatec, Inc.</a> </strong>
+	</div>
+			</td>
+		</tr>
+	</table>
+
+</body>
+</html>

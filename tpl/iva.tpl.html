@@ -1,0 +1,38 @@
+<form name="form1" method="post">
+<table border="0">
+  <tr>
+    <td width="120">Partida Presupuestaria:</td>
+    <td>
+	<? $pp = new partidas_presupuestarias;
+		$arr = $pp->get_all($conn);
+	?>
+	<?=helpers::superComboObj($arr, $objeto->cod_partida,'idpartida', 'idpartida','width:350px', '', 'id', 'descripcion', true, 80)?>
+	<span class="errormsg" id="error_partida">*</span>
+		<?=$validator->show("error_partida")?>   </td>
+  </tr>
+  <tr>
+    <td>Iva</td>
+    <td>
+		<input type="text" id="porc_iva" name="porc_iva" value="<?=muestrafloat($objeto->porc_iva)?>" onkeypress="return (formatoNumero(this, event));" style="text-align:right" />
+      <span class="errormsg" id="error_iva">*</span>
+	<?=$validator->show("error_iva")?>  
+  </tr>
+  <tr>
+    <td>a&ntilde;o</td>
+    <td>
+		<input type="text" name="anio" id="anio" value="<?=($objeto->anio)?>" maxlength="4" onkeypress="return (onlyNumbersCI(event));" />
+      <span class="errormsg" id="error_anio">*</span>
+	<?=$validator->show("error_anio")?>  
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td></td>
+  </tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

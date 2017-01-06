@@ -1,0 +1,273 @@
+<?	$readonly= !empty($objeto->nrodoc) ? 'readonly' : ''; ?>
+<?	$disabled= !empty($objeto->nrodoc) ? 'disabled' : ''; ?>
+<?	$disabledStatus= (!empty($objeto->nrodoc) && $objeto->status==1) ? 'disabled' : ''; ?>
+<?	$readonlyObser= (!empty($objeto->nrodoc) && $objeto->status==1) ? 'readonly' : ''; ?>
+
+<form name="form1" method="post">
+	<table style="text-align: left; width: 100%;" border="0" cellpadding="1" cellspacing="1">
+		<tbody>
+			<tr>
+			<td>
+				Fecha: 
+			</td>
+			<td>
+				<input style="width:120px"  type="text" name="fecha" id="fecha" onchange="validafecha(this);" value="<?=muestrafecha($objeto->fecha)?>"/>
+				<a href="#" id="boton_fecha" onclick="return false;">
+					<img border="0" alt="fecha" src="images/calendarA.png" width="20" height="20" />
+				</a>  
+			<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecha",
+					button            : "boton_fecha",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			</script>
+			</td>
+			</tr>
+			<tr>
+				<td width="130">Banco</td>
+				<td width="595">
+					
+					<?	$bn = new banco;
+						$oBancos = $bn->get_all($conn);
+						$div = "'divnrocuenta'";
+						echo helpers::superComboObj($oBancos, $objeto->id_banco, 'banco', 'banco','width:150px',"traeCuentasBancarias(this.value,$div,'','')",'id','descripcion', false, 20,$disabled);
+						
+					?>
+					<? if(!empty($objeto->nrodoc)){ 
+							echo "<script type='text/javascript'>traeCuentasBancarias($objeto->id_banco, $div, $objeto->id_nro_cuenta,'$disabled');</script>";
+					 } ?>				
+				</td>
+			</tr>
+			<tr>
+				<td>Nro. de Cuenta</td>
+				<td>
+					<table width="100%" cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td width="28%">
+							<div id="divnrocuenta" style="width:155px">
+								<select name="nro_cuenta" id="nro_cuenta" style="width:150px">
+									<option value="0">Seleccione</option>
+								</select>
+							</div>						</td>
+						<td width="72%">
+							<div id="cargando_cuentas" style="display:none; font-size:11px"><img alt="Cargando" src="images/loading2.gif" />&nbsp;Cargando N&uacute;meros de Cuentas del Banco</div></td>
+					</tr>
+					</table>				</td>
+			</tr>
+				<? if(!empty($objeto->nrodoc)){ ?>
+					<tr>
+						<td>
+							Status:
+						</td>
+						<td>
+							<select name="status" id="status" style="width:150px" <?=$disabledStatus?> >
+								<option value="0" >Emitido</option>
+								<option value="1" <?=$objeto->status==1 ? 'selected' : '' ?> >Anulado</option>
+							</select>
+						</td>
+					</tr>
+				<? } ?>
+			<tr>
+				<td colspan="2" height="10"><hr /></td>			
+			</tr>
+			<tr>
+				<td colspan="2">
+					<!--<div id="ordpagDiv" style="display:inline">-->
+					<table cellpadding="0" cellspacing="0" border="0" width="100%">
+						<tr>
+							<td>Nro. Otros Pagos	</td>
+							<td>
+								<input type="text" name="nroOtrosPagos" id="nroOtrosPagos" value="<?=$objeto->nro_otros_pagos ? $objeto->nro_otros_pagos : getCorrelativo($conn, 'nro_otros_pagos', 'finanzas.otros_pagos', 'id')?>" <?=$readonly?> />
+								<span class="errormsg" id="error_nroOtrosPagos">*</span>
+								<?=$validator->show("error_nroOtrosPagos")?>
+							</td>
+						</tr>	
+						<tr>	
+							<td>Seleccione	Proveedor:	</td>
+							<td>
+								<input type="text" name="nombrepro"  id="nombrepro" value="<?=$objeto->rif_proveedor?>"  readonly  />
+								<input type="text" name="nombre" id="nombre" value="<?=$objeto->proveedor?>" class="proveedores" readonly  style="width:300px" />
+								<input type="hidden" name="id_proveedor" value="<?=$objeto->id_proveedor?>" id="id_proveedor"  />													
+								<span class="errormsg" id="error_prov">*</span>
+								<?=$validator->show("error_prov")?>	
+								<? if(empty($objeto->nrodoc)){ ?>
+								<span onclick="mostrar_ventana();" id="buscadorpro" style="cursor:pointer;"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+								<? } ?>
+							</td>
+						</tr>
+						<tr>
+							<td>Beneficiario:</td>
+							<td><input type="text" name="beneficiario" id="beneficiario" value="<?=$objeto->beneficiario?>" style="width:300px" /> 
+								<span class="errormsg" id="error_benef">*</span>
+								<?=$validator->show("error_benef")?>	
+							</td>
+						</tr>	
+						<? if(empty($objeto->nrodoc)){ ?>
+						<tr>	
+							<td>Orden de Pago</td>
+							<td>
+								<input type="text" id="ordenes_pago" name="ordenes_pago" readonly />
+								<span onclick="mostrar();" style="cursor:pointer"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+							</td>
+						</tr>	
+						<? } ?>
+					</table>
+					<!--</div>-->
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><hr /></td>
+			</tr>
+			<tr>
+				<td >Ordenes de Pago</td>
+				<? if(empty($objeto->nrodoc)){ ?>
+				<td align="right"><input type="button" name="agregar" value="Eliminar"  onclick="Eliminar();" /></td> 
+				<? } ?>
+			</tr>
+			<tr>
+				<td colspan="2"><hr /></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="gridboxsp" style=" width:728px; height:150px" class="gridbox" align="center"></div>				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="hidden" name="contenedor_ordenes" id="contenedor_ordenes" /></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tr>
+							<td align="right" width="75%">Total Monto:&nbsp;</td>
+							<td><input style="width:160px; text-align:right;"  type="text" name="total_monto" id="total_monto" value="0" readonly /></td>
+						</tr> 
+					</table>				
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><hr /></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table border="0" cellpadding="0" cellspacing="0" width="100%">
+						<tr>
+							<td >Nro Control</td>
+							<td ><input style="width:200px;"  type="text" name="nro_control" id="nro_control" value="<?=$objeto->nro_control?>" /></td>
+							<td align="right" >Nro Cuenta Destino:</td>
+							<td align="right" ><input style="width:200px;" type="text" name="cuentaDestino" id="cuentaDestino" value="<?=$objeto->cuentaDestino?>" />
+								 <span class="errormsg" id="error_ctaDestino">*</span>
+								<?=$validator->show("error_ctaDestino")?>	
+							</td>
+						</tr> 
+					</table>				
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" ><br></td>
+			</tr>
+			<tr>
+				<td colspan="2" >Concepto</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<textarea name="descripcion" id="descripcion" cols="70" rows="5"><?=$objeto->descripcion?></textarea>
+					<span class="errormsg" id="error_descripcion">*</span>
+					<?=$validator->show("error_descripcion")?>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" >Motivo  de Anulacion</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<textarea name="observacion" id="observacion" cols="70" <?=$readonlyObser?> rows="5"><?=$objeto->observacion?></textarea>
+					<span class="errormsg" id="error_observacion">*</span>
+					<?=$validator->show("error_observacion")?>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="right">&nbsp;</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="right">
+				<input type="hidden" name="nrodoc" value="<?= $objeto->nrodoc?>" />
+				<input type="hidden" name="accion" value="<?=empty($objeto->nrodoc) ? 'Guardar' : 'Actualizar'?>" />
+				<? if($objeto->status!=1 AND $objeto->cerrado != 'S'){ ?>
+					<input type="button" name="boton" onclick="Guardar();" value="<?=empty($objeto->nrodoc) ? 'Guardar' : 'Actualizar'?>" /></td>
+				<? } ?>
+			</tr>
+		</tbody>
+	</table>
+</form>
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+	<img onclick="close_div();" src="images/close_div.gif" />
+</div>
+<script type="text/javascript">
+buildGridSP();
+cargaGridSP();
+function buildGridSP(){
+	//set grid parameters
+	mygridsp = new dhtmlXGridObject('gridboxsp');
+	mygridsp.selMultiRows = true;
+	mygridsp.setImagePath("js/grid/imgs/");
+	mygridsp.setHeader("Orden de Pago,Causado,Pagado,Monto por Pagar, Monto Pago");
+	mygridsp.setInitWidths("145,145,145,145,140");
+	mygridsp.setColAlign("center,center,center,center,center");
+	<? if(empty($objeto->nrodoc)){ ?>
+	mygridsp.setColTypes("ro,ro,ro,ro,ed");
+	<? }else{ ?>
+	mygridsp.setColTypes("ro,ro,ro,ro,ro");
+	<? } ?>
+	mygridsp.setColSorting("str,str,str,str,str");
+	mygridsp.setColumnColor("white,white,white,white,white");
+	mygridsp.rowsBufferOutSize = 0;
+	mygridsp.setMultiLine(false);
+	mygridsp.selmultirows="true";
+	mygridsp.delim = ";";
+	mygridsp.setOnEditCellHandler(validarMonto);
+	//INICIA GRID//
+	mygridsp.init();
+}
+function validarMonto(stage,rowId,cellInd){
+	if(!("<?=$objeto->id?>")){
+		if(stage==2){
+			if(cellInd=='4'){
+				if(usaFloat(mygridsp.cells(rowId,'4').getValue())>=usaFloat(mygridsp.cells(rowId,'3').getValue())){
+					alert("El monto no puede ser mayor que el monto a pagar");
+					mygridsp.cells(rowId,'4').setValue(mygridsp.cells(rowId,'3').getValue());
+				}
+				sumaTotal();
+			}
+		}
+	}
+}
+function cargaGridSP(){
+var JsonAux;
+	mygridsp.clearSelection();
+	mygridsp.clearAll();
+	if("<?=$objeto->id?>"){
+		if('<?=$objeto->json?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->json?>' + ')');
+			
+			for(ifac=0;ifac<Relaciones.length;ifac++){
+				mygridsp.addRow(Relaciones[ifac]['nroref'],Relaciones[ifac]['nroref']+";"+muestraFloat(parseFloat(Relaciones[ifac]['montopagar'])+parseFloat(Relaciones[ifac]['montopagado']))+";"+muestraFloat(Relaciones[ifac]['montopagado'])+";"+muestraFloat(Relaciones[ifac]['montopagar'])+";"+muestraFloat(Relaciones[ifac]['monto']));
+			}
+			sumaTotal();
+		}
+	}
+}
+
+
+</script>

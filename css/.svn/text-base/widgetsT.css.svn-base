@@ -1,0 +1,89 @@
+/*Documento CSS */
+
+option {}
+
+select {
+	color: #666666;
+	font-family: verdana;
+	font-size: 10px;
+	border:1px solid #27226F;
+}
+
+input {
+	color: #666666;
+	font-family: verdana;
+	font-size: 10px;
+	border:1px solid #27226F;
+}
+
+textarea {
+	color: #666666;
+	font-family: verdana;
+	font-size: 10px;
+	border:1px solid #27226F;
+}
+
+div#formulario{
+	border: #27226F 1px solid;
+	padding:10px;
+	margin-top:10px;
+
+	margin-left: 5px; 
+/*	margin-right: auto; */
+	width: 750px;
+	font-size:10px;
+	font-family : Arial, Helvetica, sans-serif;
+	position: relative;
+}
+
+div#formulario td{
+	font-size:10px;
+	font-family : Arial, Helvetica, sans-serif;
+}
+
+fieldset#buscador{
+	margin-left: 5px; 
+/*	margin-right: auto; */
+	width: 754px;
+	position: relative;
+	border:1px solid #27226F;
+}
+
+.campoForm {
+	border:1px solid #27226F;
+	padding-left:5px;
+	background-color: #ffffff;
+	color: black;
+	font-weight: bold;
+}
+
+.campoFecha {
+	width: 80px;
+}
+
+.textDesc {
+	width: 300px;
+}
+
+.nrodoc {
+	width: 110px;
+}
+
+.iva {
+	width: 30px;
+	text-align: center;
+}
+
+.monto{
+	width: 110px;
+	text-align: right;
+}
+
+.minimonto{
+	width: 85px;
+	text-align: right;
+}
+
+.nrofac {
+	width: 70px;
+}

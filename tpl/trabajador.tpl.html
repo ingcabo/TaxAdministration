@@ -1,0 +1,347 @@
+<form name="form1" method="post">
+<table width="700" border="0">
+	<tr>
+		<td colspan="4"><span class="titulo">Datos Personales</span></td>
+	</tr>
+	<tr>
+		<td width="100">Codigo:</td>
+		<td ><input type="text" name="codigo" value="<?=$objeto->int_cod ? $objeto->tra_cod : getCorrelativo($conn, 'tra_cod', 'rrhh.trabajador', 'int_cod')?>">
+		<span class="errormsg" id="error_codigo">*</span>
+		<?=$validator->show("error_codigo")?>
+		</td>
+		<td >Vacante: <input type="checkbox" name="vacante" id="vacante" <?=$objeto->tra_vac==1 ? 'checked' : ''  ?> value="1"></td>
+		<td >Contratado (Otro): <input type="checkbox" name="contratado" id="contratado" onclick="oculta();"<?=$objeto->tra_tipo==1 ? 'checked' : ''  ?> value="1"></td>
+	</tr>
+	<tr>
+		<td>Nombre:</td>
+		<td >
+			<input type="text" name="nombre" value="<?=$objeto->tra_nom?>">
+			<span class="errormsg" id="error_nombre">*</span>
+			<?=$validator->show("error_nombre")?>
+		</td>
+		<td >Apellido:</td>
+		<td >	
+			<input type="text" name="apellido" value="<?=$objeto->tra_ape?>">
+			<span class="errormsg" id="error_apellido">*</span>
+			<?=$validator->show("error_apellido")?>
+		</td>
+	</tr>
+	<tr>
+		<td>Cedula:</td>
+		<td >
+			<SELECT NAME="nacionalidad" id="nacionalidad">
+				<OPTION <?=($objeto->tra_nac=='0') ? "selected" : "" ?> value='0'>V
+				<OPTION <?=($objeto->tra_nac=='1') ? "selected" : "" ?> value='1'>E
+			</SELECT>&nbsp;
+			<input type="text" name="cedula" value="<?=$objeto->tra_ced?>" size="15">
+			<span class="errormsg" id="error_cedula">*</span>
+			<?=$validator->show("error_cedula")?>
+		</td>
+		<td>Genero:</td>
+		<td >
+			<SELECT NAME="genero" id="genero">
+				<OPTION <?=($objeto->tra_sex=='0') ? "selected" : "" ?> value='0'>Masculino
+				<OPTION <?=($objeto->tra_sex=='1') ? "selected" : "" ?> value='1'>Femenino
+			</SELECT>
+		</td>
+	</tr>
+	<tr>
+		<td>Fecha de Nacimiento:</td>
+		<td >
+			<table>
+				<tr>
+					<td><input value="<?=empty($objeto->tra_fec_nac) ? date("d/m/Y") : muestrafecha($objeto->tra_fec_nac)?>" name="fn" id="fn"  type="text" style="width:80px" /></td> 
+					<td > 
+						<a href="#" id="boton_fecha_nacimiento" onclick="return false;"><img border="0" src="images/calendarA.png" width="20" height="20" /></a>  
+						<script type="text/javascript">
+							new Zapatec.Calendar.setup({
+								firstDay          : 1,
+								weekNumbers       : true,
+								showOthers        : false,
+								showsTime         : false,
+								timeFormat        : "24",
+								step              : 2,
+								range             : [1900.01, 2999.12],
+								electric          : false,
+								singleClick       : true,
+								inputField        : "fn",
+								button            : "boton_fecha_nacimiento",
+								ifFormat          : "%d/%m/%Y",
+								daFormat          : "%Y/%m/%d",
+								align             : "Br"
+							});
+						</script>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td>Telefono:</td>
+		<td ><input type="text" name="telefono" value="<?=$objeto->tra_telf?>"></td>
+	</tr>
+	<tr>
+		<td>Estado:</td>
+		<td>
+			<?=helpers::superCombo($conn, 'estado', $objeto->id_estado, 'estado','estado','', 'traeMunicipios(this.value,0);')?>
+		</td>
+	</tr>
+	<tr>
+		<td>Municipio:</td>
+		<td>
+			<? if(empty($objeto->id_municipio)){ ?>
+				<div id="divcombomunicipios" style="width:100%" align="left">
+					<select style="width:95%">
+						<option>Seleccione</option>
+					</select>
+				</div>
+			<? } else { ?>
+				<?=helpers::superCombo($conn, 'SELECT * FROM puser.municipios WHERE id_estado = '.$objeto->id_estado, $objeto->id_municipio, 'municipios','municipios','width:120px', 'traeParroquias(this.value,0);')?>
+			<? } ?>
+		</td>
+	 </tr>
+	<tr>
+		<td>Parroquias:</td>
+		<td>
+			<? if(empty($objeto->id_parroquia)){ ?>
+				<div id="divcomboparroquia" style="width:100%" align="left">
+					<select style="width:95%">
+						<option>Seleccione</option>
+					</select>
+				</div>
+			<? } else { ?>
+				<?=helpers::superCombo($conn, 'SELECT * FROM puser.parroquias WHERE id_municipio = '.$objeto->id_municipio, $objeto->id_parroquia, 'parroquias','parroquias','width:120px', 'traeTerritorios(this.value,0);')?>
+			<? } ?>
+		</td>
+	</tr>
+	<tr>
+		<td>Territorios:</td>
+		<td>
+			<? if(empty($objeto->id_territorio)){ ?>
+				<div id="divcomboterritorio" style="width:100%" align="left">
+					<select style="width:95%">
+						<option>Seleccione</option>
+					</select>
+				</div>
+			<? } else { ?>
+				<?=helpers::superCombo($conn, 'SELECT * FROM puser.territorios WHERE id_parroquia = '.$objeto->id_parroquia, $objeto->id_territorio, 'territorios','territorios','width:120px', '')?>
+			<? } ?>
+		</td>
+	</tr>
+	<tr>
+		<td >Direccion:</td>
+		<td colspan="3"><input type="text" name="direccion" style="width:415px" value="<?=$objeto->tra_dir?>"></td>
+	</tr>
+	<tr>
+		<td colspan="4"><hr /><span class="titulo">Datos de la Empresa</span></td>
+	</tr>
+	<tr>
+		<td><div id="cargox" style="display:inline">Cargo:</div><div id="funcionx" style="display:none">Funci&oacute;n:</div></td>
+		<td colspan="3" ><div id="cargos" style="display:inline"><?=helpers::combonomina($conn, 'rrhh.cargo', $objeto->car_cod,'width: 550px','int_cod','cargo','int_cod','car_nom','','','SELECT * FROM rrhh.cargo WHERE car_estatus = 0 ORDER BY int_cod','TraeSueldo(this.options[this.selectedIndex].value,\''.$boton.'\',false,0)')?></div>
+		<div id="funcions" style="display:none"><?=helpers::combonomina($conn, 'rrhh.funciones', $objeto->fun_cod,'width: 550px','int_cod','funcion','int_cod','fun_nom','','','SELECT * FROM rrhh.funciones WHERE fun_estatus = 0 ORDER BY int_cod','TraeSueldo(this.options[this.selectedIndex].value,\''.$boton.'\',false,1)')?></div></td>
+	</tr>
+	<tr>
+		<td >Nomina:</td>
+		<td colspan="3" ><?=helpers::combonomina($conn, '', $objeto->cont_cod,'','','Contrato','int_cod','cont_nom','Contrato','','SELECT * FROM rrhh.contrato WHERE emp_cod='.$_SESSION['EmpresaL'].' AND cont_estatus = 0 ORDER BY int_cod','')?></td>
+	</tr>
+	<tr>
+		<td >Division:</td>
+		<td colspan="3" ><?=helpers::combonomina($conn, '', $objeto->div_cod,'','','division','int_cod','div_nom','division','','SELECT int_cod,div_nom FROM rrhh.division WHERE emp_cod='.$_SESSION['EmpresaL'].' ORDER BY div_nom','ComboDepartamento(this.options[this.selectedIndex].value)')?></td>
+	</tr>
+	<tr>
+		<td >Departamento:</td>
+		<td colspan="3" ><?=helpers::combonomina($conn, '', $objeto->dep_cod,'','','departamento','int_cod','dep_nom','departamento','','SELECT int_cod,dep_nom FROM rrhh.departamento WHERE div_cod='.(!empty($objeto->div_cod) ? $objeto->div_cod : 0).' ORDER BY int_cod','')?></td>
+	</tr>
+	<tr>
+		<td>Tipo de Pago:</td>
+		<td >
+			<SELECT NAME="tipopago" id="tipopago" >
+				<OPTION <?=($objeto->tra_tip_pag=='0') ? "selected" : "" ?>  value='0'>Efectivo
+				<OPTION <?=($objeto->tra_tip_pag=='1') ? "selected" : "" ?>  value='1'>Cheque
+				<OPTION <?=($objeto->tra_tip_pag=='2') ? "selected" : "" ?> value='2'>Deposito
+			</SELECT>
+		</td>
+		<td>Banco:</td>
+		<td ><?=helpers::combonomina($conn, 'public.banco', $objeto->ban_cod,'','id','banco','id','descripcion','banco','','','','1')?></td>
+	</tr>
+		<td>Tipo de Cuenta:</td>
+		<td >
+			<SELECT NAME="tipocta" id="tipocta">
+				<OPTION <?=($objeto->tra_tipo_cta=='0') ? "selected" : "" ?> value='0'>Corriente
+				<OPTION <?=($objeto->tra_tipo_cta=='1') ? "selected" : "" ?> value='1'>De Ahorro
+			</SELECT>
+		</td>
+		<td>Nro de Cuenta:</td>
+		<td ><input type="text" name="ncuenta" id="ncuenta" value="<?=$objeto->tra_num_cta?>"></td>
+	</tr>
+	</tr>
+		<td>Estatus:</td>
+		<td >
+			<SELECT NAME="estatus" id="estatus" onChange="ActivarFE(this.options[this.selectedIndex].value)" >
+				<OPTION <?=($objeto->tra_estatus=='0') ? "selected" : "" ?> value='0'>Activo
+				<OPTION <?=($objeto->tra_estatus=='1') ? "selected" : "" ?> value='1'>Vacaciones
+				<OPTION <?=($objeto->tra_estatus=='2') ? "selected" : "" ?> value='2'>Reposo
+				<OPTION <?=($objeto->tra_estatus=='3') ? "selected" : "" ?> value='3'>Por Egresar
+				<OPTION <?=($objeto->tra_estatus=='4') ? "selected" : "" ?> value='4'>Egresado
+				<OPTION <?=($objeto->tra_estatus=='5') ? "selected" : "" ?> value='5'>Inactivo
+			</SELECT>
+		</td>
+		<td><div id="salario" style="display:inline">Sueldo Mensual:</div><div id="salariox" style="display:none">Monto:</div></td>
+		<td ><div id="imput" style="display:inline">
+			<input type="text" name="sueldo" id="sueldo" value="<?=empty($objeto->tra_sueldo) ? '0,00' : $objeto->tra_sueldo?>" ></div>
+			<div id="imputx" style="display:none">
+			<input type="text" name="sueldox" id="sueldox" value="<?=empty($objeto->tra_sueldo) ? '0,00' : $objeto->tra_sueldo?>" ></div>
+			<span class="errormsg" id="error_sueldo">*</span>
+			<?=$validator->show("error_sueldo")?>
+		</td>
+	</tr>
+	<tr>
+		<td >Fecha de Ingreso:</td>
+		<td >
+			<table>
+				<tr>
+					<td><input value="<?=empty($objeto->tra_fec_ing) ? date("d/m/Y") : muestrafecha($objeto->tra_fec_ing)?>" name="fi" id="fi" type="text" style="width:80px" /></td>
+					<td >
+						<a href="#" id="boton_fecha_ingreso" onclick="return false;"><img border="0" src="images/calendarA.png" width="20" height="20" /></a>  
+						<script type="text/javascript">
+							new Zapatec.Calendar.setup({
+								firstDay          : 1,
+								weekNumbers       : true,
+								showOthers        : false,
+								showsTime         : false,
+								timeFormat        : "24",
+								step              : 2,
+								range             : [1900.01, 2999.12],
+								electric          : false,
+								singleClick       : true,
+								inputField        : "fi",
+								button            : "boton_fecha_ingreso",
+								ifFormat          : "%d/%m/%Y",
+								daFormat          : "%Y/%m/%d",
+								align             : "Br"
+							});
+						</script>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td >Fecha de Egreso:</td>
+		<td >
+			<table>
+				<tr>
+					<td><input disabled value="<?=empty($objeto->tra_fec_egr) ? "" : muestrafecha($objeto->tra_fec_egr)?>" name="fe" id="fe" type="text" style="width:80px" /></td>
+					<td >
+						<a href="#" id="boton_fecha_egreso" onclick="return false;"><img border="0" src="images/calendarA.png" width="20" height="20" /></a>  
+						<script type="text/javascript">
+							new Zapatec.Calendar.setup({
+								firstDay          : 1,
+								weekNumbers       : true,
+								showOthers        : false,
+								showsTime         : false,
+								timeFormat        : "24",
+								step              : 2,
+								range             : [1900.01, 2999.12],
+								electric          : false,
+								singleClick       : true,
+								inputField        : "fe",
+								button            : "boton_fecha_egreso",
+								ifFormat          : "%d/%m/%Y",
+								daFormat          : "%Y/%m/%d",
+								align             : "Br"
+							});
+						</script>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4"><hr /><span class="titulo">Carga Familiar</span></td>
+	</tr>
+	<tr>
+		<td align="left" colspan="2"  ><input type="button" value="Agregar" onClick="Agregar()"></td>
+		<td align="right" colspan="2"  ><input type="button" value="Eliminar" onClick="Eliminar()"></td>
+	</tr>
+	<tr>
+		<td colspan="4"><div id="gridbox" width="700" height="100" class="gridbox"></div></td>
+	</tr>
+	<tr>
+		<td align="right" colspan="4"><br /><input style="float:right"  name="accion" type="button" value="<?=$boton?>"  onclick="Guardar(<?=empty($objeto->tra_estatus)? '-1': $objeto->tra_estatus?>,<?=empty($objeto->car_cod)? '-1':$objeto->car_cod?>, <?=empty($objeto->dep_cod)? '-1':$objeto->dep_cod?>, <?=empty($objeto->tra_sueldo)? '-1':guardafloat($objeto->tra_sueldo)?>)" /></td>
+	</tr>
+</table>
+<input name="int_cod" type="hidden" value="<?=$objeto->int_cod?>" />
+<input name="familiar" id="familiar" type="hidden" />
+<input name="crearVacante" id="crearVacante" type="hidden" />
+<input name="crearVacanteAux" id="crearVacanteAux" type="hidden" />
+<input name="departamentoAux" id="departamentoAux" type="hidden" />
+<input name="sueldoAux" id="sueldoAux" type="hidden" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<script type="text/javascript">
+buildGrid();
+CargarGrid();
+oculta();
+TraeSueldo($('cargo').options[$('cargo').selectedIndex].value,'<?=$boton?>',true,0);
+TraeSueldo($('cargo').options[$('cargo').selectedIndex].value,'<?=$boton?>',true,1);
+<? if($objeto->tra_estatus!=3){ ?>
+		Element.hide('boton_fecha_egreso');
+<? } ?>
+<? if(empty($objeto->dep_cod)){ ?>
+if($('division').selectedIndex!=-1){
+	ComboDepartamento($('division').options[$('division').selectedIndex].value);
+}
+<? } ?>
+
+function buildGrid(){
+	//set grid parameters
+	mygrid = new dhtmlXGridObject('gridbox');
+	mygrid.selMultiRows = true;
+	mygrid.setImagePath("js/grid/imgs/");
+	mygrid.setHeader("Relacion,Nombre,Apellido,Fecha N,Genero");
+	mygrid.setInitWidths("100,200,200,100,100");
+	mygrid.setColAlign("center,left,left,center,center");
+	mygrid.setColTypes("coro,ed,ed,ed,coro");
+	mygrid.setColSorting("int,str,str,date,int");
+	mygrid.setColumnColor("white,white,white,white,white");
+	mygrid.rowsBufferOutSize = 0;
+	mygrid.setMultiLine(false);
+	mygrid.selmultirows="true";
+	mygrid.getCombo(0).put("0","Hijo");
+	mygrid.getCombo(0).put("1","Conyuge");
+	mygrid.getCombo(0).put("2","Madre");
+	mygrid.getCombo(0).put("3","Padre");
+	mygrid.getCombo(0).put("4","Hermano");
+	mygrid.getCombo(0).put("5","Tio");
+	mygrid.getCombo(0).put("6","Sobrino");
+	mygrid.getCombo(0).put("7","Abuelo");
+	mygrid.getCombo(4).put("0","Masculino");
+	mygrid.getCombo(4).put("1","Femenino");
+	mygrid.setOnEditCellHandler(ValidarFecha);
+	
+	//start grid
+	mygrid.init();
+
+} 
+function ValidarFecha(stage,rowId,cellInd){
+	if(stage==2 && cellInd==3){
+		if(!validarFecha(mygrid.cells(rowId,'3').getValue())){
+			alert("Fecha de nacimiendo invalida, revise");  
+		}
+	}
+}
+function CargarGrid(){
+var JsonAux;
+	mygrid.clearSelection();
+	mygrid.clearAll();
+	if("<?=$objeto->int_cod?>"){ 
+		if('<?=$objeto->familiar?>'){
+			var Familiar = eval( '(' + '<?=$objeto->familiar?>' + ')');
+			for(i=0;i<Familiar.length;i++){
+				mygrid.addRow(i,Familiar[i][0]+","+Familiar[i][1]+","+Familiar[i][2]+","+Familiar[i][3]+","+Familiar[i][4],i);
+			}
+		}
+	}
+}
+</script>
+

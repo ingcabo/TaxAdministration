@@ -1,0 +1,72 @@
+<form name="form1" method="post">
+<table>
+<!--tr>
+	<td>Escenario:</td>
+	<td colspan="3">
+	<?=helpers::superCombo($conn, 
+									'escenarios', 
+									$objeto->id_escenario, 
+									'escenarios', 
+									'id_escenario', 
+									'', 
+									'traeCCDesdeUpdater(this.value), traeParPreDesdeUpdater(this.value)',
+									'id',
+									'descripcion',
+									'descripcion') ?>
+		<span class="errormsg" id="error_esc">*</span>
+		<?=$validator->show("error_esc")?>
+	</td>
+</tr-->
+<tr>
+	<td>Cuentas Contables:</td>
+	<td colspan="3">
+	<table cellpadding="0" cellspacing="0">
+		<tr>
+		<td>
+			<input type="text" name="txtCuentaContable" id="txtCuentaContable" style="width:350px" value="<?=$objeto->cuenta_contable->descripcion?>" />
+            <input type="hidden" name="plan_cuenta" id="plan_cuenta" value="<?=$objeto->id_cuenta_contable?>" />
+            <span onclick="traeCuentasContables();" style="cursor:pointer; " id="bcuentas">
+                <img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar
+            </span> 
+            
+            
+            
+        </td>    
+		<td>
+			&nbsp;<span class="errormsg" id="error_plan_cuenta">*</span>
+			&nbsp;<?=$validator->show("error_plan_cuenta")?>
+		</td>
+		</tr>
+	</table>
+	</td>
+</tr>
+<tr>
+	<td>Partida Presupuestaria:</td>
+	<td colspan="3">
+	<table cellpadding="0" cellspacing="0">
+		<tr>
+			<td>
+				<input type="text" name="txtpartidas_presupuestarias" id="txtpartidas_presupuestarias" style="width:350px " value="<?=$objeto->partida_presupuestaria->descripcion?>" />
+					<input type="hidden" name="partidas_presupuestarias" id="partidas_presupuestarias" value="<?=$objeto->id_partida_presupuestaria?>" />
+                    <input type="hidden" name="categorias_programaticas" id="categorias_programaticas" />
+					<span onclick="traePartidasPresupuestarias();" style="cursor:pointer" id="bpartidas">
+						<img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar
+					</span>
+			</td>
+			<td>	
+				&nbsp;<span class="errormsg" id="error_parpre">*</span>
+				&nbsp;<?=$validator->show("error_parpre")?>
+			</td>
+		</tr>
+	</table>
+	<td>
+</tr>
+</table>
+
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate()?>" />
+<input name="id" id="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

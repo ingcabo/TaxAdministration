@@ -1,0 +1,47 @@
+<?php 
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+?>
+<form name="form1" method="post">
+<table width="495" border="0">
+  <tr>
+    <td width="161">Descripcion</td>
+     <td> <input name="descripcion" type="text" id="descripcion" value="<?=$objeto->descripcion?>" size="50" onchange="this.value = this.value.toUpperCase();"/>
+	<span class="errormsg" id="error_descripcion">*</span>
+		<?=$validator->show("error_descripcion")?> </td>
+  </tr>
+  <tr>
+    <td width="161">Maximo de Personas </td>
+    <td width="324"><input name="mpersona" type="text" id="mpersona" value="<?=$objeto->mpersona?>" size="10" onchange="this.value = this.value.toUpperCase();"/>
+	<span class="errormsg" id="error_mpersona">*</span>
+		<?=$validator->show("error_mpersona")?> 
+	</td>
+  </tr>
+  <tr>
+    <td width="161">Tiene Precio </td>
+    <td><label>
+      <input name="precio" type="checkbox" id="precio" value="1" <?=compara_checked($objeto->precio, 1)?>/>
+    </label></td>
+  </tr>
+  <tr>
+    <td>Exonerada de Impuesto </td>
+    <td><input name="imp" type="checkbox" id="imp" value="1" <?=compara_checked($objeto->imp, 1)?>/></td>
+  </tr>
+  <tr>
+    <td>Aforo:</td>
+    <td><input name="aforo" type="text" id="aforo" value="<?=muestrafloat($objeto->aforo)?>"></td>
+  </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td><input name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

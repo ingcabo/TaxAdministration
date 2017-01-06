@@ -1,0 +1,601 @@
+<?
+//$disabledProv = $objeto->id_tipo_documento != '002' ? "disabled" : "";
+//$disabledCiud = $objeto->id_tipo_documento != '009' ? "disabled" : "";
+//var_dump($objeto);
+?>
+<form name="form1" method="post">
+<table border="0">
+<? if(!$auxNrodoc){ ?>
+<tr>
+	<td>Numero de Documento:</td>
+	<td colspan="3">
+		<!--<input name="nrodoc" type="text" class="Estilo2" id="nrodoc" value="<?=$objeto->nrodoc ?>" size="15" onkeypress="return onlyNumbersCI(event)" onchange="digitosMin(this, 6);" maxlength="9"/>-->
+		<span class="errormsg" id="error_nrodoc">*</span>
+		<?=$validator->show("error_nrodoc")?>
+	</td>
+	<td align="right">
+	<span style="text-align:right">Fecha:</span>	</td>
+	<td>
+		<table border="0" cellpadding="0" cellspacing="0">
+			<tr>
+			<td width="95px" valign="top">
+	  		<div align="left">
+	    <input name="fechadoc" type="text" class="Estilo2" id="fechadoc" value="<?=$objeto->nrodoc ? muestrafecha($objeto->fecha) : date("d/m/Y")?>" size="15" readonly />
+			</div>
+			</td>
+			</td>
+				<span class="errormsg" id="error_fechadoc">*</span>
+				<?=$validator->show("error_fechadoc")?>	
+			<td>
+			<td valign="top">
+			
+			<div align="left" style="vertical-align:top">
+			&nbsp;
+		<a href="#" id="boton_fechadoc" onclick="return false;">
+					  <img  border="0" src="images/calendarA.png" width="20" height="20" />
+					 </a>  
+              <script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fechadoc",
+					button            : "boton_fechadoc",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			         </script>
+      </div></td>
+	  	</tr>
+	  </table>
+	</td>
+</tr>
+	<tr>
+	<td>Tipo de Documento:</td>
+	<td colspan="5">
+	<?=helpers::combo_ue_cp($conn, 
+															'tipdoc', 
+															$objeto->id_tipo_documento,
+															'',
+															'',
+															'',
+															'',
+															"toggleProvCiudadano();",
+															"SELECT * FROM tipos_documentos WHERE abreviacion = 'OS' OR abreviacion = 'OT' ")?>
+		<span class="errormsg" id="error_tipo_doc">*</span>
+		<?=$validator->show("error_tipo_doc")?>	</td>
+<tr>
+
+<? } else { ?>
+	<tr>
+	<td>Tipo de Documento:</td>
+	<td colspan="3">
+	<?=helpers::combo_ue_cp($conn, 
+															'tipdoc', 
+															$objeto->id_tipo_documento,
+															'',
+															'',
+															'',
+															'',
+															"toggleProvCiudadano();",
+															"SELECT * FROM tipos_documentos WHERE abreviacion = 'OS' OR abreviacion = 'OT' ")?>
+		<span class="errormsg" id="error_tipo_doc">*</span>
+		<?=$validator->show("error_tipo_doc")?>	</td>
+	<td align="right">
+	<span style="text-align:right">Fecha:</span>	</td>
+	<td>
+	<table border="0" cellpadding="0" cellspacing="0">
+			<tr>
+			<td width="95px" valign="top">
+	  		<div align="left">
+	    <input name="fecha" type="text" class="Estilo2" id="fecha" value="<?=empty($objeto->fecha) ? "" : muestrafecha($objeto->fecha)?>" size="15" readonly />
+			</div>
+			</td>
+			</td>
+				<span class="errormsg" id="error_fecha">*</span>
+				<?=$validator->show("error_fecha")?>	
+			<td>
+			<td valign="top">
+			
+			<div align="left" style="vertical-align:top">
+			&nbsp;
+		<a href="#" id="boton_fecha" onclick="return false;">
+					  <img  border="0" src="images/calendarA.png" width="20" height="20" />
+			  </a>  
+              <script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecha",
+					button            : "boton_fecha",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			         </script>
+      </div></td>
+	  	</tr>
+	  </table>
+<!--	<input value="<?=empty($objeto->fecha) ? date("d/m/Y") : muestrafecha($objeto->fecha)?>" readonly name="fecha"  type="text" style="width:80px" />	</td>
+--><tr>	
+<? } ?>
+	<!--td>Condiciones de la Operaci&oacute;n:	</td>
+	<td colspan="5"><input value="<?=$objeto->condicion_operacion?>" name="condicion_operacion" size="110 " type="text" class="proveedores" <?=$disabledProv?> />	</td-->
+</tr>
+<tr>
+	<td>Fecha de Entrega:	</td>
+	<td>
+		<table>
+			<tr>
+				<td>
+				<input style="width:80px" readonly value="<?=empty($objeto->fecha_entrega) ? date("d/m/Y") : muestrafecha($objeto->fecha_entrega)?>" name="fecha_entrega" id="fecha_entrega" type="text" />				</td>
+				<td>
+					 <a href="#" id="boton_fecha_entrega" onclick="return false;">
+					  <img border="0" src="images/calendarA.png" width="20" height="20" />					</a>  
+					<span class="errormsg" id="error_fecha_entrega">*</span>
+					<?=$validator->show("error_fecha_entrega")?>
+			<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecha_entrega",
+					button            : "boton_fecha_entrega",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			</script>				</td>
+			</tr>
+		</table>	</td>
+	<td>Lugar de Entrega:	</td>
+	<td colspan="3">
+		<input value="<?=$objeto->lugar_entrega?>" name="lugar_entrega" size="30 " type="text" />
+		<span class="errormsg" id="error_lugar_entrega">*</span>
+		<?=$validator->show("error_lugar_entrega")?>	</td>
+</tr>
+<tr>
+	<td>
+		N&ordm; de Requisici&oacute;n:	</td>
+	<td>
+		<input value="<?=$objeto->nro_requisicion?>" name="nro_requisicion" size="12 " type="text" class="proveedores" <?=$disabledProv?> />
+
+	</td>
+	<td>Condici&oacute;n de pago:	</td>
+	<td colspan="3">
+		
+			<?=helpers::combo_ue_cp($conn, 
+														'condicion_pago', 
+														$objeto->condicion_pago,
+														'width:160px',
+														'',
+														'',
+														'',
+														"",
+														"SELECT * FROM vehiculo.forma_pago")?>
+			
+		<span class="errormsg" id="error_cond_pago">*</span>
+		<?=$validator->show("error_cond_pago")?>	</td>
+</tr>
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td colspan="6"><span class="titulo">Referencias del Proveedor</span></td>
+</tr>
+
+<tr>
+	<td>Seleccione
+			Proveedor:	</td>
+	<td><input type="text" name="nombrepro" <?=$disabledProv?>  id="nombrepro" <? if($objeto->id_tipo_documento=='002') echo "value=$objeto->rif" ?> style="widows:200px" class="proveedores" />
+		<input type="hidden" name="proveedores" value="<?=$objeto->id_proveedor?>" id="proveedores"  />													
+		<span class="errormsg" id="error_prov">*</span>
+		<?=$validator->show("error_prov")?>	
+		<span onclick="mostrar_ventana(1);" id="buscadorpro" style="cursor:pointer; display:none"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+		</td>
+		<td>N&ordm; Registro Proveedor:</td>
+		<td><input value="<?=$objeto->id_proveedor?>" readonly class="proveedores" <?=$disabledProv?> id="id_proveedor" name="id_proveedor" style="width:90px" type="text" /></td>
+</tr>
+<tr>
+	<td>Raz&oacute;n Social:</td>
+	<td colspan="3"><input  value="<?=$objeto->proveedor?>" class="proveedores" <?=$disabledProv?> readonly name="nombre" id="nombre" style="width:420px"  type="text" />	</td>
+</tr>
+<tr>
+	<td>Direcci&oacute;n:</td>
+	<td colspan="3">
+<!-- 		<input class="proveedores" <?=$disabledProv?> readonly name="direccion" id="direccion" style="width:300px " type="text" /> -->
+				<textarea readonly name="direccion" id="direccion" <?=$disabledProv?> style="width:420px" class="proveedores"><?=$objeto->dir_proveedor ?></textarea>	</td>
+</tr>
+<tr>
+	<td>N&ordm; Factura:	</td>
+	<td>
+		<input value="<?=$objeto->nro_factura?>" class="proveedores" <?=$disabledProv?> name="nro_factura" size="12 " type="text" onkeypress="return onlyNumbersCI(event)" />
+		<span class="errormsg" id="error_nro_fact">*</span>
+		<?=$validator->show("error_nro_fact")?>	</td>
+	<td>Fecha Factura:	</td>
+	<td colspan="3">
+	
+		<table>
+			<tr>
+				<td>
+				<input value="<?=empty($objeto->fecha_factura) ? date("d/m/Y") : muestrafecha($objeto->fecha_factura)?>" class="proveedores" <?=$disabledProv?> name="fecha_factura" id="fecha_factura" style="width:80px" type="text" readonly />				</td>
+				<td>
+					 <a href="#" id="boton_fecha_factura" onclick="return false;">
+					  <img border="0" src="images/calendarA.png" width="20" height="20" />					</a>  
+					<span class="errormsg" id="error_fecha_fact">*</span>
+					<?=$validator->show("error_fecha_fact")?>
+			<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecha_factura",
+					button            : "boton_fecha_factura",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			</script>				</td>
+			</tr>
+		</table>	</td>
+</tr>
+<tr>
+	<td>N&ordm; de
+			Cotizaci&oacute;n: </td>
+	</td>
+	<td><input value="<?=$objeto->nro_cotizacion?>"  class="proveedores" <?=$disabledProv?> name="nro_cotizacion" size="12 " type="text" /></td>
+	<td>&nbsp;</td>
+	<td colspan="3">&nbsp;</td>
+</tr>
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<!--<tr>
+	<td colspan="6"><span class="titulo">Referencias del Ciudadano</span></td>
+</tr>
+<tr>
+	<td>C&eacute;dula:</td>
+	<? /* $aux = explode('-', $objeto->rif);
+	   $cedula = $aux[1]; */
+	?>	
+	
+	<td ><input type="hidden"  name="id_ciudadano" id="id_ciudadano" class="ciudadano"  <?=$disabledCiud?>  value="<?=$objeto->id?>" size="14" />
+	<input type="text"  name="rif_ciudadano" id="rif_ciudadano" class="ciudadano"  <?=$disabledCiud?> <? if($objeto->id_tipo_documento=='009') echo "value=$objeto->rif"?> size="14" />
+	<span onclick="mostrar_ventana(2);" id="buscadorciu" style="cursor:pointer; display:none"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+	<span class="errormsg" id="error_ciudadano">*</span>
+		<?=$validator->show("error_ciudadano")?>	</td>
+	<td>Nombre del Ciudadano:	</td>
+	<td colspan="3"><input type="text" <?=$disabledCiud?> class="ciudadano" name="nombre_ciudadano" id="nombre_ciudadano" value="<?=$objeto->ciudadano?>" size="38" />	</td>
+</tr>
+<tr>
+	<td>Tel&eacute;fono:
+		<span style="text-align:right"><?=$validator->show("error_tlf_ciudadano")?></span>	</td>
+	<td>
+		<input value="<?=$objeto->tlf_ciudadano?>" class="ciudadano" <?=$disabledCiud?> name="tlf_ciudadano" id="tlf_ciudadano" size="16 " type="text" />	</td>
+	<td>Direcci&oacute;n:
+		<span style="text-align:right"><?=$validator->show("error_direccion_ciudadano")?></span>	</td>
+	<td colspan="3">
+		<input value="<?=$objeto->dir_ciudadano?>" class="ciudadano" <?=$disabledCiud?> name="dir_ciudadano" id="dir_ciudadano" size="45 " type="text" />	</td>
+</tr>-->
+
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td>Unidad Ejecutora:	</td>
+	<td colspan="5"><?=helpers::combo_ue_cp($conn, 
+														'unidad_ejecutora', 
+														$objeto->id_unidad_ejecutora,
+														'',
+														'',
+														'',
+														'',
+														"mostrarBuscarCat();",
+														"SELECT id, (id || ' - ' || descripcion) AS descripcion FROM unidades_ejecutoras WHERE id_escenario='$escEnEje' ORDER BY id")?>
+		<span class="errormsg" id="error_ue">*</span>
+		<?=$validator->show("error_ue")?>	</td>
+</tr>
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td colspan="6"><span class="titulo">Partidas Presupuestarias:</span></td>
+</tr>
+<tr>
+	<td colspan="7">
+		<hr />	</td>
+</tr>
+<tr>
+	<td colspan="7">
+	<? if ($objeto->status=='1' || $objeto->status==''){?>
+		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td width="275">Categoria</td>
+					<td width="275">Partida Presupuestaria</td>
+					<td width="150">Monto</td>
+				</tr>
+				<tr>
+					<td style="width:200px">
+						<table width="250" cellpadding="0" cellspacing="0" border="0">
+							<tr>
+								<td width="254">
+									<input type="text" name="txtcategorias_programaticas" id="txtcategorias_programaticas" size="35" />
+									<input type="hidden" name="categorias_programaticas" id="categorias_programaticas" />
+							  <span onclick="traeCategoriasProgramaticas($('unidad_ejecutora').value);" style="cursor:pointer; <?=($boton=='Guardar')? 'display:none' : ''?>" id="bcategorias"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span> </td>
+								
+					  </table>
+					</td>
+					<td style="width:200px">
+						<table cellpadding="0" cellspacing="0" border="0">
+							<tr>
+								<td >
+									<input type="text" name="txtpartidas_presupuestarias" id="txtpartidas_presupuestarias" size="40" />
+									<input type="hidden" name="partidas_presupuestarias" id="partidas_presupuestarias" />
+									<span onclick="traePartidasPresupuestarias($('categorias_programaticas').value);" style="cursor:pointer; display:none" id="bpartidas"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+									
+								</td>
+							</tr>
+						</table>					
+					</td>
+					<td width="55">
+						<input type="text" name="montoip" id="montoip" class="monto" onkeypress="return(formatoNumero(this,event));" value="0,00" />
+				  </td>
+			</tr>
+		</table>
+	<? }?>	</td>
+</tr>
+<tr>
+		<td colspan="6">
+		<? if ($objeto->status=='1' || $objeto->status==''){?>
+		<table border="0" cellpadding="0" cellspacing="0" width="100%" >
+			<tr>
+				<td>
+					<input name="button2" type="button" id="Agregarcp" onclick="AgregarCP()" value="Agregar" />				</td>
+				<td align="right">
+	    			<input name="button" type="button" onclick="EliminarCP()" value="Eliminar" align="right" /></td>
+				</tr>
+		</table>	
+		<? }?>	</tr>
+<tr>
+	<td colspan="6">
+		<div id="gridboxpp" style=" width:728px; height:150px; z-index:0; display:block" class="gridbox" align="center"></div>	</td>
+</tr>
+<tr>
+	<td colspan="3"><input type="hidden" name="contenedor_partidas" id="contenedor_partidas"  /></td>
+	<td></td>
+	<td>&nbsp;</td>
+	<td><input style="text-align:right" value="<?=muestrafloat($montoTotal)?>" type="hidden" id="monto_total_partidas" name="monto_total_partidas" readonly />
+		<input type="hidden" name="disponible" id="disponible" value="0"  />
+		<input type="hidden" id="idParCat" name="idParCat" value="0" />
+	</td>
+</tr>
+</table>
+<table border="0" width="100%"> 
+<tr>
+		<td width="500px" align="left">Categoria Programatica: &nbsp; <input type="text" name="nom_cat_pro" id="nom_cat_pro" readonly size="70" /> </td>
+    	<td align="right" colspan="2" ><span class="Estilo1">IVA:</span></td>
+  		<td colspan="2">
+    	<input value="<?= muestraFloat($objeto->total_iva)?>" name="total_iva" id="total_iva" size="20" type="text" readonly / >
+		</td>
+  	</tr>
+  	<tr>
+		<td width="500px" align="left">Partida Presupuestaria: &nbsp;&nbsp;&nbsp; <input type="text" name="nom_par_pre" id="nom_par_pre" readonly size="70"/></td>
+    	<td height="25" valign="top" align="right" colspan="2"><span class="Estilo1">TOTAL GENERAL Bs. </span></td>
+    	<td valign="top" colspan="2">
+     	 <input value="<?= muestraFloat($objeto->total_general)?>" name="total_general" id="total_general" size="20" type="text" readonly />
+	 	</td>
+	</tr>
+</table>
+<table border="0">
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td colspan="6"><span class="titulo">Servicios:</span></td>
+</tr>
+<? if ($objeto->status=='1' || $objeto->status==''){?>
+<tr>
+	<td colspan="6">
+		<table border="0">
+			<td width="350px" ><input type="button" value="Agregar" onclick="Agregar()" /></td>
+	 		<td align="right" width="360"><input type="button" value="Eliminar" onclick="Eliminar()"></td>
+		</table>
+	</td>
+</tr>
+<? }?>
+<tr>
+	<td colspan="6">
+	<div id="gridbox" style=" width:728px; height:150px" class="gridbox" align="center"></div>
+	<input name="productos_contenedor" id="productos_contenedor" type="hidden" />	</td>
+</tr>
+
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td colspan="6" >Observaciones:</td>
+</tr>
+<tr>
+	<td rowspan="3" colspan="3" width="400px">
+		<textarea name="observaciones" rows="3" cols="75"><?=$objeto->observaciones?></textarea>
+		<? /* <span class="errormsg" id="error_obser">*</span>
+		$validator->show("error_obser") */?>	
+	</td>
+	<td colspan="2" align="right" width="120px">Sub Total:</td>
+	<td><input style="text-align:right" value="<?=muestrafloat($objeto->subtotal)?>" name="subtotal" id="subtotal" size="12 " type="text" readonly /></td>
+</tr>
+<tr>
+	<td colspan="2" align="right">IVA:</td>
+	<td><input style="text-align:right" value="<?=muestrafloat($objeto->total_iva)?>" name="total_iva" id="total_iva_fact" size="12 " type="text" readonly /></td>
+</tr>
+<tr>
+	<td colspan="2" align="right">Total General Bs.:</td>
+	<td><input style="text-align:right" value="<?=muestrafloat($objeto->total_general)?>" name="total_general" id="total_general_fact" size="12 " type="text" readonly /></td>
+</tr>
+</table>
+<? if($boton == 'Guardar'){ ?>
+<input style="float:right; margin: 5px" name="boton" type="button" value="<?=$boton?>" onclick="GuardarPP(); Guardar();buscaNroDoc(this.value);" />
+
+<? } if($boton == 'Actualizar' && $objeto->status=='1'){ ?>
+<input style="float:right; margin: 5px" name="botonActualizar" type="button" value="Actualizar" onclick="GuardarPP(); Guardar();buscaNroDoc(this.value);" />
+<? } ?>
+<? if($objeto->status=='1'){ ?>
+<input style="float:right; margin: 5px" name="botonAprobar" type="button" value="Aprobar" onclick="GuardarPP(); Guardar();buscaNroDoc(this.value);" />
+<input style="float:right; margin: 5px" name="botonAnular" type="button" value="Anular" onclick="GuardarPP(); Guardar();buscaNroDoc(this.value);" />
+<? }elseif($objeto->status=='2' || $objeto->status=='1'){ ?>
+<input style="float:right; margin: 5px" name="botonAnular" type="button" value="Anular" onclick="GuardarPP(); Guardar();buscaNroDoc(this.value);" />
+<?}?>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value=""  id="accion"/>
+<input name="nrodoc" type="hidden" value="<?=$objeto->nrodoc?>" id="nrodoc" />
+<input type="hidden" name="status" id="status" value="<?=$objeto->status?>" />
+
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+<br />
+</form>
+
+<script type="text/javascript">
+buildGrid();
+buildGridPP()
+CargarGrid();
+CargarGridPP('<?=$objeto->id?>');
+//TODO LO QUE ES EL MANEJO DL GRID DE PRODUCTOS//
+function buildGrid(){
+	//set grid parameters
+	mygrid = new dhtmlXGridObject('gridbox');
+	mygrid.selMultiRows = true;
+	mygrid.setImagePath("js/grid/imgs/");
+	mygrid.setHeader("Descripci&oacute;n,Precio,Porc. Iva,Precio Iva,Total");
+	mygrid.setInitWidths("350,100,70,100,100");
+	mygrid.setColAlign("center,center,center,center,center");
+	mygrid.setColTypes("ed,ed,coro,ro,ro");
+	mygrid.setColSorting("txt,int,int,int,int");
+	mygrid.setColumnColor("white,white,white,white,white");
+	mygrid.rowsBufferOutSize = 0;
+	mygrid.setMultiLine(false);
+	mygrid.selmultirows="true";
+	mygrid.setOnEditCellHandler(validarMontoPP);
+	mygrid.setOnEnterPressedHandler(calcularprecio);
+	mygrid.delim=';';
+	//start grid
+	<? $iva = new iva;
+		$objiva = $iva->iva_anio($conn, $anoCurso);
+	?>
+	<?=helpers::combogrid($objiva, 2, 'porc' , 'descripcion', 'Seleccione', 'mygrid' )?>
+	
+	mygrid.init();
+}
+
+function CargarGrid(){
+var JsonAux;
+	mygrid.clearSelection();
+	mygrid.clearAll();
+	if("<?=$objeto->id?>"){
+	
+		if('<?=$objeto->relacionProductos?>'){
+		
+			var Productos = eval( '(' + '<?=$objeto->relacionProductos?>' + ')');
+			
+			for(i=0;i<Productos.length;i++){
+				mygrid.addRow(i,Productos[i][0]+";"+muestraFloat(Productos[i][1])+";"+muestraFloat(Productos[i][4].toFixed(2))+";"+muestraFloat(Productos[i][2])+";"+muestraFloat(Productos[i][3]));
+			}
+		}
+	}
+} 
+
+//TODO LO QUE ES EL MANEJO DEL GRID DE PARTIDA PRESUPUESTARIA//
+
+function buildGridPP(){
+	//set grid parameters
+	mygridpp = new dhtmlXGridObject('gridboxpp');
+	mygridpp.selMultiRows = true;
+	mygridpp.setImagePath("js/Grid/imgs/");
+	mygridpp.setHeader("Categoria,Partida Presupuestaria, Base Imponible, Monto Excento, % IVA, Monto IVA, Total");
+	mygridpp.setInitWidths("150,150,100,80,50,75,115");
+	mygridpp.setColAlign("center,center,right,right,center,right,right");
+	mygridpp.setColTypes("coro,coro,ed,ed,coro,ed,ed");
+	mygridpp.setColSorting("str,str,int,int,int,int,int");
+	mygridpp.setColumnColor("white,white,white,white,white,white,white");
+	//mygridpp.setEditable('fl');
+	mygridpp.rowsBufferOutSize = 0;
+	mygridpp.setMultiLine(false);
+	mygridpp.delim = ";";
+	mygridpp.selmultirows="true";
+	mygridpp.setOnEnterPressedHandler(generaTotal);
+	mygridpp.setOnRowSelectHandler(traerPartidasSeleccionada);
+	//<? $cp = new categorias_programaticas;
+		//$objcp = $cp->get_all($conn);
+	//?>
+	//<? //helpers::combogrid($objcp, 0, 'id' , 'descripcion', 'Seleccione', 'mygridpp' )?>
+	
+	//<? $pp = new partidas_presupuestarias;
+		//$obj = $pp->get_all($conn);
+	//?>
+	//<? //helpers::combogrid($obj, 1, 'id' , 'descripcion', 'Seleccione', 'mygridpp' )?>
+	
+	<? $iva = new iva;
+		$objiva = $iva->iva_anio($conn, $anoCurso);
+	?>
+	<?=helpers::combogrid($objiva, 4, 'porc' , 'descripcion', 'Seleccione', 'mygridpp' )?>
+	
+	mygridpp.init();
+}
+
+function CargarGridPP(id){
+	mygridpp.clearSelection();
+	mygridpp.clearAll();
+	var url = 'json.php';
+	var pars = 'op=relacion_servicio_trabajo&id='+ id +'&ms='+new Date().getTime();
+	var Request = new Ajax.Request(
+		url,
+		{
+			method: 'get',
+			parameters: pars,
+			onLoading:function(request){}, 
+			onComplete:function(request){
+				var JsonData = eval( '(' + request.responseText + ')');
+				if(JsonData){
+					for(var j=0;j<JsonData.length;j++){
+						var monto_iva = (JsonData[j]['monto'] - JsonData[j]['monto_exc']) * (JsonData[j]['porc_iva']/100);
+						var total = parseFloat(JsonData[j]['monto']) + parseFloat(monto_iva);
+						mygridpp.addRow(JsonData[j]['idParCat'],JsonData[j]['id_categoria_programatica']+";"+JsonData[j]['id_partida_presupuestaria']+";"+muestraFloat(JsonData[j]['monto'])+";"+muestraFloat(JsonData[j]['monto_exc'])+";"+JsonData[j]['porc_iva']+";"+muestraFloat(monto_iva.toFixed(2))+";"+muestraFloat(total));
+						traerDisponiblePartidas(JsonData[j]['id_categoria_programatica'],JsonData[j]['id_partida_presupuestaria']);
+						ipp++;
+						
+					}
+					
+				}
+				//sumaTotalPartidas();
+			}
+		}
+	);  
+} 
+
+</script>

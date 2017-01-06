@@ -1,0 +1,135 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>C&oacute;digo:</td>
+	<td colspan="5">
+	<!--digitosMin(this, 13);-->
+
+	<input type="text" name="cod1" id="cod1" style="width:40px; text-align:center" maxlength="3" onchange="validar_codigo(this, 3, 'ingreso');" onkeypress="return onlyNumbersCI(event)"  onkeyup="auto_focus(document.form1.cod1,document.form1.cod2 ,3)" value="<?=substr($objeto->id,0,3)?>"/>
+	<input type="text" name="cod2" id="cod2" style="width:40px; text-align:center " maxlength="2" onchange="validar_codigo(this, 2, 'oculto');" onkeypress="return onlyNumbersCI(event)"  onkeyup="auto_focus(document.form1.cod2,document.form1.cod3 ,2)" value="<?=substr($objeto->id,3,5)?>"/>
+	<input type="text" name="cod3" id="cod3" style="width:40px; text-align:center " maxlength="2" onchange="validar_codigo(this, 2, 'oculto');" onkeypress="return onlyNumbersCI(event)"  onkeyup="auto_focus(document.form1.cod3,document.form1.cod4 ,2)" value="<?=substr($objeto->id,5,7)?>"/>
+	<input type="text" name="cod4" id="cod4" style="width:40px; text-align:center " maxlength="2" onchange="validar_codigo(this, 2, 'oculto');" onkeypress="return onlyNumbersCI(event)"  onkeyup="auto_focus(document.form1.cod4,document.form1.cod5 ,2)" value="<?=substr($objeto->id,7,9)?>"/>
+	<input type="text" name="cod5" id="cod5" style="width:40px; text-align:center " maxlength="2" onchange="validar_codigo(this, 2, 'oculto');" onkeypress="return onlyNumbersCI(event)"  onkeyup="auto_focus(document.form1.cod5,document.form1.cod6 ,2)" value="<?=substr($objeto->id,9,11)?>"/>
+	<input type="text" name="cod6" id="cod6" style="width:40px; text-align:center " maxlength="2" onblur="validar_codigo(this, 2, 'oculto');" onkeypress="return onlyNumbersCI(event)"  value="<?=substr($objeto->id,11,13)?>"/>
+	<span class="errormsg" id="error_cod">*</span>
+	<?=$validator->show("error_cod")?>	</td>
+</tr>
+<tr>
+	<td>Escenario:</td>
+	<td><?=helpers::combo($conn, 'escenarios', $objeto->id_escenario) ?>
+	<span class="errormsg" id="error_esc">*</span>
+	<?=$validator->show("error_esc")?>
+	</td>
+	<td colspan="4"></td>
+</tr>
+<tr>
+	<td>Descripci&oacute;n:</td>
+	<td colspan="3"><input size="53" name="descripcion" value="<?=$objeto->descripcion ?>" type="text">
+	<span class="errormsg" id="error_desc">*</span>
+	<?=$validator->show("error_desc")?>
+	</td>
+	<!-- Maira pidio eliminar esto
+	<td>Partida Madre:</td>
+	<td>Si <input type="radio" name="madre" id="madre" value="1" <?=$objeto->madre == 1 ? ' checked="checked" ': '' ?> /> &nbsp;&nbsp;&nbsp; No: <input type="radio" name="madre" id="madre" value="0" <?=$objeto->madre != 1 ? ' checked="checked" ': '' ?> />
+	-->
+</tr>
+<tr>
+	<td>Detalle de la partida:</td>
+	<td colspan="5"><textarea cols="50" rows="8" name="detalle"><?=$objeto->detalle ?></textarea>
+	</td>
+</tr>
+<tr>
+	<td>Gatos de Inversi&oacute;n:</td>
+	<td><input type="radio" name="gastos_inv" value="true" id="gasto1" <?=radio('t',$objeto->gastos_inv) ?> />Si
+		<input type="radio" name="gastos_inv" value="false" id="gasto2" <?=radio('f',$objeto->gastos_inv) ?> />No 
+		<span class="errormsg" id="error_gastos">*</span><input type="text" name="oculto" id="oculto" style="display:none" />
+		<?=$validator->show("error_gastos")?>
+	</td>
+</tr>
+<tr>
+	<td>Ingreso:</td>
+	<td><!--<input type="checkbox" name="check_ing" id="check_ing" onClick="cambio('this');" value="1" <?=$objeto->check_ing == 1 ? ' checked="checked" ': '' ?> />-->
+		<input type="text" name="ingreso" id="ingreso" style="text-align:right" value="<?=muestrafloat($objeto->ingreso)?>" onkeypress="return(formatoNumero(this, event));"  <?= substr($objeto->id,0,1) != '3'  ? 'disabled="disabled"': '' ?> /> 
+		<span class="errormsg" id="error_ing">*</span>
+		<?=$validator->show("error_ing")?>
+	</td>
+</tr>
+<tr>
+	<td>Partida de Transferencia</td>
+	<td><input type="radio" name="transferencia" id="transferencia_1" value="true" <?=($objeto->check_trans=='true')? 'checked="checked"' : '' ?> /> Si 
+		<input type="radio" name="transferencia" id="transferencia_2" value="false" <?=($objeto->check_trans=='false')? 'checked="checked"' : '' ?> /> No</td>
+</tr>
+</table>
+<div id="estimaIng" style="display:none">
+<table width="100%" >
+    <tr>
+        <td style="width:25px">Estimacion A&ntilde;o Anterior:</td>
+        <td style="width:80px"><input style="width:80px;text-align:right" type="text" name="estAnt" id="estAnt" onkeypress="return(formatoNumero(this,event));" value="<?=muestrafloat($objeto->estAnterior)?>" /></td>
+        <td style="width:25px">Estimacion Ajustada A&ntilde;o Anterior:</td>
+        <td style="width:100px"><input style="width:80px;text-align:right" type="text" name="estAjusAnt" id="estAjusAnt" onkeypress="return(formatoNumero(this,event));" value="<?=muestrafloat($objeto->estAjusAnterior)?>" /></td>
+    </tr>
+    <tr>
+    	<td>Base de Calculo:</td>
+        <td colspan="3"><textarea name="baseCalc" id="baseCalc" cols="30" rows="5"><?=$objeto->baseCalculo?></textarea></td>
+    </tr>
+</table>
+</div>
+
+<div id="porcMaxi" style="display:none">
+<table width="30%" >
+    <tr>
+        <td>Porcentaje M&aacute;ximo: </td>
+        <td><input style="width:80px;text-align:right" type="text" name="porcMaxi" id="porcMaxi" onkeypress="return(formatoNumero(this,event));" value="<?=muestrafloat($objeto->porcMax)?>" /></td>
+    </tr>
+</table>
+</div>
+
+<!--    ///////////////// Posiblemente se habiliten en el futuro estas opciones  \\\\\\\\\\\\\\\\\\\\\\
+<tr>
+	<td>Presupuesto Original:</td>
+	<td><input size="20" type="text" name="presupuesto_original" value="<?=$objeto->presupuesto_original ?>" /></td>
+	<td>Compromisos:</td>
+	<td><input size="20" type="text" name="compromisos" value="<?=$objeto->compromisos ?>" /></td>
+</tr>
+<tr>
+	<td>Aumentos:</td>
+	<td><input size="20" type="text" name="aumentos" value="<?=$objeto->aumentos ?>"></td>
+	<td>Causados:</td>
+	<td><input size="20" type="text" name="causados" value="<?=$objeto->causados ?>" /></td>
+</tr>
+<tr>
+	<td>Disminuciones:</td>
+	<td><input size="20" type="text" name="disminuciones" value="<?=$objeto->disminuciones ?>" /></td>
+	<td>Pagados:</td>
+	<td><input size="20" type="text" name="pagados" value="<?=$objeto->pagados ?>"></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td>Disponible:</td>
+	<td><input size="20" type="text" name="disponible" value="<?=$objeto->disponible ?>" /></td>
+</tr>
+-->
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="habilitar(); <?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+
+<script language="javascript" type="text/javascript">
+	
+	
+	function muestraSlide(){
+		if("<?= substr($objeto->id,0,1) == '3'?>"){
+			Effect.toggle('estimaIng','blind');
+			opn = 1;
+		}else if("<?= substr($objeto->id,0,3) == '498'?>"){ 
+			Effect.toggle('porcMaxi','blind');
+			opn2 = 1;
+		}
+	}
+	
+	muestraSlide(); 
+</script>

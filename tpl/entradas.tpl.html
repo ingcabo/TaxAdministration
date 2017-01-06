@@ -1,0 +1,30 @@
+<?php 
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+?>
+<form name="form1" method="post">
+<table width="310" border="0">
+  <tr>
+    <td>Descripci&oacute;n: </td>
+    <td><input value="<?=$objeto->descripcion?>" size="25" name="descripcion" type="text">	</td>
+  </tr>
+  <tr>
+    <td>Monto:</td>
+    <td><input type="text" name="monto" value="<?=muestrafloat($objeto->monto)?>"></td>
+  </tr>
+  <tr>
+    <td>Activo:</td>
+    <td><input type="checkbox" name="status" value="1" <?=compara_checked($objeto->status, 1)?> ></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><input name="accion" type="submit" value="<?=$boton?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>

@@ -1,0 +1,39 @@
+<?php 
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+?>
+<form name="form1" method="post">
+<table width="426" border="0">
+  <tr>
+    <td width="75">Mes:</td>
+    <td width="341">
+      <input type="text" name="mes" value="<?=$mes?>" size="4" maxlength="2" />
+      <span class="errormsg" id="error_mes">*</span>
+	  <?=$validator->show("error_mes")?> </td>
+  </tr>
+  <tr>
+    <td>A&ntilde;o</td>
+    <td><input type="text" name="anio" value="<?=$anio?>" size="5" maxlength="4" />
+	<span class="errormsg" id="error_anio">*</span>
+	  <?=$validator->show("error_anio")?></td>
+  </tr>
+  <tr>
+    <td>Tasa:</td>
+    <td><input type="text" name="monto" value="<?=number_format($monto, 2, ',', '.')?>" />
+	<span class="errormsg" id="error_monto">*</span>
+	  <?=$validator->show("error_monto")?></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><input name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

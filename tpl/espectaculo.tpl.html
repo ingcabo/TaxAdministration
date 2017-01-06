@@ -1,0 +1,309 @@
+<? 
+	$id_usuario = $_REQUEST['id_usuario'];
+	$boton_aceptar = $_REQUEST['publicidad'];
+	$contrib = $_REQUEST['id_contribuyente'];
+	//$oespectaculo = new espectaculo;
+	//$oespectaculo->get($conn, $objeto->id); 
+	$q='SELECT id,descripcion FROM publicidad.entradas';
+	$r=$conn->Execute($q);
+?>
+<style type="text/css">
+<!--
+	.subt 
+	{
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 14px;
+	}
+-->
+</style>
+<form name="form1" method="post">
+	<table width="100%" rules="none"frame="below">
+  		<!--DWLayoutTable-->
+  		<tr>
+    		<td height="30" colspan="3" valign="top">
+				<div align="center" class="Estilo2">
+        			<div align="left">
+						Identificaci&oacute;n del Contribuyente
+					</div>
+    			</div>
+			</td>
+			<td width="94" valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Fecha:
+					</span>
+				</div>
+		  </td>
+    		<td colspan="2" valign="top">
+	  			<div align="left">
+	    			<input name="fechadoc" type="text" class="Estilo2" id="fechadoc" value="<?=muestrafecha($objeto->fecha_registro)?>" size="15" readonly />
+      			</div>
+			</td>
+	    	<td width="127" valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Patente:
+					</span>
+				</div>
+		  </td>
+		 	<td width="163" valign="top">
+				<div align="left">
+					<input name="patente" id="patente" type="text" value="<?=$objeto->patente?>">
+	           	</div>
+			</td>
+		</tr>
+  		<tr valign="top" class="filas">
+     		<td width="181" height="24" valign="top">
+				<span class="Estilo2">
+					Rif/C&eacute;dula:				</span>			</td>
+     		<td colspan="2" valign="top"><?=helpers::combo_ue_cp($conn, 
+															'contribuyente', 
+															$objeto->id_contribuyente,
+															'width:145px',
+															'',
+															'id_contribuyente',
+															'id_contribuyente',
+															"traeContribuyenteDesdeXML(this.value)",
+															"SELECT id AS id, rif AS descripcion FROM vehiculo.contribuyente ",
+															'',
+															'',
+															'22')?>
+			</td>
+    		<td valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Contribuyente:
+        			</span>
+	   			</div>
+			</td>
+    		<td colspan="2" valign="top">                          
+	 			<input name="primer_nombre" type="text" id="primer_nombre" value="<?=$objeto->nombre_contribuyente?>" size="30" maxlength="25" readonly>
+			</td>
+      		<td valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Razon Social:
+					</span>
+				</div>
+			</td>
+    		<td valign="top">
+        		<input name="razons" type="text" id="razons" value="<?=$objeto->razon_contribuyente?>" size="35" maxlength="25" readonly>
+			</td>
+  		</tr>
+		<tr valign="top" class="filas">
+    		<td height="24" valign="top">
+				<span class="Estilo2">
+					Ciudad:
+				</span>
+			</td>
+    		<td colspan="2" valign="top">
+        		<input name="ciudad" type="text" id="ciudad" value="<?=$objeto->ciudad_contribuyente?>" size="20" maxlength="20" readonly>
+    		</td>
+			<td valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Telefono:
+					</span>
+				</div>
+			</td>
+			<td colspan="2" valign="top">       
+        		<input name="telefono" type="text" id="telefono" value="<?=$objeto->telefono_contribuyente?>" size="27" maxlength="25" readonly>
+			</td>
+    		<td valign="top">
+				<div align="right">
+					<span class="Estilo2">
+						Domicilio Tributario:
+					</span>
+				</div>
+			</td>
+    		<td valign="top">
+				<input name="domicilio_fiscal" type="text" id="domicilio_fiscal" value="<?=$objeto->domiciliotrib_contribuyente?>" size="20" maxlength="20" readonly>
+			</td>
+		</tr>
+   		<!--<tr valign="top" class="filas">   </tr>-->
+	</table>
+	<table rules="none"frame="below">
+      <!--DWLayoutTable-->
+      
+      <tr>
+        <td width="179">Espect&aacute;culo:</td>
+        <td width="177"><!--DWLayoutEmptyCell-->&nbsp;</td>
+        <td colspan="2">Clasificacion del Espectaculo </td>
+      </tr>
+
+      <tr>
+        <td align="left" valign="middle"><?=helpers::combo_publicidad($conn,
+													  '', 
+													   $objeto->tipo_espectaculo,
+													   '', 
+													   '', 
+													   'cod_espectaculo', 
+													   'cod_espectaculo', 
+													   '', 
+											        	"SELECT cod_espectaculo as id, descripcion FROM publicidad.tipo_espectaculo")?></td>
+        <td><!--DWLayoutEmptyCell-->&nbsp;</td>
+        <td colspan="2"><span class="Estilo8">
+          <script type="text/javascript">
+					new Zapatec.Calendar.setup({
+						firstDay          : 1,
+						weekNumbers       : true,
+						showOthers        : false,
+						showsTime         : false,
+						timeFormat        : "24",
+						step              : 2,
+						range             : [1900.01, 2999.12],
+						electric          : false,
+						singleClick       : true,
+						inputField        : "fec_fin",
+						button            : "boton_fechafin",
+						ifFormat          : "%d/%m/%Y",
+						daFormat          : "%Y/%m/%d",
+						align             : "Br"
+					 });
+		       	</script>
+          <?=helpers::combo_publicidad($conn,
+													  '', 
+													   $objeto->cod_lugar_evento,
+													   '', 
+													   '', 
+													   'cod_lugar_evento', 
+													   'cod_lugar_evento', 
+													   '', 
+											        	"SELECT cod_lugar_evento as id, descripcion FROM publicidad.clasificacion_eventos")?>
+        </span></td>
+      </tr>
+      <tr>
+        <td align="left" valign="middle"><!--DWLayoutEmptyCell-->&nbsp;</td>
+        <td><!--DWLayoutEmptyCell-->&nbsp;</td>
+        <td width="36"><!--DWLayoutEmptyCell-->&nbsp;</td>
+        <td width="325"><!--DWLayoutEmptyCell-->&nbsp;</td>
+      </tr>
+      <tr>
+        <td align="left" valign="middle">Periodo Desde:</td>
+        <td>Periodo Hasta:</td>
+        <td><!--DWLayoutEmptyCell-->&nbsp;</td>
+        <td>Direccion  del Evento</td>
+      </tr>
+      <tr>
+        <td align="left" valign="middle"><input name="fec_ini" type="text" id="fec_ini" value="<?=muestrafecha($objeto->fec_ini)?>" size="12" />
+          <a href="#" id="boton_fechainicio" onclick="return false;"> <img  border="0" src="images/calendarA.png" width="14" height="14" /></a></td>
+        <td><div align="left"><span class="Estilo8">
+          <input  name="fec_fin" type="text" id="fec_fin" value="<?=muestrafecha($objeto->fec_fin)?>" size="12" />
+         <a href="#" id="boton_fechafin" onclick="return false;"> <img  border="0" src="images/calendarA.png" width="14" height="14" /></a></span></div></td>
+        <td><!--DWLayoutEmptyCell-->&nbsp;</td>
+        <td><textarea name="lugar_evento" cols="50" rows="2" id="lugar_evento"><?=$objeto->lugar_evento?>
+		  </textarea></td>
+      </tr>
+    </table>
+	<div id="formulario_publicidad">
+<div id="divTablitaEvento"> 
+    <div align="center">
+	    <table id="tabla_entradas">
+          <tr>
+            <td width="62" align="left"  ><input type="button" value="Agregar" onclick="Agregar()" /></td>
+            <td width="183" colspan="2" align="right"  ><input type="button" value="Eliminar" onclick="Eliminar()" /></td>
+          </tr>
+          <tr>
+            <td colspan="3"><div id="gridbox" width="340" height="100" class="gridbox"></div></td>
+          </tr>
+        </table>
+  
+	  </div>
+  </div>
+ <br>
+  <br>
+	<div id="deuda"></div>
+	<table width="756">
+		<br />
+		<tr>
+    		<td width="57">&nbsp;</td>
+    		<td width="50">&nbsp;</td>
+			<td width="82">&nbsp;</td>
+    		<td width="213">&nbsp;</td>
+    		<td width="257" align="center" valign="bottom">
+			<? 	$z="SELECT * FROM publicidad.calculo_espectaculo WHERE patente='$objeto->patente'";
+				$z = $conn->Execute($z);
+				$nro_recibo = $z->fields['id_calculo_espectaculo'];
+			?>
+<input type="button" name="btn_liq" value="Liquidar" onclick="document.location.href='liquidacion.espectaculo.pdf.php?&id=<?=$objeto->id?>'" />
+				<input type="button" name="btn_realizar_pago" value="Realizar Pago" onclick="realizarpago('<?=$objeto->id?>')"/>
+		  </td>
+   		  <td width="166" align="right">
+		 		<br />
+					<input name="accion" type="submit" value="<?=$boton?>" style="float:right" onclick="Guardar()"/>
+					<input name="id" type="hidden" value="<?=$objeto->id?>" />
+		  <input name="accion" type="hidden" value="<?=$boton?>" /></td>
+  		</tr>
+	</table>
+    <input name="int" type="hidden" id="int" value="<?=$objeto->id?>" />
+  <input name="entradas" id="entradas" type="hidden" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<script type="text/javascript">
+
+buildGrid();
+CargarGrid();
+function buildGrid(){
+	//set grid parameters
+	mygrid = new dhtmlXGridObject('gridbox');
+	mygrid.selMultiRows = true;
+	mygrid.setImagePath("js/Grid/imgs/");
+	mygrid.setHeader("N° de Entrada,Valor,Aforo");
+	mygrid.setInitWidths("120,120,100");
+	mygrid.setColAlign("left,left,left");
+	mygrid.setColTypes("ed,ed,ed");
+	mygrid.setColSorting("int,int,int");
+	mygrid.setColumnColor("yellow,white,white");
+	mygrid.rowsBufferOutSize = 0;
+	mygrid.setMultiLine(false);
+	mygrid.selmultirows="true";
+	mygrid.init();
+	//mygrid.setOnEditCellHandler();
+	//CargarComboGrid();
+} 
+function CargarComboGrid(){
+	<? while(!$r->EOF){ ?>
+		mygrid.getCombo(0).put(<?=$r->fields['id']?>,<?="'".$r->fields['descripcion']."'"?>);
+	<? $r->movenext();
+	} ?>
+}
+
+function CargarGrid(){
+var JsonAux;
+	mygrid.clearSelection();
+	mygrid.clearAll();
+	if("<?=$objeto->id?>"){ 
+		if('<?=$objeto->entrada?>'){
+			var Familiar = eval( '(' + '<?=$objeto->entrada?>' + ')');
+			for(i=0;i<Familiar.length;i++){
+				mygrid.addRow(i,Familiar[i][0]+","+Familiar[i][1]+","+Familiar[i][2],i);
+			}
+		}
+	}
+}
+//CargarAforo
+function CargarAforo(stage,rowId,cellInd){
+	if(stage==2){
+		if(cellInd=='0'){
+			var url = 'buscarAforo.php';
+			var pars = 'id=' + mygrid.cells(rowId,'0').getValue();
+			var Request = new Ajax.Request(
+				url,
+				{
+					method: 'post',
+					parameters: pars,
+					//asynchronous:false, 	
+					onComplete:function(request){
+						if(request.responseText){
+							mygrid.cells(rowId,'3').setValue(request.responseText);
+						}
+					}
+				}
+			); 
+		}
+	}
+}
+</script>

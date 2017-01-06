@@ -1,0 +1,52 @@
+8
+
+dir
+3019
+svn://192.168.0.253/repositorio/libertador/trunk/sql
+svn://192.168.0.253
+
+
+
+2006-08-14T20:45:25.471334Z
+1
+fcalderon
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+c1473cfb-fa1a-0410-b983-abe8840b5a9e
+
+estructura_data_bd_viejo.sql
+file
+
+
+
+
+2007-11-27T17:22:28.890625Z
+7540fa506ee34fe7ce50d0d00ead497c
+2006-08-14T20:45:25.471334Z
+1
+fcalderon
+
+estructura_data_bd.sql
+file
+
+
+
+
+2007-11-27T17:22:28.906250Z
+ce155ed4deba15241c56b398e4c2bbcc
+2006-08-14T20:45:25.471334Z
+1
+fcalderon
+

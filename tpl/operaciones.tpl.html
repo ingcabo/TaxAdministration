@@ -1,0 +1,69 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>Descripci&oacute;n:</td>
+	<td colspan="3"><input name="descripcion" value="<?=$objeto->descripcion?>" size="40" type="text">
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+</tr>
+<tr>
+	<td>P&aacute;gina:</td>
+	<td><input name="pagina" value="<?=$objeto->pagina?>" size="40" type="text">
+		<span class="errormsg" id="error_pag">*</span>
+		<?=$validator->show("error_pag")?>
+	</td>
+	<td>M&oacute;dulo:</td>
+	<td><?=helpers::combo_ue_cp($conn, 'modulos', $objeto->id_modulo,'','id','','','traeCarpetasDesdeUpdater(this.value)')?>
+		<span class="errormsg" id="error_mod">*</span>
+		<?=$validator->show("error_mod")?>
+	</td>
+</tr>
+<tr>
+	<td>Tipo:</td>
+	<td>
+		<select name="tipo" id="tipo">
+			<option value="">Seleccione</option>
+			<option value="C" <?=$objeto->tipo=='C' ? 'selected' : ''?>>Carpeta</option>
+			<option value="V" <?=$objeto->tipo=='V' ? 'selected' : ''?>>V&iacute;nculo</option>
+		</select>
+		<span class="errormsg" id="error_tipo">*</span>
+		<?=$validator->show("error_tipo")?>
+	</td>
+	<td>Pertenece A:</td>
+	<td><div id="cont_carpetas">
+		<?
+		$xml = new DomDocument();
+		$nodoSelect = helpers::xmlCombo($objeto->getCarpetas($conn, $objeto->id_modulo), 
+				$objeto->id_padre, 
+				'padre', 
+				'padre',
+				'',
+				'desactivaNivel1();');
+		// importamos el nodo select
+		$nodoSelectImpCatPro = $xml->importNode($nodoSelect, true);
+		echo $xml->saveXML($nodoSelectImpCatPro);
+		?>
+		</div>
+	</td>
+</tr>
+<tr>
+	<td><label for="nivel1">Nivel 1</label></td>
+	<td>
+		<input id="nivel1" name="nivel1" type="checkbox" <?=$objeto->nivel == 1 ? "checked" : "" ?> <?=$objeto->id_padre != 0? "disabled" : "" ?>  />
+	</td>
+	<td><label for="nivel1">Orden</label></td>
+	<td>
+		<input id="orden" name="orden" type="text" value="<?=$objeto->orden ?>" />
+		<span class="errormsg" id="error_orden">*</span>
+		<?=$validator->show("error_orden")?>
+	</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

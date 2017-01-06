@@ -1,0 +1,41 @@
+<form name="form1" method="post">
+<table width="600" border="0">
+  <tr>
+    <td width="100">Codigo:</td>
+    <td ><input type="text" name="codigo" value="<?=$objeto->int_cod ? $objeto->emp_cod : getCorrelativo($conn, 'emp_cod', 'rrhh.empresa', 'int_cod')?>">
+		<span class="errormsg" id="error_codigo">*</span>
+		<?=$validator->show("error_codigo")?>
+   </td>
+  </tr>
+  <tr>
+    <td>Razon Social:</td>
+    <td>
+		<input type="text" name="nombre" style="width:250px" value="<?=$objeto->emp_nom?>">
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+  </tr>
+  <tr>
+    <td >Rif:</td>
+    <td ><input type="text" name="rif" value="<?=$objeto->emp_rif?>"> </td>
+  </tr>
+  <tr>
+    <td>Nit</td>
+    <td><input type="text" name="nit" value="<?=$objeto->emp_nit?>"></td>
+  </tr>
+  <tr>
+    <td >Telefono:</td>
+    <td ><input type="text" name="telf" value="<?=$objeto->emp_telf?>"></td>
+  </tr>
+  <tr>
+    <td>Direccion</td>
+    <td><input type="text" name="direccion" style="width:400px" value="<?=$objeto->emp_dir?>"></td>
+  </tr>
+</table>
+<input style="float:right"  name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="int_cod" type="hidden" value="<?=$objeto->int_cod?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p

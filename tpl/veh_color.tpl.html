@@ -1,0 +1,23 @@
+<form name="form1" method="post">
+<table width="600" border="0">
+  <tr>
+    <td width="100">Descripcion del Color:</td>
+    <td ><input name="color_nom" type="text" id="color_nom" style="width:250px" value="<?=$objeto->color_nom?>" onchange="this.value = this.value.toUpperCase();">
+      <label>
+      <input name="id" type="hidden" id="id" value="<?=$objeto->id?>" />
+      <span class="errormsg" id="error_color_nom">*</span>
+      <?=$validator->show("error_color_nom")?>
+      </label></td>
+  </tr>
+  <tr>
+    <td>Estatus:</td>
+    <td><label>
+         <?=helpers::combo($conn, 'status', $objeto->status)?></label></td>
+  </tr>
+</table>
+<input style="float:right"  name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

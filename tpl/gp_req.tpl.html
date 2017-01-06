@@ -1,0 +1,39 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>C&oacute;digo:</td>
+	<td colspan="2"><input name="id_nuevo" value="<?=$objeto->id?>" size="10" type="text"></td>
+</tr>
+<tr>
+	<td>Nombre:</td>
+	<td colspan="2"><input name="nombre" value="<?=$objeto->nombre?>" size="40" type="text"></td>
+</tr>
+<tr>
+	<td colspan="3">Requisitos por Grupo</td>
+</tr>
+<tr>
+	<td>Requisito:</td>
+	<td></td>
+	<td>
+	Fecha:
+	<a href="#" onclick="addTR(); return false;">[+]</a>
+	</td>
+</tr>
+<? if(empty($objeto->requisitos)){ ?>
+<tr>
+	<td colspan="2"><?=helpers::combo($conn, 'requisitos', '', '', 'descripcion', 'req[]') ?></td>
+	<td><input name="fecha_req[]" id="fecha_req" size="12" type="text"></td>
+</tr>
+<? }else{ ?>
+<? foreach ($objeto->requisitos as $requisito){ ?>
+<tr>
+	<td colspan="2"><?=helpers::combo($conn, 'requisitos', '$requisito->id', '', 'descripcion', 'req[]') ?></td>
+	<td><input name="fecha_req[]" id="fecha_req" value="<?=muestrafecha($requisito->fecha)?>" size="12" type="text"></td>
+</tr>
+<? } } ?>
+</table>
+<input name="accion" type="submit" value="<?=$boton?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>

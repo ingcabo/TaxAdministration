@@ -1,0 +1,271 @@
+<?  
+	$anio=date('Y');
+	$oContribuyente = new contribuyente;
+	$oContribuyente->get($conn, $objeto->id_contribuyente);
+
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+$rm="SELECT * FROM vehiculo.ramo_imp WHERE tipo_imp='VH' AND anio=".$anio." AND status=1 ";
+$rm=$conn->Execute($rm);
+$ramo=$rm->fields['tipo_imp'];
+if(!$ramo){  $script='
+	alert("Ramo Inválido: No hay ramo establecido.");
+';
+}
+
+		/*$sql="SELECT primera_vez FROM vehiculo.vehiculo WHERE id='$id'";
+		$resul = $conn->Execute($sql); 
+		$primera_vez=$resul->fields('primera_vez');*/
+?>
+<script type="text/javascript">
+//buildGridSAN();
+</script>
+<script> <?=@$script?>  </script>
+<form name="form1" method="post">
+<table width="767" border="0">
+  <tr>
+    <td colspan="4" align="right">
+	<input type="hidden" value="<?=$ramo?>" name="ramo" id="ramo">
+	
+	Contribuyente: 
+	<?php 
+	$cv= new contribuyente;
+	$Avc= $cv->get_all($conn);
+	echo helpers::superComboObj($Avc, '$objeto->id', 'id_contribuyente', 'id_contribuyente', '', '', 'id', 'nombre_completo', false, 50);
+	 ?>
+ <span class="errormsg" id="error_id_contribuyente">*</span> 
+ <?=$validator->show("error_id_contribuyente")?>&nbsp;&nbsp;</td>
+  </tr>
+  <tr>
+
+    <td width="125">
+	Placa:<br>
+	<input type="text" name="placa" value="<?=$objeto->placa?>" id="placa" size="10" onchange="this.value = this.value.toUpperCase();">
+
+		<span class="errormsg" id="error_placa">*</span>
+	  <?=$validator->show("error_placa")?>	</td>
+    <td width="223">
+	Serial Carrocer&iacute;a:<br>
+	<input type="text" name="serial_carroceria" id="serial_carroceria" value="<?=$objeto->serial_carroceria?>" onchange="this.value = this.value.toUpperCase();">
+
+		<span class="errormsg" id="error_serial_carroceria">*</span>
+	  <?=$validator->show("error_serial_carroceria")?>	</td>
+    <td width="225">
+	Serial Motor:<br>
+	<input type="text" name="serial_motor" id="serial_motor" value="<?=$objeto->serial_motor?>" onchange="this.value = this.value.toUpperCase();">
+
+		<span class="errormsg" id="error_serial_motor">*</span>
+	  <?=$validator->show("error_serial_motor")?>	</td>
+    <td width="176">
+	A&ntilde;o Modelo Veh&iacute;culo:<br>
+	<input type="text" name="anio_veh" value="<?=$objeto->anio_veh?>" id="anio_veh" size="6" maxlength="4">	
+	
+		<span class="errormsg" id="error_anio_veh">*</span>
+	  <?=$validator->show("error_anio_veh")?></td>
+  </tr>
+  <tr>
+    <td>
+	Marca:<br>
+	<? $vm= new veh_marca;
+		$aVmar=$vm->get_all($conn);
+		echo helpers::SuperComboObj($aVmar, $objeto->cod_mar, 'marcas', 'marcas', '', "TraeSPDesdeXML(this.value);", 'id', 'descripcion', false, 15);?>
+	</td>
+    <td>
+		Modelo:<br>
+		<div id="divmodelos">
+			<? if ($objeto->id=='') {?> 
+				<select >
+					<option>Seleccione un modelo</option>
+				</select>
+				<? } else { 
+				echo helpers::superComboObj(veh_modelo::get_marca($conn, $objeto->cod_mar),$objeto->cod_mod, 'modelos', 'modelos', '', '', 'id', 'mod_nom', false, '18');
+				 } ?>
+		</div>
+	</td>
+    <td>
+	Color:<br>
+	<? $vc= new veh_color;
+	   $Avc= $vc->get_all($conn);
+	   echo helpers::SuperComboObj($Avc, $objeto->cod_col, 'cod_col', 'cod_col', '', '', 'id', 'color_nom', false, 18);?>
+	</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>
+	Uso:<br>
+	<?=helpers::combo($conn, '', $objeto->cod_uso, '', 'cod_uso', 'cod_uso', '', '', 'SELECT cod_uso as id, descripcion FROM vehiculo.uso WHERE status=1')?>	</td>
+    <td colspan="2">
+	Tipo de Veh&iacute;culo:<br>
+	<?=helpers::combo($conn, '', $objeto->cod_tip, '', 'cod_tip', 'cod_tip', 'tipo_vehiculo', '', 'SELECT cod_veh as id, descripcion FROM vehiculo.tipo_veh_segun_gaceta WHERE status=1')?>	</td>
+
+    <td valign="top">Peso del Veh&iacute;culo:<br>
+	<input type="text" name="peso_kg" value="<?=muestrafloat($objeto->peso_kg)?>" size="10" maxlength="8" onkeypress="return(formatoNumero(this, event));"> Kg.
+
+	
+		<span class="errormsg" id="error_peso_kg">*</span>
+		<?=$validator->show("error_peso_kg")?>	</td>
+  </tr>
+  <tr>
+    <td valign="top">Fecha de Compra:<br>
+      <input id="fec_compra" value="<?=$objeto->fec_compra?>" size="12" name="fec_compra" type="text" />
+      <a href="#" id="boton1" onclick="return false;"><img border="0" align="absmiddle" src="images/calendarA.png" width="18" height="14" /></a>  
+				<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fec_compra",
+					button            : "boton1",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+				</script>
+	
+		<span class="errormsg" id="error_fec_compra">*</span>
+		<?=$validator->show("error_fec_compra")?>	</td>
+    <td valign="top">
+	Precio:<br>
+	<input type="text" name="precio" id="precio" value="<?=muestrafloat($objeto->precio)?>" onkeypress="return(formatoNumero(this, event));">	
+
+		
+		<span class="errormsg" id="error_precio">*</span>
+		<?=$validator->show("error_precio")?>	</td>
+    <td valign="top">
+	  <p>L&iacute;nea de Transporte:<br>
+          <?=helpers::combo($conn, '', $objeto->per_pago, '', 'cod_lin', 'cod_lin', '', '', 'SELECT cod_lin as id, descripcion FROM vehiculo.linea WHERE status=1')?>
+	    </p>
+	  <p>Cant. Ejes:
+	    <input type="text" name="cant_eje" value="" size="3" maxlength="2" />
+	    <br>
+	  </p></td>
+    <td align="top"><p>
+      <label>Fecha de Desincorporacion: 
+      <input name="textfield" type="text" value="<?=$objeto->fecha?>" readonly/>
+      </label>
+      </p>
+      <p>
+        <label>Fecha de Reincorporacion <br />
+        <input type="text" name="textfield2" value="<?=$objeto->fecha_re?>" readonly/>
+        </label>
+        <br />
+        </p></td>
+  </tr>
+  <tr>
+    <td >Sanciones: <input type="checkbox" id="sancion" name="sancion" value="1" onclick="cambio('this');" <?=compara_checked($objeto->solvencia, 1)?> /></td>
+	<td colspan="3">
+	<?= helpers::combo_ue_cp($conn, '', $objeto->cod_san, '', '', 'tipo_sancion', 'tipo_sancion', "getInfo(this.value);", 'SELECT cod_san as id, descripcion FROM vehiculo.sancion WHERE status = 1', 'disabled', '', '30');?>
+	<input type="hidden" name="id_sancion" id="id_sancion" />
+	<input type="hidden" name="desc_sancion" id="desc_sancion" />
+	<input type="hidden" name="monto_sancion" id="monto_sancion" />
+	<? /*$vs= new veh_sanciones;
+		$AVs=$vs->get_all($conn);
+		echo helpers::SuperComboObj($AVs, $objeto->cod_san, 'tipo_sancion', 'tipo_sancion', '', '', 'id', 'descripcion', false, 30);*/?></td>
+  </tr>
+</table>
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+<div id="facrelDiv" style="display:inline">
+<br />
+<table width="767" border="0">
+  <tr >
+  	<td align="center" valign="top">
+		<input type="button" name="Agregar" id="Agregar"  onclick="agregarSN();" value="Agregar Sancion" />
+	</td>
+	<td colspan="2" align="center" valign="top">
+		<div id="gridboxsan" style=" width:290px; height:90px" class="gridbox" align="center"></div>
+	</td>
+	<td align="center" valign="top">
+		<input name="button" type="button" onclick="EliminarSP()" value="Eliminar Sancion" align="right" />
+	</td>
+  </tr>
+  <tr>
+  	<td>&nbsp;</td>
+	<td colspan="2" align="right">Total Sanciones:&nbsp;&nbsp;&nbsp;<input type="text" name="total[]" id="total" style="text-align:right; width:110px" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	<td>&nbsp;</td>
+  </tr> 
+</table>
+</div>
+<table width="767" border="0">
+  <tr height="5">
+  	<td colspan="4"></td>
+  </tr>
+  <tr>
+    <td >Observaciones:</td>
+	<td colspan="3"><input type="text" name="observacion" value="<?=$objeto->observacion?>" size="75" onchange="this.value = this.value.toUpperCase();"></td>
+  </tr>
+  <tr>
+    <td>Ultimo Pago:</td>
+    <td>A&ntilde;o:<input type="text" name="anio_pago" id="anio_pago" value="<?=$objeto->anio_pago?>" maxlength="4" size="5">
+		 
+		<span class="errormsg" id="error_anio_pago">*</span>
+		<?=$validator->show("error_anio_pago")?>	</td>
+    <td>Primera vez?: <input type="checkbox" id="primera_vez" name="primera_vez" value="1" <?php if (($objeto->primera_vez==1) and ($objeto->anio_pago<>date("Y"))){ echo 'checked'; } ?> ></td>
+    <td><!--MULTA:<br>-->	</td>
+  </tr>
+  <tr>
+    <td>Deuda Hasta: </td>
+    <td>A&ntilde;o:<input type="text" name="deuda_pago" id="deuda_pago" value="<?=date('Y')?>" maxlength="4" size="5" readonly="readonly"></td>
+    <td>	</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td valign="top" colspan="4"><br>
+	<div id="deuda">	</div><br>   </td>
+	</tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td colspan="2">
+	<? if ($objeto->id_contribuyente!="") { ?>
+    <input type="button" name="btn_liq" value="Liquidar" onClick="document.location.href='liquidacion.pdf.php?&ultimo_pago=<?=$objeto->anio_pago?>&tipo=<?=$objeto->cod_tip?>&primera=<?=$objeto->primera_vez?>&veh=<?=$objeto->id?>&id_contribuyente=<?=$objeto->id_contribuyente?>&anio_veh=<?=$objeto->anio_veh?>'"> <input name="btn_realizar_pago" type="button" id="btn_realizar_pago" onClick="realizarpago($('anio_pago').value, '<?=date('Y')?>', $('ramo').value, $('tipo_vehiculo').value, $('anio_veh').value, $('placa').value, '<?=$objeto->primera_vez?>', '<?=$objeto->exento?>','<?=$objeto->id_contribuyente?>','<?=$objeto->id?>',<?=$objeto->fec_compra?>)" value="Realizar Pago">
+	<?
+	} else {
+	echo '&nbsp;'; }
+	?>
+	</td> 
+    <td align="center"><input name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton ?>" />
+
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<script type="text/javascript">
+buildGridSAN();
+
+function buildGridSAN(){
+	//set grid parameters
+	mygridsn = new dhtmlXGridObject('gridboxsan');
+	mygridsn.selMultiRows = true;
+	mygridsn.setImagePath("js/Grid/imgs/");
+	mygridsn.setHeader("Sancion,Monto");
+	mygridsn.setInitWidths("180,110");
+	mygridsn.setColAlign("left,right");
+	mygridsn.setColTypes("coro,ed");
+	mygridsn.setColSorting("str,int");
+	mygridsn.setColumnColor("white,white");
+	mygridsn.rowsBufferOutSize = 0;
+	mygridsn.setMultiLine(false);
+	mygridsn.selmultirows="true";
+	//mygridpp.setOnEnterPressedHandler(calcularMontoCausado);
+	//mygridpp.setOnEditCellHandler(validarMontoPP);
+	
+	//INICIA GRID//
+	mygridsn.init();
+	Effect.toggle('facrelDiv', 'blind');
+	//$('facrelDiv').style.display=='none';
+}
+
+</script>

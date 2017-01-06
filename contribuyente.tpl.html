@@ -1,0 +1,328 @@
+<?php 
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+
+$disabled='disabled="disabled"';
+//si el id contiene valor, entonces creo un js q me mustra los radio buttons habilidatos
+if(!empty($objeto->id)) {  
+/*	$script="	
+		if($('J').checked){  
+		$('C').disabled=true; 
+		$('P').disabled=true;
+		$('S/I').disabled=true;
+		$('R').disabled=false;
+		$('rif_letra').disabled=false;
+		$('rif_numero').disabled=false;
+		$('rif_cntrl').disabled=false;
+	
+		$('identificacion').disabled=true;
+		$('razon_social').disabled=false;
+	
+		$('primer_nombre').disabled=true;
+		$('primer_apellido').disabled=true;
+		$('segundo_nombre').disabled=true;
+		$('segundo_apellido').disabled=true;
+
+		$('nacionalidadv').disabled=false;
+		$('nacionalidade').disabled=false;
+		$('pasaporte').disabled=true;
+
+		
+		}
+		
+		if($('N').checked){ 
+			
+		$('R').checked=false;
+		$('R').disabled=false;
+		$('C').disabled=false;
+		$('P').disabled=false;
+		$('S/I').disabled=false;
+		$('rif_letra').disabled=false;
+		$('rif_numero').disabled=false;
+		$('rif_cntrl').disabled=false;
+		
+		$('identificacion').disabled=false;
+		$('razon_social').disabled=true;
+
+		$('primer_nombre').disabled=false;
+		$('primer_apellido').disabled=false;
+		$('segundo_nombre').disabled=false;
+		$('segundo_apellido').disabled=false;
+
+		$('nacionalidadv').disabled=false;
+		$('nacionalidade').disabled=false;
+		$('pasaporte').disabled=false;
+		
+		}
+
+	";*/
+}
+	
+?>
+<!--<script><?=@$script?></script>-->
+<form name="form1" method="post">
+<table width="718" border="0">
+  <tr>
+    <td width="169" valign="top">
+	<fieldset>
+		 Tipo: 	<span class="errormsg" id="error_tipo_persona">*</span>
+				<?=$validator->show("error_tipo_persona")?>
+
+	    <table width="80" border="0">
+			<tr>
+				<td width="20"><input type="radio" name="tipo_persona" value="J" id="J" onClick="show_rif();" <?php compara_checked($objeto->tipo_persona, 'J') ?> ></td>
+				<td width="93">Jur&iacute;dica</td>
+			</tr>
+			<tr>
+				<td><input type="radio" name="tipo_persona" value="N" id="N" onClick="hide_rif();" <?php compara_checked($objeto->tipo_persona, 'N') ?>></td>
+				<td>Natural</td>
+			</tr>
+	  </table>
+	</fieldset>
+	</td>
+    <td width="322" valign="top">
+	<fieldset style="width:230 ">
+		Tipo de Identificaci&oacute;n: <span class="errormsg" id="error_tipo_ident">*</span>
+							<?=$validator->show("error_tipo_ident")?>
+		<table width="123"  border="0">
+			<tr>
+				<td width="29"><input type="radio" name="tipo_ident" value="C" id="C" <?=$disabled?> <?php compara_checked($objeto->tipo_identificacion, 'C') ?> onClick="hide_campos_rif()"></td>
+				<td width="84">C&eacute;dula</td>
+			</tr>
+			<tr>
+				<td><input type="radio" name="tipo_ident" value="R" id="R" <?=$disabled?> <?php compara_checked($objeto->tipo_identificacion, 'R') ?> onClick="unhide_campos_rif()"></td>
+				<td>Rif</td>
+			</tr>
+
+			<tr>
+				<td><input type="radio" name="tipo_ident" value="P" id="P" <?=$disabled?> <?php compara_checked($objeto->tipo_identificacion, 'P') ?> onClick="hide_campos_rif()"></td>
+				<td>Pasaporte</td>
+			</tr>
+			<tr>
+				<td><input type="radio" name="tipo_ident" value="S/I" id="S/I" <?=$disabled?> <?php compara_checked($objeto->tipo_identificacion, 'S/I') ?> onClick="hide_campos_rif()"></td>
+				<td>Sin Identificaci&oacute;n</td>
+			</tr>
+	  </table>
+	</fieldset>
+	</td>
+    <td width="322" valign="bottom">
+		<table width="282" border="0">
+		  <tr>
+		  	<td colspan="2">
+			Rif : <input type="text" name="rif_letra" value="" size="1" id="rif_letra"  Onkeyup="rif_ident()">-<input type="text" id="rif_numero" name="rif_numero" value="<?=$objeto->rif_numero?>" size="10" maxlength="8"  Onkeyup="rif_ident()">-
+			<input type="text" id="rif_cntrl" name="rif_cntrl" value="<?=$objeto->rif_control?>" size="2" maxlength="1"  Onkeyup="rif_ident()">			</td>
+		  </tr>
+		  <tr>
+			<td width="83">Identificaci&oacute;n:</td>
+			<td width="189"><input type="text" name="identificacion" value="<?=$objeto->identificacion?>" id="identificacion" disabled="disabled" ></td>
+		  </tr>
+		  <tr>
+			<td>Raz&oacute;n Social: </td>
+			<td><input type="text" name="razon_social" id="razon_social" value="<?=$objeto->razon_social?>" size=""></td>
+		  </tr>
+	  </table>
+	</td>
+  </tr>
+  <tr>
+    <td valign="top">
+<fieldset>
+Nacionalidad:
+	<table width="100" border="0">
+	  <tr>
+		<td width="20"><input type="radio" name="nacionalidad" id="nacionalidadv" value="V" <?php compara_checked($objeto->nacionalidad, 'V') ?>></td>
+		<td width="70">Venezolana</td>
+	  </tr>
+	  <tr>
+		<td><input type="radio" name="nacionalidad" id="nacionalidade" value="E" <?php compara_checked($objeto->nacionalidad, 'E') ?>></td>
+		<td>Extranjero</td>
+	  </tr>
+	</table>
+</fieldset>	<br>
+<input type="checkbox" name="contribuyente" value="S" <?php compara_checked($objeto->contribuyente, 'S') ?>> Contribuyente</td>
+    <td valign="top">
+		<table width="253" border="0">
+		  <tr>
+			<td width="103">Primer Apellido: </td>
+			<td width="144"><input type="text" name="primer_apellido" id="primer_apellido" value="<?=$objeto->primer_apellido?>">
+			<!--	<span class="errormsg" id="error_primer_apellido">*</span>
+				<?=$validator->show("error_primer_apellido")?>
+			-->
+		
+			</td>
+		  </tr>
+		  <tr>
+			<td>Primer Nombre: </td>
+			<td><input type="text" name="primer_nombre" id="primer_nombre" value="<?=$objeto->primer_nombre?>">
+			<!--	<span class="errormsg" id="error_primer_nombre">*</span>
+				<?=$validator->show("error_primer_nombre")?>
+			-->
+			</td>
+		  </tr>
+		  <tr>
+			<td>F. Nacimiento: </td>
+			<td>
+		<input id="fec_nacimiento" value="<?=muestrafecha($objeto->fec_nacimiento)?>" size="12" name="fec_nacimiento" readonly type="text" />
+	<a href="#" id="boton" onclick="return false;"><img border="0" src="images/calendarA.png" width="20" height="20" /></a>  
+				<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fec_nacimiento",
+					button            : "boton",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+				</script>
+			</td>
+		  </tr>
+<!--		  <tr>
+			<td>Pasaporte:</td>
+			<td><input type="text" name="pasaporte" id="pasaporte" value="06"></td>
+		  </tr>
+-->
+	</table>	</td>
+    <td valign="top">
+		<table width="234" border="0">
+		  <tr>
+			<td width="57">Segundo Apellido:</td>
+			<td width="167"><input type="text" name="segundo_apellido" id="segundo_apellido" value="<?=$objeto->segundo_apellido?>"></td>
+		  </tr>
+		  <tr>
+			<td>Segundo Nombre:</td>
+			<td><input type="text" name="segundo_nombre" id="segundo_nombre" value="<?=$objeto->segundo_nombre?>"></td>
+		  </tr>
+	  </table>	</td>
+  </tr>
+	<tr>
+		<td height="283" valign="top">
+		<table width="169" border="0">
+		  <tr>
+			<td width="53">F. Registro:</td>
+			<td width="106">
+				<input id="fec_registro" value="<?=muestrafecha($objeto->fec_registro)?>" size="12" name="fec_registro" readonly type="text" />
+	<a href="#" id="boton1" onclick="return false;"><img border="0" src="images/calendarA.png" width="20" height="20" /></a>  
+				<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fec_registro",
+					button            : "boton1",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+				</script>
+			</td>
+		  </tr>
+		  <tr>
+			<td>F. Desin.:</td>
+			<td>
+	<input id="fec_desincorporacion" value="<?=$objeto->fec_desincorporacion?>" size="12" name="fec_desincorporacion" readonly type="text" />
+	<a href="#" id="boton2" onclick="return false;"><img border="0" src="images/calendarA.png" width="20" height="20" /></a>  
+				<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fec_desincorporacion",
+					button            : "boton2",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+				</script>
+			</td>
+		  </tr>
+	  </table>	  </td>
+		<td valign="top">
+			<table width="211" border="0">
+			  <tr>
+				<td width="205">Direcci&oacute;n: 	<span class="errormsg" id="error_direccion">*</span>
+									<?=$validator->show("error_direccion")?>
+
+				<br>
+				<textarea name="direccion" cols="30" rows="5"><?=$objeto->direccion?></textarea>
+				</td>
+			  </tr>
+			  <tr>
+				<td>
+				
+				Domicilio Fiscal:<br>
+				<textarea name="domicilio_fiscal" id="domicilio_fiscal" cols="30" rows="5"><?=$objeto->domicilio_fiscal?></textarea></td>
+			  </tr>
+			  <tr>
+				<td height="91">
+				Direcci&oacute;n Eventual:<br>
+				<textarea name="direccion_eventual" id="direccion_eventual" cols="30" rows="5"><?=$objeto->direccion_eventual?></textarea></td>
+			  </tr>
+			</table>	
+		</td>
+		<td valign="top">
+<fieldset style="width:50 ">Tel&eacute;fonos/Mail
+<table width="200" border="0">
+  <tr>
+    <td width="56">Tel&eacute;fono:</td>
+    <td width="128"><input type="text" name="telefono" value="<?=$objeto->telefono?>"></td>
+  </tr>
+  <tr>
+    <td>Fax:</td>
+    <td><input type="text" name="fax" value="<?=$objeto->fax?>"></td>
+  </tr>
+  <tr>
+    <td>Celular:</td>
+    <td><input type="text" name="celular" value="<?=$objeto->celular?>"></td>
+  </tr>
+  <tr>
+    <td>E-mail:</td>
+    <td><input type="text" name="email" value="<?=$objeto->email?>"></td>
+  </tr>  
+</table>	  
+</fieldset>
+<table width="100" border="0">
+  <tr>
+    <td width="94">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td><input name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>"/></td>
+  </tr>
+</table>
+
+</td>
+	</tr> 
+	<tr><td colspan="3">Estado: <?=helpers::combo($conn, 'estado', $objeto->id_estado)?> &nbsp; Municipio: <?=helpers::combo($conn, 'municipios', $objeto->id_municipio)?> 
+	&nbsp;Parroquia: <?=helpers::combo($conn, 'parroquias', $objeto->id_parroquia)?>
+	</td></tr> 
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

@@ -1,0 +1,292 @@
+<form name="form1" method="post">
+
+<table width="600" border="0">
+	<tr>
+		<td width="115">Nombre:</td>
+		<td colspan="6">
+			<input type="text" name="nombre" id="nombre" value="<?=$objeto->nombre?>" size="82">
+			<span class="errormsg" id="error_nombre">*</span>
+			<?=$validator->show("error_nombre")?>
+		</td>
+	</tr>
+	<tr>
+		<td>R.I.F:</td>
+		<td align="left" colspan="6">
+			<select name="rif_letra" id="rif_letra">
+			<option value="0">Seleccione</option>
+			<option value="E" <?php if($objeto->rif_letra=='E') echo "selected"?>>E</option>
+			<option value="J" <?php if($objeto->rif_letra=='J') echo "selected"?>>J</option>
+			<option value="V" <?php if($objeto->rif_letra=='V') echo "selected"?>>V</option>
+			<option value="G" <?php if($objeto->rif_letra=='G') echo "selected"?>>G</option>  
+			</select>
+			<span class="errormsg" id="error_rif_letra">*</span>
+			<?=$validator->show("error_rif_letra")?>
+			<!--<?=helpers::combo($conn, 'rif_letra', $objeto->rif_letra)?>--> - <input type="text" name="rif_numero" value="<?=$objeto->rif_numero?>" id="rif_numero" size="10" maxlength="8">
+			<span class="errormsg" id="error_rif_numero">*</span>
+			<?=$validator->show("error_rif_numero")?>
+			- <input type="text" name="rif_cntrl" value="<?=$objeto->rif_control?>" id="rif_cntrl" size="2" maxlength="1" onkeypress="return onlyNumbersCI(event)">
+			<span class="errormsg" id="error_rif_cntrl">*</span>
+			<?=$validator->show("error_rif_cntrl")?>
+			&nbsp;&nbsp;Nit: 
+			<input type="text" name="nit" value="<?=$objeto->nit?>" size="10" maxlength="12">
+			<!--<span class="errormsg" id="error_nit">*</span>-->
+			<? // $validator->show("error_nit")
+			?>
+			&nbsp;&nbsp;
+			Nro. Trab:<input type="text" name="n_trabajadores" value="<?=$objeto->nro_trabajadores?>" size="4" maxlength="12" onkeypress="return onlyNumbersCI(event)">
+		</td>
+	</tr>
+	<tr>
+		<td>Direcci&oacute;n</td>
+		<td colspan="6">
+			<input type="text" name="direccion" id="direccion" value="<?=$objeto->direccion?>" size="82">
+			<span class="errormsg" id="error_direccion">*</span>
+			<?=$validator->show("error_direccion")?>
+		</td>
+	</tr>
+	<tr>
+		<td>Entidad:</td>
+		<td width="138">
+			<?=helpers::superCombo($conn, 'estado', $objeto->id_estado, 'estado','estado','width:120px;', "traeMunicipios(this.value,'','');")?>
+			&nbsp;&nbsp;<span class="errormsg" id="error_estado">*</span>
+			<?=$validator->show("error_estado")?>
+			<?php if ($objeto->id) echo("<script>traeMunicipios($objeto->id_estado, $objeto->id_municipio)</script>")?>
+			<?php if ($objeto->id) echo("<script>traeParroquias($objeto->id_municipio, $objeto->id_parroquia)</script>")?>
+		</td>	
+		<td width="132">	
+			<div id="divcombomunicipios" style="width:100%" align="left">
+				<select style="width:120px" name="municipios" id="municipios">
+				<option value="0">Seleccione</option>
+				</select>
+			</div>
+		</td>
+		<td width="9">
+			<span class="errormsg" id="error_municipios">*</span>
+			<?=$validator->show("error_municipios")?>
+		</td>
+		<td width="132">
+			<div id="divcomboparroquias" style="width:100%" align="left">
+				<select style="width:120px" name="parroquias" id="parroquias">
+				<option value="0">Seleccione</option>
+				</select>
+			</div>
+		</td>
+		<td>	
+			<span class="errormsg" id="error_parroquias">*</span>
+			<?=$validator->show("error_parroquias")?>
+		</td>
+	</tr>
+	<tr>
+		<td>Contribuyente:</td>
+		<td colspan="6">
+			<select name="provee_contrib_munic" id="provee_contrib_munic" onchange="selecciona_cont(this.value,'0'); mostrarBuscarCta(); defineCuenta(this.value);">
+			<option value="0">Seleccione</option>
+			<option value="S" <?php if($objeto->provee_contrib_munic=='S') echo "selected"?>>Formal</option>
+			<option value="N" <?php if($objeto->provee_contrib_munic=='N') echo "selected"?>>Ordinario</option>
+			</select>
+			<span class="errormsg" id="error_provee_contrib_munic">*</span>
+			<?=$validator->show("error_provee_contrib_munic")?>&nbsp;&nbsp;
+			<?php if ($objeto->id) echo("<script>selecciona_cont($('provee_contrib_munic').value, '$objeto->provee_contrat');</script>")?>
+			Tipo: 
+			<select name="provee_contrat" id="provee_contrat" > <!-- onchange="defineCuenta(this.value);" -->
+			<option value="0">Seleccione</option>
+			</select>
+			<?php if ($objeto->id) echo("<script>defineCuenta($('provee_contrib_munic').value);</script>")?>
+			<span class="errormsg" id="error_provee_contrat">*</span>
+			<?=$validator->show("error_provee_contrat")?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			Status: 
+			<input type="text" name="status_proveedor" value="<?=$objeto->status?>" size="3" readonly="readonly" style="text-align:center" >
+		</td>
+	</tr>
+	<tr>
+		<td>Cuenta Contable:</td>
+		<td colspan="4">
+			<input type="text" name="txtCuentaContable" id="txtCuentaContable" style="width:350px" value="<?=$objeto->desc_cuenta?>" />
+            <span class="errormsg" id="error_cc">*</span>
+			<?=$validator->show("error_cc")?>
+            <input type="hidden" name="cta_contable" id="cta_contable" value="<?=$objeto->cta_contable?>" />
+            <span onclick="traeCuentasContables();" style="cursor:pointer; display:none" id="bcuentas">
+                <img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar
+            </span> 
+		</td>
+		<td colspan="2">
+			
+			<input type="hidden" name="ctaContable" id="ctaContable" value="<?=$objeto->cta_contable?>"  /> 
+		</td>
+	</tr>
+	<tr>
+		<td>Datos Reg: </td>
+		<td colspan="6">
+			<input type="text" name="datos_reg" id="datos_reg" value="<?=$objeto->datos_reg?>" size="43">	<span class="errormsg" id="error_datos_reg">*</span>
+			<?=$validator->show("error_datos_reg")?>&nbsp;&nbsp;&nbsp;
+			Registro Const.: 
+			<input type="text" size="12" name="registro_const" id="registro_const" readonly  value="<?=$objeto->registro_const?>" />
+			<a href="#" id="boton2" onclick="return false;"><img border="0" src="images/calendarA.png" width="20" height="20" /></a>  
+				<script type="text/javascript">
+							new Zapatec.Calendar.setup({
+								firstDay          : 1,
+								weekNumbers       : true,
+								showOthers        : false,
+								showsTime         : false,
+								timeFormat        : "24",
+								step              : 2,
+								range             : [1900.01, 2999.12],
+								electric          : false,
+								singleClick       : true,
+								inputField        : "registro_const",
+								button            : "boton2",
+								ifFormat          : "%d/%m/%Y",
+								daFormat          : "%Y/%m/%d",
+								align             : "Br"
+							 });
+							 
+						</script>	</td>
+	</tr>
+	<tr>
+		<td>Represent.:</td>
+		<td colspan="6">
+			<input type="text" name="ci_representante" id="ci_representante" size="11" maxlength="11" value="<?=$objeto->ci_representante?>">
+			<span class="errormsg" id="error_ci_representante">*</span>
+			<?=$validator->show("error_ci_representante")?>
+			<input type="text" name="nombre_representante" id="nombre_representante" value="<?=$objeto->nombre_representante?>" size="66">
+			<span class="errormsg" id="error_nombre_representante">*</span>
+			<?=$validator->show("error_nombre_representante")?>
+		</td>
+	</tr>
+	<tr>
+		<td>Contacto:</td>
+		<td colspan="6"><input type="text" name="contacto" value="<?=$objeto->contacto?>" style="width:421px"></td>
+	</tr>
+	<tr>
+		<td>Accionistas:</td>
+		<td colspan="6"><input type="text" name="accionistas" value="<?=$objeto->accionistas?>" style="width:421px"></td>
+	</tr>
+	<tr>
+		<td>Junta Directiva: </td>
+		<td colspan="6"><input type="text" name="junta_directiva" value="<?=$objeto->junta_directiva?>" style="width:421px"></td>
+	</tr>
+	<tr>
+		<td>Tel&eacute;fono:</td>
+		<td colspan="6">
+			<input type="text" name="telefono" id="telefono" size="11" value="<?=$objeto->telefono?>" onkeypress="return onlyNumbersCI(event)">
+			<span class="errormsg" id="error_telefono">*</span>
+			<?=$validator->show("error_telefono")?>
+			&nbsp;&nbsp;  
+			Fax: <input type="text" name="fax" size="15" value="<?=$objeto->fax?>" onkeypress="return onlyNumbersCI(event)"> &nbsp;&nbsp;
+			Email: <input type="text" name="email" style="width:175px" value="<?=$objeto->email?>" onchange="validarEmail(this.value);">
+		</td>
+	</tr>
+	<tr>
+		<td>Comisario:</td>
+		<td colspan="6"><input type="text" name="ci_comisario" size="11" value="<?=$objeto->ci_comisario?>"> <input type="text" name="nombre_comisario" value="<?=$objeto->nombre_comisario?>" style="width:350px"></td>
+	</tr>
+	<tr>
+		<td>Responsable:</td>
+		<td colspan="6"><input type="text" name="ci_responsable" size="11" value="<?=$objeto->ci_responsable?>"> <input type="text" name="nombre_responsable" value="<?=$objeto->nombre_responsable?>" style="width:350px"></td>
+	</tr>
+	<tr>
+		<td width="115">Objeto de la Empresa:</td>
+		<td colspan="6"><textarea name="obj_empresa" id="obj_empresa" cols="78" rows="6"><?=$objeto->obj_empresa?></textarea></td>
+	</tr>
+</table>
+<table border="0" width="600">
+	<tr>
+		<td>Cap. Suscrito:</td>
+		<td>
+			<input type="text" name="cap_suscrito" id="cap_suscrito" value="<?=number_format($objeto->cap_suscrito, 2, ',', '.')?>" onkeypress="return onlyNumbersCI(event)">
+			<span class="errormsg" id="error_cap_suscrito">*</span>
+			<?=$validator->show("error_cap_suscrito")?>
+			&nbsp;
+			Cap. Pagado: <input type="text" name="cap_pagado" id="cap_pagado" value="<?=number_format($objeto->cap_pagado, 2, ',', '.')?>" onkeypress="return onlyNumbersCI(event)">
+			<span class="errormsg" id="error_cap_pagado">*</span>
+			<?=$validator->show("error_cap_pagado")?>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">&nbsp;</td>
+	</tr>	
+	<tr>
+		<td width="115">Grupos de Proveedores:</td>
+		<td><?=helpers::superCombo($conn, 'SELECT id, nombre AS descripcion FROM puser.grupos_proveedores', '', 'grupos_proveedores', 'grupos_proveedores')?></td>
+	</tr>
+	<tr>
+		<td align="center" colspan="2">
+			<br />
+			<input type="button" name="b_agregarGP" value="Agregar" onclick="agregarGP();" />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="button" name="b_eliminarGP" value="Eliminar" onclick="eliminarGP();" />
+		</td>
+	</tr>
+	<tr>
+		<td align="center" colspan="2"><div id="gridboxgp" style="width:300px; height:100px; z-index:0; display:block" class="gridbox" align="center"></div><input type="hidden" name="relacion_gp" id="relacion_gp" /></td>
+	</tr>
+	<tr>
+		<td colspan="2">&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="right" valign="bottom">
+			<?php if(!empty($id)){ ?>
+			<!--<input type="button" name="btn_retencion_iva" value="Reteni&oacute;n IVA" onclick="popup('retencion_iva_proveedor.php?id_proveedores=<?=$objeto->id?>','','resizable,scrollbars=no,width=420,height=230')">-->
+			<?php } ?>	
+			<?php if(!empty($id)){ ?>
+			<input type="button" name="btn_requisitos" value="Requisitos" onclick="popup('requisitos_proveedor.php?id_proveedores=<?=$objeto->id?>&grupo=<?=$objeto->id_grupo_prove?>','','resizable,scrollbars,width=580,height=450')">
+			<?php } ?>
+			<? //php if(!empty($id)){ ?>
+			<!--<input type="button" name="btn_imprimir_ficha" value="Imprimir Ficha" onClick="javascript: window.open('imprimir_ficha.pdf.php?id_proveedores=<?=$objeto->id?>')">-->
+			<?php //} ?>
+			<input name="boton" type="button" value="<?=$boton?>" onclick="Guardar(); <?= $validator->validate() ?>"/>
+			<input type="hidden" name="accion" value="<?=$boton?>" />
+			<!--<td colspan="2" align="left">-->
+			<?php // if($objeto->status=='A'){ ?>
+			<!--<input type="button" name="btn_imprimir_registro" value="Imprimir Registro" onClick=	"javascript:window.open('imprimir_registro.php?id_proveedores=<?=$objeto->id?>')">-->
+			<?php // } ?>
+		</td>
+	</tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+
+<script language="javascript" type="text/javascript">
+buildGridgp();
+CargarGrid();
+function buildGridgp(){
+	//set grid parameters
+	mygridgp = new dhtmlXGridObject('gridboxgp');
+	mygridgp.selMultiRows = true;
+	mygridgp.setImagePath("js/Grid/imgs/");
+	mygridgp.setHeader("Grupo de Proveedores");
+	mygridgp.setInitWidths("300");
+	mygridgp.setColAlign("left");
+	mygridgp.setColTypes("coro");
+	mygridgp.setColSorting("str");
+	mygridgp.setColumnColor("white");
+	mygridgp.rowsBufferOutSize = 0;
+	mygridgp.setMultiLine(false);
+	mygridgp.selmultirows="true";
+	<? $prod = new grupos_proveedores;
+		$objcp = $prod->get_all($conn,0,200);
+	?>
+	<?=helpers::combogrid($objcp, 0, 'id' , 'nombre', 'Seleccione', 'mygridgp' )?>
+	mygridgp.init();
+	
+}
+
+function CargarGrid(){
+var JsonAux;
+	mygridgp.clearSelection();
+	mygridgp.clearAll();
+	if("<?=$objeto->id?>"){ 
+		if('<?=$objeto->relacionPARCAT?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->relacionPARCAT?>' + ')');
+			//alert(Relaciones[0][2]);
+			for(i=0;i<Relaciones.length;i++){
+				mygridgp.addRow(i,Relaciones[i]['id_grupo']);
+			}
+		}
+		
+	}
+}
+
+</script>

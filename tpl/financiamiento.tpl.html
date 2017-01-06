@@ -1,0 +1,38 @@
+<form name="form1" method="post">
+<table>
+</tr>
+<tr>
+	<td>Descripci&oacute;n:</td>
+	<td><input size="50" name="descripcion" value="<?=$objeto->descripcion ?>" type="text">
+	<span class="errormsg" id="error_desc">*</span>
+	<input name="id" value="<?=$objeto->id?>" type="hidden" />
+	<?=$validator->show("error_desc")?></td>
+</tr>
+<!--<tr>
+	<td>Genera Retenciones:</td>
+	<td><input type="radio" name="genera_retenciones" id="genera_retenciones_si" value="1" <?=radio('t',$objeto->genera_retenciones) ?> />
+		<label for="genera_retenciones_si">Si</label>
+		<input type="radio" name="genera_retenciones" id="genera_retenciones_no" value="0" <?=radio('f',$objeto->genera_retenciones) ?> />
+		<label for="genera_retenciones_no">No</label>
+		<span class="errormsg" id="error_genr">*</span>
+		<?=$validator->show("error_genr")?>
+	</td>
+</tr>
+<tr>
+	<td>Genera Pagos Parciales:</td>
+	<td><input type="radio" name="genera_pagos_parciales" id="genera_pagos_parciales_si" value="1" <?=radio('t',$objeto->genera_pagos_parciales) ?> />
+		<label for="genera_pagos_parciales_si">Si</label>
+		<input type="radio" name="genera_pagos_parciales" id="genera_pagos_parciales_no" value="0" <?=radio('f',$objeto->genera_pagos_parciales) ?> />
+		<label for="genera_pagos_parciales_no">No</label>
+		<span class="errormsg" id="error_genpp">*</span>
+		<?=$validator->show("error_genpp")?>
+	</td>
+</tr>-->
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

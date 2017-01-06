@@ -1,0 +1,58 @@
+<?
+	$q = "SELECT * FROM rrhh.parametrossistema";
+	$r = $conn->Execute($q);
+	if(!$r->EOF){
+		$Enlace= $r->fields['enlace_presupuesto']=='1' ? '1' : '0';
+	}else{
+		$Enlace='0';
+	}
+?><form name="form1" method="post">
+<table width="600" border="0">
+  <tr>
+    <td width="100">Codigo:</td>
+    <td ><input type="text" name="codigo" value="<?=$objeto->int_cod ? $objeto->dep_cod : getCorrelativo($conn, 'dep_cod', 'rrhh.departamento', 'int_cod')?>">
+		<span class="errormsg" id="error_codigo">*</span>
+		<?=$validator->show("error_codigo")?>
+   </td>
+  </tr>
+  <tr>
+    <td>Descripcion:</td>
+    <td>
+		<input type="text" name="nombre" style="width:250px" value="<?=$objeto->dep_nom?>">
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+  </tr>
+  <tr>
+    <td >Division:</td>
+    <td ><?=helpers::combonomina($conn, '', $objeto->div_cod,'','','division','int_cod','div_nom','division','','SELECT * FROM rrhh.division WHERE emp_cod='.$_SESSION['EmpresaL'].' ORDER BY int_cod')?></td>
+  </tr>
+  <tr>
+	<td>Estatus:</td>
+	<td >
+		<SELECT NAME="estatus" id="estatus">
+			<OPTION <?=($objeto->dep_estatus=='0') ? "selected" : "" ?> value='0'>Activo
+			<OPTION <?=($objeto->dep_estatus=='1') ? "selected" : "" ?> value='1'>Inactivo
+		</SELECT>
+	</td>
+  </tr>
+  <tr>
+    <td>Orden:</td>
+    <td>
+		<input type="text" name="orden" value="<?=$objeto->dep_ord?>">
+	</td>
+  </tr>
+  <? if($Enlace=='1') { ?>
+  <tr>
+    <td>Unidad Ejecutora</td>
+    <td><?=helpers::combo_ue_cp($conn, 'puser.unidades_ejecutoras',$objeto->uni_cod,'','id','unidad','unidad','',"SELECT id,descripcion FROM puser.unidades_ejecutoras WHERE id_escenario='$escEnEje'",'','','60')?></td>
+  </tr>
+  <? } ?>
+</table>
+<input style="float:right"  name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="int_cod" type="hidden" value="<?=$objeto->int_cod?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p

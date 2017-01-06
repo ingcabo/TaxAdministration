@@ -1,0 +1,131 @@
+<form name="form1" method="post">
+<table border="0">
+  <tr>
+    <td width="150">C&oacute;digo:</td>
+    <td>
+		<input type="text" name="nro_cuenta" id="nro_cuenta" value="<?=$objeto->id?>">
+	</td>
+  </tr>
+  <tr>
+    <td width="90">Nro. de Cuenta:</td>
+    <td>
+		<input type="text" name="nro_cuenta" id="nro_cuenta" value="<?=$objeto->nro_cuenta?>" style="width:150px" />
+		<span class="errormsg" id="error_nro_cuenta">*</span>
+		<?=$validator->show("error_nro_cuenta")?>   </td>
+  </tr>
+  
+  <tr>
+    <td width="90">Banco:</td>
+    <td>
+		 <? $bn = new banco;
+			$arr = $bn->get_all($conn);
+		 ?>
+		 <?=helpers::superComboObj($arr, $objeto->banco->id,'id_banco', 'id_banco', 'width:250px', '', 'id', 'descripcion', false, 80)?>
+		 <span class="errormsg" id="error_banco">*</span>
+		 <?=$validator->show("error_banco")?>
+	 </td>
+  </tr>
+  
+  <tr>
+    <td width="90">Tipo de Cuenta:</td>
+    <td>
+		 <? $tcb = new tipos_cuentas_bancarias;
+			$arr = $tcb->get_all($conn);
+		 ?>
+		 <?=helpers::superComboObj($arr, $objeto->tipo_cuenta->id,'id_tipo_cuenta', 'id_tipo_cuenta', 'width:250px', '', 'id', 'descripcion', false, 80)?>
+		 <span class="errormsg" id="error_tipo_cuenta">*</span>
+		 <?=$validator->show("error_tipo_cuenta")?>
+	 </td>
+  </tr>
+  
+  <tr>
+    <td width="90">Clasificaci&oacute;n de Cuenta:</td>
+    <td>
+		 <? $cc = new clasificacion_cuenta;
+			$arr = $cc->get_all($conn);
+		 ?>
+		 <?=helpers::superComboObj($arr, $objeto->clasificacion_cuenta->id,'id_clasificacion_cuenta', 'id_clasificacion_cuenta', 'width:250px', '', 'id', 'descripcion', false, 80)?>
+		 <span class="errormsg" id="error_clasificacion_cuenta">*</span>
+		 <?=$validator->show("error_clasificacion_cuenta")?>
+	 </td>
+  </tr>
+  
+  <tr>
+    <td width="90">Cuenta Contable:</td>
+    <td>
+		<input type="text" name="txtCuentaContable" id="txtCuentaContable" style="width:350px" value="<?=$objeto->desc_cuenta?>" />
+        <span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?> 
+            <input type="hidden" name="id_plan_cuenta" id="id_plan_cuenta" value="<?=$objeto->plan_cuenta?>" />
+            <span onclick="traeCuentasContables();" style="cursor:pointer; " id="bcuentas">
+                <img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar
+            </span> 
+	</td>
+  </tr>
+  
+  <!--tr>
+    <td width="90">Entidades:</td>
+    <td width="204">
+	<? $en = new entidades;
+		$arr = $en->get_all($conn);
+	?>
+	<?= helpers::superComboObj($arr, $objeto->entidad->id,'id_entidades', 'id_entidades')?>
+	<span class="errormsg" id="error_entidades">*</span>
+		<?= $validator->show("error_entidades")?>   </td>
+  </tr-->
+  
+  <tr>
+    <td width="90">Fuente de Financiamiento:</td>
+    <td>
+		 <? $ff = new financiamiento;
+			$arr = $ff->get_all($conn);
+		 ?>
+		 <?=helpers::superComboObj($arr, $objeto->fuente_financiamiento->id,'id_fuente_financiamiento', 'id_fuente_financiamiento', 'width:250px', '', 'id', 'descripcion', false, 80)?>
+		 <span class="errormsg" id="error_fuente_financiamiento">*</span>
+		 <?=$validator->show("error_fuente_financiamiento")?>
+	 </td>
+  </tr>
+  
+  <tr>
+    <td width="90">Saldo Inicial:</td>
+    <td>
+		<input type="text" onkeypress="return(formatoNumero (this,event));" style="text-align:right;width:150px" name="saldo_inicial" id="saldo_inicial" value="<?=muestrafloat($objeto->saldo_inicial)?>">
+	<span class="errormsg" id="error_saldo">*</span>
+		<?=$validator->show("error_saldo")?>   </td>
+  </tr>
+  
+  <tr>
+    <td width="90">Creditos:</td>
+    <td>
+		<input type="text" style="text-align:right;width:150px" onkeypress="return(formatoNumero (this,event));" name="creditos" id="creditos" value="<?=muestrafloat($objeto->creditos)?>">
+	<span class="errormsg" id="error_creditos">*</span>
+		<?=$validator->show("error_creditos")?>   </td>
+  </tr>
+  
+  <tr>
+    <td width="90">Debitos:</td>
+    <td>
+		<input type="text" onkeypress="return(formatoNumero (this,event));" style="text-align:right;width:150px" name="debitos" id="debitos" value="<?=muestrafloat($objeto->debitos)?>">
+	<span class="errormsg" id="error_debitos">*</span>
+		<?=$validator->show("error_debitos")?>   </td>
+  </tr>
+  <tr>
+		<td>
+			Disponibilidad:
+		</td>
+		<td>
+			<input type="text" name="disponibilidad" id="disponibilidad" style="text-align:right;width:150px" value="<?=muestrafloat($objeto->saldo_inicial + $objeto->creditos - $objeto->debitos)?>" onkeypress="return(formatoNumero (this,event));"  />
+		</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td></td>
+  </tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

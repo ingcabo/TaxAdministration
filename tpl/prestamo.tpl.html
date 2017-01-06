@@ -1,0 +1,199 @@
+<form name="form1" method="post">
+<?$TxtAux=!empty($objeto->int_cod) ? "readonly" : "" ?>
+<?$CmbAux=!empty($objeto->int_cod) ? "disabled" : "" ?>
+<?$DPAux=!empty($objeto->int_cod) ? "style=\"display:none\"" : "" ?>
+<?$EstatusAux=(empty($objeto->int_cod) || $objeto->pres_estatus=='0') ? "" : "disabled"?>
+<table width="600" border="0">
+	<tr>
+		<td width="100px" >Contrato:</td>
+		<td ><?=helpers::combonomina($conn, '', $objeto->cont_cod,'','','Contrato','int_cod','cont_nom','Contrato',$CmbAux,'SELECT int_cod,cont_nom FROM rrhh.contrato WHERE emp_cod='.$_SESSION['EmpresaL'].' AND cont_estatus = 0 ORDER BY cont_nom','ComboTrabajador()','true'); ?></td>
+		<td >Monto</td>
+		<td ><p id="lblMonto"><?=muestrafloat($objeto->pres_monto)?></p></td>
+	</tr>
+	<tr>
+		<td >Departamento:</td>
+		<td ><?=helpers::combonomina($conn, '', $objeto->dep_cod,'','','Departamento','int_cod','dep_nom','Departamento',$CmbAux,'SELECT A.int_cod AS int_cod,A.dep_nom AS dep_nom FROM rrhh.departamento AS A INNER JOIN rrhh.division AS B ON A.div_cod=B.int_cod WHERE B.emp_cod='.$_SESSION['EmpresaL'].'  AND dep_estatus = 0 ORDER BY A.dep_nom','ComboTrabajador()','true'); ?></td>
+		<td >Saldo:</td>
+		<td ><p id="lblSaldo"><?=muestrafloat(!empty($objeto->int_cod) ? $objeto->TraeSaldo($conn,$objeto->int_cod) : 0) ?></p></td>
+	</tr>
+	<tr>
+		<td ><div style="cursor:pointer" onClick="BuscarDatos()">Trabajador:</div></td>
+		<td ><?=helpers::combonominaIII($conn, '', $objeto->tra_cod,'','','Trabajador','int_cod','tra_nom','tra_ape','Trabajador',$CmbAux,'SELECT A.int_cod,A.tra_nom,A.tra_ape FROM (rrhh.trabajador AS A INNER JOIN rrhh.departamento AS B ON A.dep_cod=B.int_cod) INNER JOIN rrhh.division AS C ON B.div_cod=C.int_cod WHERE C.emp_cod='.$_SESSION['EmpresaL'].' AND A.tra_estatus<>4 AND A.tra_vac!= 1 ORDER BY int_cod','CargarGrid()','true'); ?></td>
+		<td  >Estatus:</td>
+		<td >
+			<SELECT NAME="Estatus" id="Estatus"  <?=$EstatusAux?> >
+				<OPTION <?=($objeto->pres_estatus=='0') ? "selected" : "" ?> value='0'>Por Aprobar
+				<OPTION <?=($objeto->pres_estatus=='1') ? "selected" : "" ?> value='1'>Aprobado
+				<OPTION <?=($objeto->pres_estatus=='2') ? "selected" : "" ?> value='2'>Rechazado
+				<OPTION <?=($objeto->pres_estatus=='3') ? "selected" : "" ?> value='3'>Cancelado
+			</SELECT>
+		</td>
+	</tr>
+	<tr >
+		<td colspan="4"><hr></td>
+	</tr >
+	<tr id="DatosTrabajador" style="display:none " >
+		<td >Fecha Ingreso:</td>
+		<td ><input type="text" readonly  id="tra_fec_ing"></td>
+		<td >Sueldo Mensual:</td>
+		<td ><input type="text" readonly  id="tra_sueldo"><br></td>
+	</tr>
+	<tr>
+		<td >Descripcion:</td>
+		<td ><textarea id="Descripcion"  name="Descripcion" cols="50" rows="1" <?=$TxtAux?>><?=$objeto->pres_desc?></textarea></td>
+	</tr>
+	<tr >
+		<td >Monto del Prestamo:</td>
+		<td ><input type="text" id="Monto" name="Monto" value="<?=muestrafloat($objeto->pres_monto)?>" onChange="CargarGrid()" <?=$TxtAux?> /></td>
+		<td >Nro Cuotas:</td>
+		<td ><input type="text" id="Cuotas" name="Cuotas" value="<?=$objeto->pres_cuotas?>" onChange="CargarGrid()" <?=$TxtAux?> /></td>
+	</tr>
+	<tr >
+		<td >Fecha Primera Nomina:</td>
+		<td >
+			<table>
+				<tr>
+					<td><input value="<?=empty($objeto->pres_fecha_ini) ? "" : muestrafecha($objeto->pres_fecha_ini)?>" name="Fecha" id="Fecha"  type="text" style="width:80px" onChange="CargarGrid()" <?=$TxtAux?> /></td> 
+					<td > 
+						<a href="#" id="boton_fecha_nacimiento"  onclick="return false;" <?=$DPAux?> ><img border="0" src="images/calendarA.png" width="20" height="20"  /></a>  
+						<script type="text/javascript">
+							new Zapatec.Calendar.setup({
+								firstDay          : 1,
+								weekNumbers       : true,
+								showOthers        : false,
+								showsTime         : false,
+								timeFormat        : "24",
+								step              : 2,
+								range             : [1900.01, 2999.12],
+								electric          : false,
+								singleClick       : true,
+								inputField        : "Fecha",
+								button            : "boton_fecha_nacimiento",
+								ifFormat          : "%d/%m/%Y",
+								daFormat          : "%Y/%m/%d",
+								align             : "Br"
+							});
+						</script>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr >
+		<td colspan="4" ><br>Cuotas:</td>
+	</tr>
+	<tr >
+		<td colspan="4" ><div id="gridbox" width="600" height="250" class="gridbox"></div><br></td>
+	</tr>
+	<tr >
+		<td colspan="4" ><input style="float:right"  name="accion" id="accion" type="button" value="<?=$boton?>" onclick="Guardar()" /></td>
+	</tr>
+</table>
+<div id="msjMonto" style="color:#FF0000; font-size:12px" ></div>
+<div id="msjTrabajador" style="color:#FF0000; font-size:12px" ></div>
+<input type="hidden" id="cont_tipo">
+<input name="CuotasDet" type="hidden" id="CuotasDet"  />
+<input name="int_cod" type="hidden" value="<?=$objeto->int_cod?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<script> 
+buildGrid();
+
+<?=!empty($objeto->int_cod) ? "CargarGrid2();\n" : "" ?>
+<?=!empty($objeto->int_cod) ? "BuscarTipoContrato();\n" : "" ?>
+function buildGrid(){
+	//set grid parameters
+	mygrid = new dhtmlXGridObject('gridbox');
+	mygrid.selMultiRows = true;
+	mygrid.setImagePath("js/grid/imgs/");
+	mygrid.setHeader("Cuota Nro,Fecha Inicio,Fecha Fin,Porcentaje, Monto,Estatus");
+	mygrid.setInitWidths("100,100,100,100,100,100")
+	mygrid.setColAlign("center,center,center,center,center,center")
+	mygrid.setColTypes("ro,ed,ro,ro,ro,ro");
+	mygrid.setColSorting("int,str,str,str,int,str")
+	mygrid.setColumnColor("white,white,white,white,white,white")
+	mygrid.rowsBufferOutSize = 0;
+	mygrid.setMultiLine(false);
+	mygrid.selmultirows="true";
+	mygrid.setOnEditCellHandler(CalcularFechas);
+	mygrid.delim=";";
+	mygrid.init();
+} 
+var FechaA,BanderaAux=true;
+function CalcularFechas(stage,rowId,cellInd){
+var Cuota,FechaD,FechaAux,Bandera=true;
+	if(BanderaAux){
+		if(stage==0){
+			FechaA=mygrid.cells(rowId,'1').getValue();
+		}
+		if(stage==2){
+			if(cellInd=='1'){
+				Estatus=mygrid.cells(rowId,'5').getValue();
+				if(Estatus=='Cancelado'){
+					alert('El registro no puede ser modificado ya que tiene estatus cancelado');
+					mygrid.cells(rowId,'1').setValue(FechaA);
+				}else{
+					FechaD=mygrid.cells(rowId,'1').getValue();
+					Cuota=mygrid.cells(rowId,'0').getValue();
+					FechaAux=FechaD.split("/");
+					if($('cont_tipo').value=='1' && FechaAux[0]!='01' && FechaAux[0]!='16'){
+						alert("Para contratos quicenales los dias de inicio de nomina son 01 y 16");
+						mygrid.cells(rowId,'1').setValue(FechaA);
+						Bandera=false;
+					}
+					if($('cont_tipo').value=='2' && FechaAux[0]!='01'){
+						alert("Para contratos mensuales el dias de inicio de nomina es 01");
+						mygrid.cells(rowId,'1').setValue(FechaA);
+						Bandera=false;
+					}
+					if(Cuota>'1'){
+						FechaDAux=mygrid.cells(rowId-1,'2').getValue();
+						if(Date.parse(ConvertirFecha(FechaDAux))>=Date.parse(ConvertirFecha(FechaD))){
+							alert("La fecha no puede ser menor que la fecha de finalizacion de la ultima cuota");
+							mygrid.cells(rowId,'1').setValue(FechaA);
+							Bandera=false;
+						}
+					}
+					if(Bandera){
+						BanderaAux=false;
+						CargarGrid3(Cuota,FechaD);
+						BanderaAux=true;
+					}
+				}
+			}
+		}
+	}
+}
+function ConvertirFecha(Fecha){
+	Fecha=Fecha.split("/");
+	return Fecha[1]+"/"+Fecha[0]+"/"+Fecha[2];
+}
+function CargarGrid2(){
+var JsonAux;
+	mygrid.clearSelection();
+	mygrid.clearAll();
+	JsonAux={"Prestamo":<?=!empty($objeto->int_cod) ? $objeto->int_cod : -1?>,"Forma":6,"Accion":1};
+	var url = 'OperarGrid.php';
+	var pars = 'JsonEnv=' + JsonAux.toJSONString();
+	var Request = new Ajax.Request(
+		url,
+		{
+			method: 'post',
+			parameters: pars,
+	//		asynchronous:true, 
+			onComplete:function(request){
+				var JsonRec = eval( '(' + request.responseText + ')');
+				if(JsonRec){
+					for(var i=0;i<JsonRec.length;i++){
+						mygrid.addRow(i,JsonRec[i]['Nro']+";"+JsonRec[i]['FechaIni']+";"+JsonRec[i]['FechaFin']+";"+muestraFloat(JsonRec[i]['Porc'],2)+";"+muestraFloat(JsonRec[i]['Monto'],2)+";"+JsonRec[i]['Estatus'],i);
+					}  
+				}
+			}
+		}
+	);  
+} 
+
+</script>
+

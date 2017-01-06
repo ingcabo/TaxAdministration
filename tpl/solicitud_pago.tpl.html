@@ -1,0 +1,387 @@
+<form name="form1" method="post">
+<table style="text-align: left; width: 100%;"
+ border="0" cellpadding="1" cellspacing="1">
+  <tbody>
+    <tr>
+      <td><label for="nrodoc">N&ordm; de Solicitud:</label></td>
+      <td><input class="nrodoc" id="nrodoc"
+ name="nrodoc" value="<?=$objeto->nrodoc?>" readonly /></td>
+      <td><label for="nroref">N&ordm; de
+Documento:</label></td>
+      <td style="width:200px">
+	<input  type="text" name="nroref" id="nroref" value="<?=$objeto->nroref?>" /> <span onclick="mostrar_ventana()" style="cursor:pointer"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" />Buscar</span>
+		<span class="errormsg" id="error_nroref">*</span>
+		<?=$validator->show("error_nroref")?>
+	</td>
+      <td colspan="2">
+	  	<table border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td>
+	  			<label for="fecha">Fecha:&nbsp;&nbsp;</label></td>
+      		<td><input id="fecha" class="campoFecha"
+ readonly="readonly" name="fecha" value="<?=muestraFecha($objeto->fecha)?>" /></td>
+ 				<td><div align="left" style="vertical-align:top">
+			&nbsp;
+		<a href="#" id="boton_fecha" onclick="return false;">
+					  <img  border="0" src="images/calendarA.png" width="20" height="20" />
+					 </a>  
+              <script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecha",
+					button            : "boton_fecha",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			         </script>
+      </div></td>
+    </tr>
+	</table>
+	</td>
+</tr>
+<td><label for="descripcion">Descripci&oacute;n:</label></td>
+      <td colspan="5">
+		<input id="descripcion" readonly="readonly" class="textDesc" name="descripcion" value="<?=$objeto->descripcion?>" />
+      </td>
+    </tr>
+    <tr>
+      <td><label for="unidades_ejecutoras">Unidad
+Ejecutora:</label></td>
+      <td colspan="5">
+		<input id="ue" readonly="readonly" class="textDesc" name="ue" value="<?=$objeto->unidad_ejecutora?>" />
+		<input id="unidad_ejecutora" name="unidad_ejecutora" value="<?=$objeto->id_unidad_ejecutora?>" type="hidden" />
+		  
+      </td>
+    </tr>
+	<tr>
+	
+		<td colspan="6"><?
+		
+		$nrodoc = $objeto->nrodoc;
+		$oMovPre = new movimientos_presupuestarios;
+		$oMovPre->get($conn, $nrodoc, 1);
+		/*$porcret = ($oMovPre->tipo_contribuyente == 'ORDINARIO') ? '75' : '100';*/
+		$porcret = '100';
+		?>
+		<input name="porcret" id="porcret" type="hidden" value="<?=$porcret?>"  /></td>
+	</tr>
+    <tr>
+      <td><label for="proveedor">Benef./Prove.:</label></td>
+      <td>
+		<input id="proveedor" readonly="readonly"style="width:150px" name="proveedor" value="<?=$objeto->proveedor?>" />
+		<input type="hidden" value="<?=$objeto->id_proveedor?>" name="proveedores" id="proveedores"  />
+      </td>
+      <td><label for="tipo_contrib">Tipo de Contribuyente:</label></td>
+      <td colspan="3">
+      <input id="tipo_contribuyente" readonly="readonly" name="tipo_contribuyente" value="<?=$objeto->tipo_contribuyente?>" />
+      </td>
+	</tr>
+	<tr>
+      <td><label for="ingreso_periodo_fiscal">Ingreso
+Per&iacute;odo Fiscal:</label></td>
+      <td>
+		<input id="ingreso_periodo_fiscal" readonly="readonly" class="monto" name="ingreso_periodo_fiscal" value="<?=muestrafloat($objeto->ingreso_periodo_fiscal)?>" />
+      </td>
+      <td><label for="status"></label></td>
+      <td colspan="5">&nbsp;</td>
+    </tr>
+    <tr>
+      <td><label for="tipdoc">Tipo Documento:</label></td>
+      <td colspan="5">
+		<input id="tipdoc" style="width:200px" readonly="readonly" value="<?=$objeto->tipdoc->descripcion?>" name="tipdoc"/>
+		<input id="idtipodoc" type="hidden" value="<?=$objeto->tipdoc->id?>" name="idtipodoc" />
+      </td>
+    </tr>
+    <!--<tr>
+      <td><label for="cond_pago">Condici&oacute;n
+de Pago:</label></td>
+      <!--<td colspan="5" rowspan="1">
+		<?=helpers::superComboSQL($conn, 'finanzas.condiciones_pago', $objeto->id_condicion_pago,'cond_pago','cond_pago')?>
+		<span class="errormsg" id="error_cpago">*</span>
+		<?=$validator->show("error_cpago")?>
+      </td>
+    </tr>
+    <tr>
+      <td><label for="tipsol">Fuentes de Financiamiento:</label></td>
+      <td colspan="5" rowspan="1">
+      <?=helpers::superComboSQL($conn, 'puser.financiamiento', $objeto->fuente,'finan','finan')?>
+			<span class="errormsg" id="error_finan">*</span>
+		<?=$validator->show("error_tipsol")?>
+      </td>
+    </tr>-->
+<tr>
+	<td colspan="6">
+		<hr />
+	</td>
+<tr>
+	<td colspan="5">
+		<span class="titulo">Partidas Presupuestarias:</span>
+	</td>
+	<td><div style="display:none;" id="cargador_partidas"><table><tr><td><img alt="Cargando" src="images/loading.gif" align="middle" /> </td><td style="color:#FF0000; font-weight:bold">Cargando Data</td></tr></table></div></td>
+</tr>
+<tr>
+	<td colspan="6">	
+	</td>
+</tr>
+<tr>
+	<td colspan="6" align="center">
+		<hr />
+		<div id="gridboxpp" style=" width:728px; height:150px" class="gridbox" align="center"></div>
+		<input type="hidden" id="idParCat" value="0" />
+		<input type="hidden" id="hCausados" value="0" />
+		<input  type="hidden" id="contenedor_partidas" value="" name="contenedor_partidas" />
+		
+		</td>
+</tr>
+<tr height="10px">
+	<td colspan="6"><hr /></td>	
+</tr>
+    <tr>
+      <td><label for="compromiso">Compromiso:</label></td>
+      <td>
+	  <? $comprometido = round($comprometido,2); ?>
+	  <input class="monto" id="compromiso"
+ readonly="readonly" name="compromiso" value="<?=$comprometido?>" /></td>
+      <td><label for="causado">En Transito:</label></td>
+      <td>
+      <input id="transito" class="monto"
+ readonly="readonly" name="transito" value="<?=($causado=="" || $causado==0)? '0': $causado?>" /></td>
+ 
+      <td><label for="disponibilidad">Disponibilidad:</label></td>
+      <td>
+	  <? $disponible = $comprometido - $causado;
+	  $disponible = round($disponible,2);    ?>
+	  <input id="disponibilidad" class="monto" readonly="readonly" name="disponibilidad" value="<?=$disponible?>" /></td>
+    </tr>
+	<tr>
+		
+		<td>Monto a Pagar: </td>
+		<td><input type="text" name="pagar" id="pagar" onkeypress="return(formatoNumero(this,event));" value="<?= muestraFloat($objeto->pago)?>" style="text-align:right"  /></td>
+	</tr>
+    <tr>
+    	
+		<td colspan="6"><hr /></td>
+	
+	<tr>
+		<td colspan="6">
+			<span class="titulo">Facturas Relacionadas</span>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="6"><hr />
+		</td>
+	</tr>
+    <tr>
+        <td colspan="3"><input name="button2" type="button" id="Agregarcp" onclick="Agregar()" value="Agregar Facturas" /></td>
+        <td colspan="3" align="right"><input name="button" type="button" onclick="Eliminar()" value="Eliminar Facturas" align="right" /></td>
+        </tr>
+        <tr>
+            <td align="center" colspan="6">
+                <div id="gridboxfac" style=" width:728px; height:150px" class="gridbox" align="center"></div>
+                <input type="hidden" id="contenedor_facturas" value="" name="contenedor_facturas" />
+            </td>
+        </tr>
+        <tr>
+                <td colspan="3" style="text-align:right">Total Iva:</td>
+                <td colspan="3" style="text-align:right"><span style="text-align:right">
+                   </span> <input class="monto" style="width:150px" id="iva" name="iva" value="<?=muestrafloat($total)?>" readonly />
+                </td>
+        </tr>
+        <tr>
+                <td colspan="3" style="text-align:right">Total Iva Retenido:</td>
+                <td colspan="3" style="text-align:right"><span style="text-align:right">
+                    <input class="monto" style="width:150px" id="ivaRet" name="ivaRet" value="<?=muestrafloat($total)?>" readonly />
+                </span></td>
+            </tr>
+            <tr>
+            <td colspan="3" style="text-align:right">Total a Facturar:</td>
+            <td colspan="3" style="text-align:right"><span style="text-align:right">
+              <input class="monto" style="width:150px" id="total" name="total" value="<?=muestrafloat($total)?>" readonly />
+            </span></td>
+          </tr>
+        <tr>
+            <td colspan="2">Motivo:</td>
+            <td colspan="4"><textarea name="motivo" id="motivo" cols="100" rows="5"><?= $objeto->motivo?></textarea>
+                <span class="errormsg" id="error_motivo">*</span>
+                <?=$validator->show("error_motivo")?>
+            </td>
+            
+        </tr>		
+  </tbody>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+
+<br />
+<table border="0" cellpadding="0" cellspacing="0" width="750px">
+<tr>
+	<td align="right">
+	<? if($boton=='Guardar'){ ?>
+		<input name="boton" type="button" style="margin-left:2px;" value="<?=$boton?>" onclick="GuardarPP();GuardarFAC();actapr(this);" />  <!--actapr(this);-->
+		<input type="hidden" name="status" id="status" value="<?=($boton=='Guardar' || $boton=='Actualizar' )? '1' : '2'?>" />
+	<? } elseif($boton == 'Actualizar' && $objeto->status=='1') { ?>
+		<input style="float:right; margin: 5px" name="botonActualizar" type="button" value="Actualizar" onclick="GuardarPP();GuardarFAC(); actapr(this);" />
+		<input style="float:right; margin: 5px" name="botonAprobar" type="button" value="Aprobar" onclick="GuardarPP(); actapr(this);" />
+		<input style="float:right; margin: 5px" name="botonAnular" type="button" value="Anular" onclick="GuardarPP(); actapr(this);" />
+	<?} elseif($boton == 'Actualizar' && $objeto->status=='2'){ ?>
+		<input style="float:right; margin: 5px" name="botonAnular" type="button" value="Anular" onclick="GuardarPP(); actapr(this);" />
+	<? } ?>
+	<input name="accion" type="hidden" value="<?=$boton?>"  id="accion"/>
+	<input type="hidden" name="status_old" id="status_old" value="<?= $objeto->status?>" />
+	</td>
+</tr>
+</table>
+<br />
+<p class="errormsg">(*) Campo requerido</p>
+</form>
+<script language="javascript" type="text/javascript">
+<? if($boton=='Guardar'){ ?>
+buildGridPP();
+buildGridFAC();
+<? }else{?>
+buildGridPP();
+buildGridFAC();
+CargarGridPPInicial('<?=$objeto->nrodoc?>');
+CargarGridFAC();
+<? }?>
+
+
+//GRID DE PARTIDAS PRESUPUESTARIAS//
+function buildGridPP(){
+	//set grid parameters
+	mygridpp = new dhtmlXGridObject('gridboxpp');
+	mygridpp.selMultiRows = true;
+	mygridpp.setImagePath("js/grid/imgs/");
+	mygridpp.setHeader("Categoria,Partida Presupuestaria,Monto");
+	mygridpp.setInitWidths("240,240,245");
+	mygridpp.setColAlign("center,center,center");
+	mygridpp.setColTypes("coro,coro,ed");
+	mygridpp.setColSorting("str,str,int");
+	mygridpp.setColumnColor("white,white,white");
+	mygridpp.rowsBufferOutSize = 0;
+	mygridpp.setMultiLine(false);
+	mygridpp.selmultirows="true";
+	//mygridpp.setOnEnterPressedHandler(calcularMontoCausado);
+	mygridpp.delim=';';
+	mygridpp.setOnEditCellHandler(validarMontoPP);
+	
+	//INICIA GRID//
+	mygridpp.init();
+	
+	}
+
+//CARGA DEL GRID DE PARTIDA PREUPUESTARIA//
+function CargarGridPPInicial(id){
+	mygridpp.clearSelection();
+	mygridpp.clearAll();
+	//var idpc_iva = <?= $idpc_iva?>;
+	var url = 'json.php';
+	var pars = 'op=pp_solicitud2&id='+ id;
+	var Request = new Ajax.Request(
+		url,
+		{
+			method: 'get',
+			parameters: pars,
+			onLoading:function(request){}, 
+			onComplete:function(request){
+				var JsonData = eval( '(' + request.responseText + ')');
+				var transito = 0;
+				var comprometido = 0; 
+				var montoIva = 0;
+				var baseImp = 0;
+				var IdParCat = new Array;
+				if(JsonData){
+					for(var j=0;j<JsonData.length;j++){
+						
+						IdParCat[j] = new Array;
+						var monto_causar = JsonData[j]['montoporcausar'];
+						if(monto_causar < 0.1) monto_causar = 0;
+						mygridpp.getCombo(0).put(JsonData[j]['id_categoria_programatica'],JsonData[j]['categoria_programatica']);
+						mygridpp.getCombo(1).put(JsonData[j]['id_partida_presupuestaria'],JsonData[j]['partida_presupuestaria']);
+						mygridpp.addRow(JsonData[j]['idParCat'],JsonData[j]['id_categoria_programatica']+";"+JsonData[j]['id_partida_presupuestaria']+";"+muestraFloat(monto_causar));
+						IdParCat[j][0] = JsonData[j]['idParCat'];
+						
+						//ACUMULO EL CAUSADO Y EL COMPROMETIDO//	
+						transito += JsonData[j]['transito'];
+						comprometido += JsonData[j]['comprometido'];
+						
+						//SEPARO EL VALOR DEL IVA DE LA BASE IMPONIBLE
+						/*if(JsonData[j]['idParCat'] == idpc_iva) {
+							montoIva+= parseFloat(JsonData[j]['monto']);
+						}else{
+							baseImp+=  parseFloat(JsonData[j]['monto']);
+						}*/	
+						
+						ipp++;
+					}
+				var JsonIdParCat={"IdPartCat":IdParCat};
+				$("idParCat").value=JsonIdParCat.toJSONString();	
+				
+				if(isNaN(transito))
+					transito = 0;	
+				var disponible = comprometido - transito;
+				$('compromiso').value = muestraFloat(comprometido.toFixed(2));
+				$('transito').value = muestraFloat(transito.toFixed(2));
+				$('disponibilidad').value = muestraFloat(disponible.toFixed(2));		
+						  
+				}
+			}
+		}
+	);  
+}
+
+function buildGridFAC(){
+	//PARAMETROS DEL GRID//
+	mygridfac = new dhtmlXGridObject('gridboxfac');
+	mygridfac.selMultiRows = true;
+	mygridfac.setImagePath("js/grid/imgs/");
+	mygridfac.setHeader("N&ordm; Factura,N&ordm; Control,Fecha,Monto Doc,Descuento,Monto Exento,Iva, %, Base Imponible, Monto Iva, Iva Ret.");
+	mygridfac.setInitWidths("60,60,60,80,60,60,110,28,80,70,65");
+	mygridfac.setColAlign("center,center,center,center,center,center,center,center,center,center,center");
+	mygridfac.setColTypes("ed,ed,calendar,ed,ed,ed,coro,ed,ed,ed,ed");
+	mygridfac.setColSorting("str,str,int,int,int,int,int,int,int,int,int");
+	mygridfac.setColumnColor("white,white,white,white,white,white,white,white,white,white,white");
+	mygridfac.rowsBufferOutSize = 0;
+	mygridfac.setMultiLine(false);
+	mygridfac.selmultirows="true";
+	mygridfac.setOnEditCellHandler(busca_ret_iva);
+	//mygridfac.setOnEnterPressedHandler(calcularMontoBaseImp);
+	<? //$iva = new iva;
+		//$objiva = $iva->iva_anio($conn, $anoCurso);
+		$iva = new retenciones_adiciones;
+		
+		$objiva = $iva->get_retencion_iva($conn);
+		//die(var_dump($objiva));
+	?>
+	<?=helpers::combogrid($objiva, 6, 'id' , 'descripcion', 'Seleccione', 'mygridfac' )?>
+	//INICIO DE GRID//
+	mygridfac.init();
+}
+
+function CargarGridFAC(){
+	var JsonAux;
+	mygridfac.clearSelection();
+	mygridfac.clearAll();
+	if("<?=$objeto->nrodoc?>"){ 
+		if('<?=$objeto->relacionFacturas?>'){
+			var Facturas = eval( '(' + '<?=$objeto->relacionFacturas?>' + ')');
+			
+			for(i=0;i<Facturas.length;i++){
+				mygridfac.addRow(i,Facturas[i]['nrofac']+","+Facturas[i]['nrocontrol']+","+Facturas[i]['fechafac']+","+Facturas[i]['montofac']+","+Facturas[i]['descuento']+","+Facturas[i]['monto_excento']+","+Facturas[i]['id_retencion']+","+Facturas[i]['iva']+","+Facturas[i]['base_imponible']+","+Facturas[i]['monto_iva']+","+Facturas[i]['iva_retenido'],i);
+			}
+		}
+		sumaTotalFacturas();
+	}
+} 
+
+
+
+</script>

@@ -1,0 +1,89 @@
+<?php 
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+?>
+<form name="form1" method="post">
+<table width="310" border="0">
+  <tr>
+    <td width="90">A&ntilde;o:</td>
+    <td width="204"><input type="text" name="anio" value="<?=$objeto->anio?>" size="5" maxlength="4">
+		<span class="errormsg" id="error_anio">*</span>
+		<?=$validator->show("error_anio")?>
+    </td>
+  </tr>
+  <tr>
+    <td>Fecha Desde: </td>
+    <td><input id="fecha_desde" value="<?=muestrafecha($objeto->fecha_desde)?>" size="12" name="fecha_desde" readonly type="text" />
+	<a href="#" id="boton" onclick="return false;"><img border="0" src="images/calendarA.png" width="20" height="20" /></a>  
+				<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecha_desde",
+					button            : "boton",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+				</script>
+
+		<span class="errormsg" id="error_desde">*</span>
+		<?=$validator->show("error_desde")?>
+   </td>
+  </tr>
+  <tr>
+    <td>Fecha Hasta: </td>
+    <td>	<input id="fecha_hasta" value="<?=muestrafecha($objeto->fecha_hasta)?>" size="12" name="fecha_hasta" readonly type="text" />
+	<a href="#" id="boton1" onclick="return false;"><img border="0" src="images/calendarA.png" width="20" height="20" /></a>  
+				<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecha_hasta",
+					button            : "boton1",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+				</script>
+
+		<span class="errormsg" id="error_hasta">*</span>
+		<?=$validator->show("error_hasta")?>
+</td>
+  </tr>
+  <tr>
+    <td>Monto:</td>
+    <td><input type="text" name="monto" value="<?=muestrafloat($objeto->monto)?>"></td>
+  </tr>
+  <tr>
+    <td>Activo:</td>
+    <td><input type="checkbox" name="status" value="1" <?=compara_checked($objeto->status, 1)?> ></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><input name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

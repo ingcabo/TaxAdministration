@@ -1,0 +1,60 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>C&oacute;digo:</td>
+	<td><input 
+		name="id_nuevo" 
+		value="<?=$objeto->id?>" 
+		style="width:60px"
+		onkeypress="return onlyNumbersCI(event)" 
+		onchange="digitosMin(this, 3);"
+		type="text" />
+	<span class="errormsg" id="error_cod">*</span>
+	<?=$validator->show("error_cod")?>
+	</td>
+</tr>
+<tr>
+	<td>Momento Presupuestario:</td>
+	<td><?=helpers::combo($conn, 'momentos_presupuestarios', $objeto->id_momento_presupuestario) ?>
+	<span class="errormsg" id="error_mp">*</span>
+	<?=$validator->show("error_mp")?>
+	</td>
+	<td>Colocar en OP:</td>
+	<td>
+	<? if ($boton == 'Guardar'){ ?>
+	<input name="colocar_op" type="radio" value="true" checked="checked" />Si 
+	<?} else{ ?>
+	<input name="colocar_op" type="radio" value="true" <?=radio('t',$objeto->colocar_op) ?> />Si 
+	<? } ?>
+	<input name="colocar_op" type="radio" value="false" <?=radio('f',$objeto->colocar_op) ?> />No
+	<span class="errormsg" id="error_op">*</span>
+	<?=$validator->show("error_op")?>
+	</td>
+</tr>
+<tr>
+	<td>Abrebiaci&oacute;n:</td>
+	<td colspan="3"><input maxlength="2" name="abreviacion" value="<?=$objeto->abreviacion?>" style="width:30px" type="text">
+	<span class="errormsg" id="error_abrv">*</span>
+	<?=$validator->show("error_abrv")?>
+	</td>
+</tr>
+<tr>
+	<td>Descripci&oacute;n:</td>
+	<td colspan="3"><input name="descripcion" value="<?=$objeto->descripcion ?>" size="50" type="text">
+	<span class="errormsg" id="error_desc">*</span>
+	<?=$validator->show("error_desc")?>
+	</td>
+</tr>
+<tr>
+	<td>Observaci&oacute;n:</td>
+	<td colspan="3"><textarea  name="observacion" cols="50" rows="8"><?=$objeto->observacion ?></textarea>
+	</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

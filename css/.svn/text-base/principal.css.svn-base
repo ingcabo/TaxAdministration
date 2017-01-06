@@ -1,0 +1,113 @@
+/*Documento CSS */
+body {
+	font: 10px arial, hevetica, sans-serif;
+	margin: 0 0 0 0px; 
+	text-align:left;
+	background-color: #ffffff;
+}
+ul{
+	list-style-type: none;
+}
+#contenedor{
+	text-align: left;
+	margin: auto; 
+	width: 850px;
+	border: #F2B88C 1px solid;
+}
+#cabecera{
+	background:url(../images/banner.jpg);
+	padding: 0 0 0 0px;
+	border: #F2B88C 1px solid;
+	width: 850px;
+	height: 106px;
+}
+#cuerpo{
+	margin: 1 0 1 0px;
+/* Color para la alcaldia de libertador 
+	background:url(../images/fondo.gif); */
+	background-color: #FFF4F4; 
+	padding: 10 10 10 10px;
+/*	margin-left: 150px;
+	border-left: #F2B88C 1px solid;
+*/
+	font-size:10px;
+}
+
+#pie{
+	background-color: #FFF4F4; 
+/*	background:url(../images/fondo.gif); */
+	padding: 3 10 3 10px;
+	text-align:right;
+	border-top: #F2B88C 1px solid;
+}
+
+div#cuerpo a:link { color: #666666;text-decoration: none; 	font-weight: bold;}
+div#cuerpo a:visited { color: #666666;text-decoration: none;	font-weight: bold; }
+div#cuerpo a:hover { color: #666666;text-decoration: none;	font-weight: bold; }
+
+#grid{
+	width: 70%;
+	background-color:#C82619;
+	margin-left: auto; 
+	margin-right: auto;
+	font-size:10px;
+}
+#grid .cabecera{
+	background-color:#fff4f4;
+}
+#grid .filas{
+	background-color:#FFFFFF;
+}
+
+#grid tr td{
+	padding: 0 2 0 2px;
+}
+td{
+	font-size:10px;
+	font-family : Arial, Helvetica, sans-serif;
+}
+
+.titulo_maestro{
+	margin-left: 10px;
+	color: #C82619;
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	text-align:left;
+}
+
+div#msj {
+	margin-left:30%;
+	margin-right:30%;
+	border:1px solid #C82619;
+	padding:10px;
+	background-color: #ffffff;
+	text-align:center;
+	color: #C82619;
+	font-weight: bold;
+	font: 12px/18px Arial, Helvetica, sans-serif;
+}
+div#msj_login {
+	margin-left:30%;
+	margin-right:30%;
+	margin-bottom:20px;
+	padding:10px;
+	text-align:center;
+	color: #C82619;
+	font-weight: bold;
+	font: 12px/18px Arial, Helvetica, sans-serif;
+}
+.errormsg{
+	color:#C82619;
+	font-size : 12px;
+	font-family : Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+.titulo{
+	color:#000000;
+	font-size : 11px;
+	font-family : Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+
+

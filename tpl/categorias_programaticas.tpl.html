@@ -1,0 +1,101 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>C&oacute;digo:</td>
+	<td colspan="2">
+	<input type="text" name="cod1" id="cod1" style="width:40px; text-align:center" maxlength="2" onkeypress="return onlyNumbersCI(event)"  onkeyup="auto_focus(document.getElementById('cod1'),document.getElementById('cod2'),2)" value="<?=substr($objeto->id,0,2)?>" />
+	<input type="text" name="cod2" id="cod2" style="width:40px; text-align:center " maxlength="2" onkeypress="return onlyNumbersCI(event)"  onkeyup="auto_focus(document.getElementById('cod2'),document.getElementById('cod3') ,2)" value="<?=substr($objeto->id,2,4)?>" />
+	<input type="text" name="cod3" id="cod3" style="width:40px; text-align:center " maxlength="2" onkeypress="return onlyNumbersCI(event)"  onkeyup="auto_focus(document.getElementById('cod3'),document.getElementById('cod4') ,2)" value="<?=substr($objeto->id,4,6)?>" />
+	<input type="text" name="cod4" id="cod4" style="width:40px; text-align:center " maxlength="2" onkeypress="return onlyNumbersCI(event)"  onkeyup="auto_focus(document.getElementById('cod4'),document.getElementById('cod5') ,2)" value="<?=substr($objeto->id,6,8)?>" />
+	<input type="text" name="cod5" id="cod5" style="width:40px; text-align:center " maxlength="2" onkeypress="return onlyNumbersCI(event)"  onkeyup="auto_focus(document.getElementById('cod5'),document.getElementById('cod5') ,2)" value="<?=substr($objeto->id,8,10)?>" />
+	<span class="errormsg" id="error_cod">*</span>
+		<?=$validator->show("error_cod")?>	</td>
+</tr>
+<tr>
+	<td>Escenario:</td>
+	<td colspan="2">
+		<?=helpers::combo($conn, 'escenarios', $objeto->id_escenario) ?>
+		<span class="errormsg" id="error_esc">*</span>
+		<?=$validator->show("error_esc")?>
+	</td>
+</tr>
+<tr>
+	<td>Descripci&oacute;n:</td>
+	<td colspan="2">
+		<input size="53" name="descripcion" value="<?=$objeto->descripcion ?>" type="text" />
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+	<tr>
+		<td>Transf. desde Partida</td>
+		<td><input type="checkbox" name="status" id="status" value="1" <?=($objeto->status=='1') ? 'checked="checked"':''?> /></td>
+	</tr>
+</tr>
+</table>
+<div id="objSect" style="display:none">
+<table width="350px" >
+<tr>
+	<td style="width:80px">Objetivo Sectorial:</td>
+	<td colspan="2" style="width:170px"><textarea name="os" cols="50" rows="8"><?=$objeto->os ?></textarea></td>
+</tr>
+</table>
+</div>
+<div id="descProg" style="display:none">
+<table width="350px" >
+    <tr>
+        <td id="txtDescripcion" style="width:80px"></td>
+        <td style="width:170px"><textarea name="dp" id="dp" cols="50" rows="8"><?=$objeto->dp ?></textarea></td>
+    </tr>
+</table>
+</div>
+
+<!--tr>
+	<td>Destinada Programa Social:</td>
+	<td><input type="checkbox" name="dps" <?=checkbox($objeto->dps)?> /></td>
+	<td></td>
+</tr-->
+<!--    ///////////////// Posiblemente se habiliten en el futuro estas opciones  \\\\\\\\\\\\\\\\\\\\\\
+<tr>
+	<td colspan="3">
+	<table>
+	<tr>
+		<td>Presupuesto Original:</td>
+		<td><input size="20" type="text" name="po" value="<?=$objeto->po ?>" /></td>
+		<td>Compromisos:</td>
+		<td><input size="20" type="text" name="compromisos" value="<?=$objeto->compromisos ?>" /></td>
+	</tr>
+	<tr>
+		<td>Aumentos:</td>
+		<td><input size="20" type="text" name="aumentos" value="<?=$objeto->aumentos ?>" /></td>
+		<td>Causados:</td>
+		<td><input size="20" type="text" name="causados" value="<?=$objeto->causados ?>" /></td>
+	</tr>
+	<tr>
+		<td>Disminuciones:</td>
+		<td><input size="20" type="text" name="disminuciones" value="<?=$objeto->disminuciones ?>" /></td>
+		<td>Pagados:</td>
+		<td><input size="20" type="text" name="pagados" value="<?=$objeto->pagados ?>" /></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td></td>
+		<td>Disponible:</td>
+		<td><input size="20" type="text" name="disponible" value="<?=$objeto->disponible ?>" /></td>
+	</tr>
+	</table>
+	</td>
+</tr>
+-->
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<script type="text/javascript">
+	muestraSect = 0;
+	muestraProg = 0;
+	validar_codigo();
+</script>
+<p class="errormsg">(*) Campo requerido</p>

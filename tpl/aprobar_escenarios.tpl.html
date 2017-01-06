@@ -1,0 +1,30 @@
+<form name="form1" method="post">
+<table>
+<tr>
+<td>Organizaci&oacute;n:</td>
+<td><?=helpers::combo($conn, 'organismos') ?></td>
+</tr>
+<tr>
+<td>Escenario:</td>
+<td><?=helpers::combo($conn, 'escenarios', $objeto->id) ?></td>
+</tr>
+<tr>
+	<td>A&ntilde;o:</td>
+	<td><input name="ano" value="<?=$objeto->ano ?>" size="8" type="text"></td>
+</tr>
+<tr>
+<td>Descripcion:</td>
+<td><input name="descripcion" value="<?=$objeto->descripcion ?>" size="50" type="text"></td>
+</tr>
+<tr>
+	<td>Detalle:</td>
+	<td><textarea name="detalle" cols="50" rows="8"><?=$objeto->detalle ?></textarea></td>
+</tr>
+</table>
+<input name="accion" type="submit" value="Aprobar Escenario" />
+<input name="id" type="hidden" value="<?=$objeto->id ?>" />
+<input name="factor" type="hidden" value="<?=$objeto->factor ?>" />
+<input name="formulacion" type="hidden" value="<?=$objeto->formulacion ?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>

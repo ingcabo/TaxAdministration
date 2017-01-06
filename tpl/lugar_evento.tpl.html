@@ -1,0 +1,24 @@
+	
+<form name="form1" action="" method="post">
+<table width="507" border="0">
+<?=$cod_lugar_evento?>
+  <tr>
+    <td>Descripci&oacute;n:</td>
+    <td><input type="text" name="descripcion" id="descripcion" value="<?=$objeto->descripcion?>" size="50">
+		<span class="errormsg" id="error_descripcion">*</span>
+		<?=$validator->show("error_descripcion")?>
+	</td>
+  </tr>
+  <tr>
+  	<td width="96">Status:</td>
+	<td width="401"><input name="status" id="status" type="checkbox" value="1" <?php if ($objeto->status==1){ echo 'checked'; } ?> /></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="right"><input name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id_lugar_evento?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>

@@ -1,0 +1,467 @@
+<form name="form1" method="post">
+
+<table border="0">
+<tr>
+	<td>Tipo de Movimiento:</td>
+	<td colspan="4">
+	<? if ($boton=='Guardar'){?>
+		<?=helpers::combo_ue_cp($conn, 
+								'momentos_presupuestarios', 
+								'',
+								'',
+								'id',
+								'',
+								'',
+								"traeMpDesdeXML(this.value, 'tipdoc'); traeMpDesdeXML(this.value, 'tipref'); campoNroDoc();tipmovpre(this.value);")?>
+	<? }else{?>
+	
+		<input type="text" size="50" id="momento" name="momento" value="<?=$objeto->momento?>" />
+		<input  type="hidden" id="momentos_presupuestarios" name="momentos_presupuestarios" value="<?=$objeto->status?>" />	
+	<? }?>
+																	<span class="errormsg">*</span>
+	</td>
+	<td>A&ntilde;o:</td>
+	<td><input value="<?=date("Y")?>" name="ano" size="6 " type="text" readonly /></td>
+</tr>
+<tr>
+	<td>Unidad Ejecutora:</td>
+	<td colspan="4">
+	<? if ($boton=='Guardar'){?>
+		<?=helpers::superCombo($conn, 
+				"SELECT id, id || ' - ' || descripcion AS descripcion FROM unidades_ejecutoras WHERE id_escenario='$escEnEje' ORDER BY id",
+				'',
+				'unidad_ejecutora',
+				'unidad_ejecutora',
+				'',
+				'mostrarBuscarCat()',
+				'id',
+				'descripcion',
+				'',
+				30)?>
+	<? }else{?>
+	<input type="text" size="50" name="nombre_unidad" value="<?=$objeto->unidad_ejecutora?>" id="nombre_unidad" />
+	<?}?>
+					<span class="errormsg">*</span>
+	</td>
+	<td>C&eacute;dula o Rif:</td>
+	<td>
+	<? if ($boton=='Guardar'){?>
+					<input type="hidden" value="0" name="txtProveedores" id="txtProveedores" />
+					<input type="text" name="proveedores" id="proveedores" />
+									<span onclick="traeProveedores();" style="cursor:pointer; " id="bobras">
+									<img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span> 
+<!--		<?=helpers::combo_ue_cp($conn, 
+				'proveedores', 
+				'',
+				'',
+				'',
+				'',
+				'',
+				"traeNroRefDesdeXML($('unidad_ejecutora').value, this.value, $('tipref').value)",
+				"SELECT id, rif || ' ' || nombre AS descripcion FROM proveedores ", '','',35)?>
+				-->
+	<? } else{?>
+		<input type="text" size="30" name="nombre_proveedores" value="<?=$objeto->proveedor?>" id="nombre_proveedores" />
+	<? }?>
+	</td>
+</tr>
+<tr>
+	<td>Descripci&oacute;n:</td>
+	<td colspan="6"><textarea cols="45" name="descripcion"><?=$objeto->descripcion?></textarea> 
+	<span class="errormsg">*</span></td>
+</tr>
+<tr>
+	<td>Tipo Doc.:</td>
+	<td colspan="6">
+		<table cellpadding="0" cellspacing="0" border="0"><tr><td>
+			<? if ($boton=='Guardar'){?>	
+				<div id="cont_tipdoc">
+					<select name="tipdoc" id="tipdoc" ><option value="0">Seleccione un Tipo de Movimiento</option></select>
+				</div>
+			<? }else{?>
+				<input type="text" name="nombretipdoc" id="nombretipdoc"  value="<?=$objeto->tipo_documento?>"/>
+			<? }?>
+			</td>
+			<td>
+				<span class="errormsg">*</span>
+			</td>
+		</tr></table>
+	</td>
+</tr>
+<tr>
+	<td>N&ordm; Doc.:</td>
+	<td><input id="nrodoc" name="nrodoc" style="width:80px" type="text" readonly value="<?=$objeto->nrodoc?>" /></td>
+	<td>Fecha Doc.:</td>
+	<td colspan="4">
+		<table>
+			<tr>
+				<td>
+					<input id="fechadoc" value="<?=date("d/m/Y")?>" name="fechadoc" style="width:80px" type="text" readonly />
+				</td>
+				<td>
+					 <a href="#" id="boton_fechadoc" onclick="return false;">
+					  <img border="0" src="images/calendarA.png" width="20" height="20" />
+					</a>  
+			<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fechadoc",
+					button            : "boton_fechadoc",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			</script>
+
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td>Tipo Ref.:</td>
+	<td colspan="6">
+		<table cellpadding="0" cellspacing="0" border="0"><tr><td>
+			<? if ($boton=='Guardar'){?>	
+				<div id="cont_tipref">
+					<select name="tipref" id="tipref"><option>Seleccione un Tipo de Movimiento</option></select>
+				</div>
+			<? }else{?>
+				<input type="text" size="50" name="documento_ref" id="documento_ref" value="<?=$objeto->tipo_documento_ref->descripcion?>" />
+			<? }?>
+			</td>
+			<td>
+				<span class="errormsg">*</span>
+			</td>
+		</tr></table>
+	</td>
+</tr>
+<tr>
+	<td>N&ordm; Ref.:</td>
+	<td>
+	<? if ($boton=='Guardar'){?>
+		<div id="cont_nroref">
+		<input value="00000000" id="nroref" name="nroref" style="width:80px" type="text" />
+		</div>
+	<? }else{?>
+		<input value="<?=$objeto->nroref?>" id="nroref" name="nroref" type="text" size="50" />
+	<? }?>
+	</td>
+	<td>Fecha Ref.:</td>
+	<td colspan="4">
+		<table>
+			<tr>
+				<td>
+				<input id="fecharef" value="" name="fecharef" style="width:80px" type="text" readonly />
+				</td>
+				<td>
+					 <a href="#" id="boton_fecharef" onclick="return false;">
+					  <img border="0" src="images/calendarA.png" width="20" height="20" />
+					</a>  
+			<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecharef",
+					button            : "boton_fecharef",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			</script>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td colspan="7"><hr /></td>
+</tr>
+<tr>
+	<td colspan="7">
+<!-- parte copiada de tpl/ordcompra.tpl.html -->
+<table width="700" >
+	<tr>
+		<td width="648" height="18" valign="top" colspan="2">
+ 			<div align="left">Partidas Presupuestarias</div>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<div id="divagregarpp" >
+			<? if ($boton=='Guardar'){?>
+			<table width="100%" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td>Categoria</td>
+					<td>Partida Presupuestaria</td>
+					<td>Monto</td>
+				</tr>
+				<tr>
+					<td style="width:250px">
+						<table width="250" cellpadding="0" cellspacing="0" border="0s">
+							<tr>
+								<td width="150">
+									<input type="text" 
+											name="txtcategorias_programaticas" 
+											id="txtcategorias_programaticas" 
+											style="width:150px;" />
+									<input type="hidden" name="categorias_programaticas" id="categorias_programaticas" />
+									<span onclick="traeCategoriasProgramaticas($('unidad_ejecutora').value);" style="cursor:pointer; display:none" id="bcategorias"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span> 
+								</td>
+							</tr>
+						</table>	
+					</td>
+					<td style="width:250px">
+						<table width="250" cellpadding="0" cellspacing="0" border="0s">
+							<tr>
+								<td width="150">
+									<input type="text" 
+											name="txtpartidas_presupuestarias" 
+											id="txtpartidas_presupuestarias" 
+											style="width:150px;" />
+									<input type="hidden" name="partidas_presupuestarias" id="partidas_presupuestarias" />
+									<span onclick="traePartidasPresupuestarias($('categorias_programaticas').value);" style="cursor:pointer; display:none" id="bpartidas"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span>
+									<!--<input type="hidden" name="disponible" id="disponible" value="0"  />-->
+									<input type="hidden" id="idParCat" name="idParCat" value="0" />
+								</td>
+							</tr>
+						</table>					
+					</td>
+					<td style="width:200px">
+						<input type="text" name="montoip" id="montoip" class="monto"
+							onkeypress="return(formatoNumero(this,event));" 
+							value="0,00" />
+					</td>
+				</tr>
+			</table>
+			<? }?>
+			</div>
+		</td>
+	</tr>
+	<? if ($boton=='Guardar'){?>
+	<tr>
+		<td><div id="divagregarpp2" ><input name="button2" type="button" id="Agregarcp" onclick="AgregarCP()" value="Agregar" /></div></td>
+	    <td align="right"><div id="divagregarpp3" ><input name="button" type="button" onclick="EliminarCP()" value="Eliminar Ultimo Registro" align="right" /></div></td>
+	</tr>
+	<? }?>
+	<tr>
+		<td colspan="2"><hr /></td>
+	</tr>
+	<tr>
+		<td colspan="2"><div id="gridboxpp" style=" width:728px; height:150px; z-index:0; display:block" class="gridbox" align="center"></div>
+			<input type="hidden" name="contenedor_partidas" id="contenedor_partidas"  />
+		</td>
+	</tr>
+</table>
+<!-- fin de plagio de ordcompra.tpl.html -->
+
+	</td>
+</tr>
+<tr>
+	<td>
+		Categoria Programatica:
+	</td>
+	<td>
+		<textarea name="nombre_categoria" id="nombre_categoria" style="width:200px"></textarea>
+		
+	</td>
+	<td >
+		Patida Presupuestaria:
+	</td>
+	<td colspan="4">
+		<textarea name="nombre_partidas" id="nombre_partidas" style="width:200px"></textarea>
+		<input type="hidden" name="total_grid" id="total_grid" />
+	</td>
+</tr>
+<tr>
+	<td colspan="7"><hr /></td>
+</tr>
+<tr>
+	<td colspan="7"><strong>Por Documento:</strong></td>
+</tr>
+<tr>
+	<td colspan="7">
+		<table align="center">
+		<tr>
+			<td>Compromiso</td>
+			<td>Causado</td>
+			<td>Pagado</td>
+			<td>Aumentos</td>
+			<td>Disminuciones</td>
+			<td>
+				<div style="display:none">Disponible</div>
+			</td>
+		</tr>
+		<tr>
+		<td><input value="0" name="ppCompromiso" id="ppCompromiso" style="width:100px; text-align:right" readonly type="text" /></td>
+		<td><input value="0" name="ppCausado" id="ppCausado" style="width:100px; text-align:right" readonly type="text" /></td>
+		<td><input value="0" name="ppPagado" id="ppPagado" style="width:100px; text-align:right" readonly type="text" /></td>
+		<td><input value="0" name="ppAumentos" id="ppAumentos" style="width:100px; text-align:right" readonly type="text" /></td>
+		<td>
+			<input value="0" name="ppDisminuciones" id="ppDisminuciones" style="width:100px; text-align:right" readonly type="text" />
+		</td>
+		<td>
+			<input name="ppDisponible" id="ppDisponible" style="width:100px; text-align:right; display:none" readonly type="text" />
+		</td>
+		</tr>
+		</table>
+</td>
+</tr>
+<tr>
+	<td colspan="7"><hr /></td>
+</tr>
+<tr>
+		<td colspan="7"><strong>Por	Partida:</strong></td>
+</tr>
+<tr>
+	<td colspan="7">
+		<table>
+		<tr>
+			<td>Ppto.</td>
+			<td>Compromiso</td>
+			<td>Causado</td>
+			<td>Pagado</td>
+			<td>Aumentos</td>
+			<td>Disminuciones</td>
+			<td>Disponible</td>
+		</tr>
+		<tr>
+			<td>
+				<input id="presupuesto_original" name="presupuesto_original" style="width:90px; text-align:right" readonly type="text" />
+				<input id="idParCat" type="hidden" />
+			</td>
+			<td>
+				<input id="compromisos" name="compromisos" style="width:90px; text-align:right" readonly type="text" />
+				<input id="hCompromisos" type="hidden" />
+			</td>
+			<td>
+				<input id="causados" name="causados" style="width:90px; text-align:right" readonly type="text" />
+				<input id="hCausados" type="hidden" />
+			</td>
+			<td>
+				<input id="pagados" name="pagados" style="width:90px; text-align:right" readonly type="text" />
+				<input id="hPagados" type="hidden" />
+			</td>
+			<td>
+				<input id="aumentos" name="aumentos" style="width:90px; text-align:right" readonly type="text" />
+				<input id="hAumentos" type="hidden" />
+			</td>
+			<td>
+				<input id="disminuciones" name="disminuciones" readonly style="width:90px; text-align:right" type="text" />
+				<input id="hDisminuciones" value="0" type="hidden" />
+			</td>
+			<td>
+				<input id="disponible" name="disponible" style="width:90px; text-align:right" readonly type="text" />
+				<input id="hDisponible" type="hidden" />
+				<input name="aumentos_0" id="aumentos_0" type="hidden" />
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="GuardarPP();valida();" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<script>
+buildGridPP();
+CargarGridPP('<?=$objeto->documento?>');
+
+
+//TODO LO QUE ES EL MANEJO DEL GRID DE PARTIDA PRESUPUESTARIA//
+
+function buildGridPP(){
+	//set grid parameters
+		
+	mygridpp = new dhtmlXGridObject('gridboxpp');
+	mygridpp.selMultiRows = true;
+	mygridpp.setImagePath("js/grid/imgs/");
+	mygridpp.setHeader("Categoria,Partida Presupuestaria,Monto");
+	mygridpp.setInitWidths("260,260,205");
+	mygridpp.setColAlign("center,center,center");
+	mygridpp.setColTypes("ed,ed,ed");
+	mygridpp.setColSorting("str,str,int");
+	mygridpp.setColumnColor("white,white,white");
+	mygridpp.setEditable('fl');
+	mygridpp.rowsBufferOutSize = 0;
+	mygridpp.setMultiLine(false);
+	mygridpp.setOnRowSelectHandler(traerDisponiblePartidasSeleccionada);
+	mygridpp.selmultirows="true";
+	mygridpp.delim=';';
+	
+	
+	//mygridpp.setOnEditCellHandler(traePartidasPresupuestarias);
+	//mygridpp.setOnEnterPressedHandler(sumaTotalPartidas);
+	//start grid
+	mygridpp.init();
+}
+
+function CargarGridPP(id){
+	mygridpp.clearSelection();
+	mygridpp.clearAll();
+	var url = 'json.php';
+	var pars = 'op=pp_solicitud&id='+ id +'&ms='+new Date().getTime();
+	var Request = new Ajax.Request(
+		url,
+		{
+			method: 'get',
+			parameters: pars,
+			onLoading:function(request){}, 
+			onComplete:function(request){
+				var JsonData = eval( '(' + request.responseText + ')');
+				if(JsonData){
+				var comprometido=0, causado=0, pagado=0;
+					for(var j=0;j<JsonData.length;j++){
+						
+						mygridpp.addRow(JsonData[j]['idParCat'],JsonData[j]['id_categoria_programatica']+";"+JsonData[j]['id_partida_presupuestaria']+";"+muestraFloat(JsonData[j]['monto']));
+						//ACUMULO EL CAUSADO Y EL COMPROMETIDO//	
+						if ($('momentos_presupuestarios').value==1){
+							
+							comprometido += parseFloat(JsonData[j]['monto']);
+							causado = 0;
+							pagado = 0;
+						}else if($('momentos_presupuestarios').value==2){
+						
+							comprometido = parseFloat(JsonData[j]['compromiso']);
+							causado += parseFloat(JsonData[j]['monto']);
+							pagado=0;
+							
+						}else if($('momentos_presupuestarios').value==3){
+
+							comprometido = parseFloat(JsonData[j]['compromiso']);
+							causado = parseFloat(JsonData[j]['causados']);
+							pagado += parseFloat(JsonData[j]['monto']);
+	
+						}
+							ipp++;
+						
+					}
+				}
+				var disponible = comprometido - causado;
+				$('ppCompromiso').value = muestraFloat(comprometido);
+				$('ppCausado').value = muestraFloat(causado);
+				$('ppPagado').value = muestraFloat(pagado);
+			}
+		}
+	);  
+} 
+</script>

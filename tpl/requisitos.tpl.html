@@ -1,0 +1,45 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td colspan="3"></td>
+</tr>
+<tr>
+	<td colspan="3"></td>
+</tr>
+<tr>
+	<td colspan="3"></td>
+</tr>
+<!--<tr>
+	<td>C&oacute;digo:</td>
+	<td width="80" colspan="2"><input name="id_nuevo" value="<?=$objeto->id?>" size="10" type="text">
+	<span class="errormsg" id="error_cod">*</span>
+	<?=$validator->show("error_cod")?>	
+	</td>
+</tr>-->
+<tr>
+	<td>Nombre:</td>
+	<td colspan="2"><input name="nombre" value="<?=$objeto->nombre?>" size="40" type="text">
+	<span class="errormsg" id="error_nombre">*</span>
+	<?=$validator->show("error_nombre")?>	
+	</td>
+</tr>
+<tr>
+	<td>Descripcion:</td>
+	<td colspan="2"><textarea name="descripcion" cols="80" rows="8"><?=$objeto->descripcion?></textarea></td>
+</tr>
+<tr>
+	<td><!--Tipo Solvencia:--></td>
+	<td colspan="2"><!--<?=helpers::combo($conn, 'solvencias', $objeto->id_solvencia)?>-->
+	&nbsp;&nbsp;&nbsp;Vence:<input type="checkbox" name="vencido" value="TRUE"  <?php if($objeto->vencido=='t'){ echo "checked";}?>>
+	
+	</td>
+</tr>
+</table>
+
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

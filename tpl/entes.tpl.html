@@ -1,0 +1,44 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>Nombre:</td>
+	<td><input name="nombre" id="nombre" style="width:260px" type="text" value="<?=$objeto->nombre?>">
+	<span class="errormsg" id="error_nombre">*</span>
+	<?=$validator->show("error_nombre")?>
+	</td>
+</tr>
+<tr>
+	<td>Siglas:</td>
+	<td><input name="siglas" id="siglas" size="8" type="text" value="<?=$objeto->siglas?>"></td>
+</tr>
+<tr>
+	<td>Direcci&oacute;n:</td>
+	<td><textarea name="direccion" id="direccion" cols="45" rows="5"><?=$objeto->direccion?></textarea>
+    <span class="errormsg" id="error_direccion">*</span>
+	<?=$validator->show("error_direccion")?>
+	</td>
+</tr>
+<tr>
+	<td>Datos de Creaci&oacute;n:</td>
+	<td><input name="datos_crea" id="datos_crea" style="width:260px" type="text" value="<?=$objeto->datoCreacion?>">
+	<span class="errormsg" id="error_creacion">*</span>
+	<?=$validator->show("error_creacion")?>
+	</td>
+</tr>
+<tr>
+	<td>Actividad:</td>
+	<td><input name="actividad" id="actividad" type="text" style="width:260px" value="<?=$objeto->actividad?>">
+	<span class="errormsg" id="error_actividad">*</span>
+	<?=$validator->show("error_actividad")?>
+	</td>
+</tr>
+</table>
+<div style="text-align:center">
+<input id="accion" name="accion" type="submit" value="<?=$boton?>" onClick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+</div>
+
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onClick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

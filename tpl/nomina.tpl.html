@@ -1,0 +1,263 @@
+<form name="form1" method="post">
+<table style="width:685px" border="0">
+<tr>
+	<td>Tipo de Documento:
+	</td>
+	<td>
+	<?=helpers::combo_ue_cp($conn, 
+															'tipdoc', 
+															$objeto->id_tipo_documento,
+															'',
+															'',
+															'',
+															'',
+															"",
+															"SELECT * FROM tipos_documentos WHERE abreviacion = 'NM' ")?>
+		<span class="errormsg" id="error_tipo_doc">*</span>
+		<?=$validator->show("error_tipo_doc")?>
+	</td>
+	<td align="right"><span style="text-align:right">Fecha:</span></td>
+	<td colspan="3">
+	<input value="<?=empty($objeto->fecha) ? date("d/m/Y") : muestrafecha($objeto->fecha)?>" readonly name="fecha" size="12 " type="text" />
+	</td>
+<tr>
+	<td>Descripci&oacute;n:
+	</td>
+	<td colspan="5">
+		<input value="<?=$objeto->descripcion?>" name="descripcion" style="width:520px" type="text" />
+		<span class="errormsg" id="error_desc">*</span>
+		<?=$validator->show("error_desc")?>
+	</td>
+</tr>
+<tr>
+	<td>Fecha de Pago:
+	</td>
+	<td>
+		<table>
+			<tr>
+				<td>
+				<input readonly value="<?=empty($objeto->fecha_pago) ? date("d/m/Y") : muestrafecha($objeto->fecha_pago)?>" name="fecha_pago" id="fecha_pago" size="9 " type="text" />
+				</td>
+				<td>
+					 <a href="#" id="boton_fecha_pago" onclick="return false;">
+					  <img border="0" src="images/calendarA.png" width="20" height="20" />
+					</a>  
+					<span class="errormsg" id="error_fecha_pago">*</span>
+					<?=$validator->show("error_fecha_pago")?>
+			<script type="text/javascript">
+				new Zapatec.Calendar.setup({
+					firstDay          : 1,
+					weekNumbers       : true,
+					showOthers        : false,
+					showsTime         : false,
+					timeFormat        : "24",
+					step              : 2,
+					range             : [1900.01, 2999.12],
+					electric          : false,
+					singleClick       : true,
+					inputField        : "fecha_pago",
+					button            : "boton_fecha_pago",
+					ifFormat          : "%d/%m/%Y",
+					daFormat          : "%Y/%m/%d",
+					align             : "Br"
+				 });
+			</script>
+				</td>
+			</tr>
+		</table>
+		
+	</td>
+	<td>N&ordm; de Referencia:
+	</td>
+	<td colspan="3">
+		<input value="<?=$objeto->nro_ref?>" name="nro_ref" style="width:100px" type="text" />
+		<span class="errormsg" id="error_nro_ref">*</span>
+		<?=$validator->show("error_nro_ref")?>
+	</td>
+</tr>
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td colspan="6"><span class="titulo">Referencias del Proveedor</span></td>
+</tr>
+<tr>
+	<td>Proveedor:
+	</td>
+ 	<td><?=helpers::combo_ue_cp($conn, 
+															'proveedores', 
+															$objeto->id_proveedor,
+															'',
+															'',
+															'',
+															'',
+															"traeProveedorDesdeXML(this.value)",
+															"SELECT id, rif AS descripcion FROM proveedores ")?>
+	<span class="errormsg" id="error_prov">*</span>
+	<?=$validator->show("error_prov")?>
+	</td>
+	<td>N&ordm; Registro Proveedor:</td>
+	<td colspan="3">
+		<input value="<?=$objeto->id_proveedor?>" readonly class="proveedores" id="id_proveedor" name="id_proveedor" size="12 " type="text" />
+	</td>
+</tr>
+<tr>
+	<td>Raz&oacute;n Social:</td>
+	<td>
+		<input class="proveedores" value="<?=$objeto->proveedor?>" readonly name="nombre" id="nombre" style="width:150px  type="text" />
+	</td>
+	<td>Direcci&oacute;n:</td>
+	<td colspan="3">
+<!--		<input class="proveedores" readonly name="direccion" id="direccion" style="width:300px " type="text" /> -->
+				<textarea readonly name="direccion" id="direccion" style="width:200px"><?=$objeto->dir_proveedor?></textarea>
+	</td>
+</tr>
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td>Unidad Ejecutora:
+	</td>
+	<td colspan="5"><?=helpers::combo_ue_cp($conn, 
+														'unidad_ejecutora', 
+														$objeto->id_unidad_ejecutora,
+														'',
+														'',
+														'',
+														'',
+														'',
+														"SELECT * FROM unidades_ejecutoras WHERE id_escenario='$escEnEje' ")?>
+	<span class="errormsg" id="error_ue">*</span>
+	<?=$validator->show("error_ue")?>
+	</td>
+</tr>
+<tr>
+	<td colspan="6"><hr /></td>
+</tr>
+<tr>
+	<td colspan="6"><span class="titulo">Partidas Presupuestarias:</span></td>
+</tr>
+<tr>
+	<td colspan="6">
+<?
+$cRelacionPartidas = $objeto->getRelacionPartidas($conn, $objeto->id, $escEnEje);
+?>
+	<a id="linkAgrega" href="#" onclick="addTR(); return false;">Agregar una partida [+]</a>
+	<a id="linkElimina" href="#" onclick="delTR(); return false;">Eliminar la &uacute;ltima partida [ - ]</a>
+	</td>
+</tr>
+<tr>
+	<td colspan="6">
+	<div id="divTablita">
+		<table align="center" border="0" id="tablita">
+<? if(is_array($cRelacionPartidas)){ $i = 1;
+	$xml = new DomDocument();
+	foreach($cRelacionPartidas as $relacionPartidas){
+		$cCategorias = $objeto->getCategorias($conn, $escEnEje);
+		$nodoSelect = helpers::xmlCombo($cCategorias, 
+																$id_seleccionado=$relacionPartidas->id_categoria_programatica, 
+																$nombre = 'categorias_programaticas[]', 
+																$id='categorias_programaticas_'.$i, 
+																$style='',
+																$onchange = 'traeParPreDesdeUpdater(this.value, '.$i.')');
+		// importamos el nodo select
+		$nodoSelectImpCatPro = $xml->importNode($nodoSelect, true);
+		// select de partidas
+		$cPartidas = partidas_presupuestarias::get_all_by_cp($conn, $relacionPartidas->id_categoria_programatica, $escEnEje);
+
+		$nodoSelect = helpers::xmlCombo($cPartidas, 
+																$id_seleccionado=$relacionPartidas->id_partida_presupuestaria, 
+																$nombre = 'partidas_presupuestarias[]', 
+																$id="partidas_presupuestarias_$i", 
+																$style='',
+																$onchange="traeParCatDesdeXML($('categorias_programaticas_$i').value, this.value, this.id)");
+		// importamos el nodo select
+		$nodoSelectImpParPre = $xml->importNode($nodoSelect, true);
+
+
+?>
+			<tr>
+				<td>Categor&iacute;a:</td>
+				<td><?=$xml->saveXML($nodoSelectImpCatPro) ?></td>
+				<td>Partida Presupuestaria:</td>
+				<td><?=$xml->saveXML($nodoSelectImpParPre) ?></td>
+				<td>Monto:</td>
+				<td>
+				<input style="width:100px; text-align:right" name="monto[]" id="monto_<?=$i?>" onclick="traeParCatDesdeXML($('categorias_programaticas_<?=$i?>').value, $('partidas_presupuestarias_<?=$i?>').value, this.id)" onkeypress="return(formatoNumero (this,event));" onchange="operacion(this.value, $('nuevoDisponibleParCat_<?=$i?>').value, this.id);" value="<?=muestrafloat($relacionPartidas->monto)?>" type="text" id="monto_<?=$i?>" class="montos" onchange="operacion(this.value, $('nuevoDisponibleParCat_<?=$i?>').value, this.id);" />
+				<input type="hidden" id="cppp_<?=$i?>" class="cppps" />
+				<input type="hidden" id="total" />
+				<input type="hidden" name="idParCat[]" id="idParCat_<?=$i?>" value="<?=$relacionPartidas->idParCat?>" />
+				<input type="hidden" id="nuevoMontoParCat_<?=$i?>" name="nuevoMontoParCat[]" value="0" />
+				<input type="hidden" id="nuevoDisponibleParCat_<?=$i?>" name="nuevoDisponibleParCat[]" value="0" />
+				</td>
+			</tr>
+<?
+$i++;
+$montoTotal += $relacionPartidas->monto;
+	} }else{ 
+		$xml = new DomDocument();
+		$cCategorias = $objeto->getCategorias($conn, $escEnEje);
+		$nodoSelect = helpers::xmlCombo($cCategorias, 
+																$id_seleccionado=$relacionPartidas->id_categoria_programatica, 
+																$nombre = 'categorias_programaticas[]', 
+																$id='categorias_programaticas_1', 
+																$style='',
+																$onchange = 'traeParPreDesdeUpdater(this.value, 1)');
+		// importamos el nodo select
+		$nodoSelectImpCatPro = $xml->importNode($nodoSelect, true);
+?>
+			<tr>
+				<td>Categor&iacute;a:</td>
+				<td><?=$xml->saveXML($nodoSelectImpCatPro) ?></td>
+				<td>Partida Presupuestaria:</td>
+				<td>
+					<div id="cont_partidas_presupuestarias_1">
+						<select id="partidas_presupuestarias_1" name="partidas_presupuestarias[]" style="width:85px">
+							<option value="0">Seleccione una Categoria Program&aacute;tica</option>
+						</select>
+					</div>
+				</td>
+				<td>Monto:</td>
+				<td>
+				<input style="width:100px; text-align:right" name="monto[]" id="monto_1" class="montos" onkeypress="return(formatoNumero (this,event));" value="0,00" onblur="operacion(this.value, $('nuevoDisponibleParCat_1').value, this.id);" type="text" />
+				<input type="hidden" id="cppp_1" class="cppps" />
+				<input type="hidden" id="total" />
+				<input type="hidden" name="idParCat[]" id="idParCat_1" value="0" />
+				<input type="hidden" id="nuevoMontoParCat_1" name="nuevoMontoParCat[]" value="0" />
+				<input type="hidden" id="nuevoDisponibleParCat_1" name="nuevoDisponibleParCat[]" value="0" />
+				</td>
+			</tr>
+<? } ?>
+		</table>
+	</div>
+	</td>
+</tr>
+<tr>
+	<td colspan="5" align="right">Total:</td>
+	<td align="right"><input style="text-align:right" value="<?=muestrafloat($montoTotal)?>" type="text" id="monto_total_partidas" name="monto_total_partidas" readonly /> </td>
+</tr>
+<tr>
+	<td  colspan="6" align="left">Observaciones:</td>
+</tr>
+<tr>
+	<td  colspan="6" align="left">
+		<textarea name="observaciones" id="observaciones" style="width:400px"><?=$objeto->observaciones?></textarea>
+	</td>
+</tr>
+</table>
+<? if($boton == 'Guardar'){ ?>
+<input style="float:right; margin: 5px" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="accion" id="accion" type="hidden" value="<?=$boton?>" />
+<? } if($boton == 'Actualizar'){ ?>
+<input style="float:right; margin: 5px" name="botonActualizar" type="button" value="Actualizar" onclick="actapr(this);" />
+<? if(empty($objeto->nrodoc)){ ?>
+<input style="float:right; margin: 5px" name="botonAprobar" type="button" value="Aprobar" onclick="actapr(this);" />
+<? } ?>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value=""  id="accion"/>
+<? } ?>
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+<br />
+</form>
+<p class="errormsg">(*) Campo requerido</p>

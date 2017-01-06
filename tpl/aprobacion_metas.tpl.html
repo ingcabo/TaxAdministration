@@ -1,0 +1,196 @@
+<form name="form1" method="post">
+	<table width="660px" border="0">
+		<tr>
+			<td height="30" colspan="3" valign="top">
+				<div align="left">
+					<span class="Estilo2">
+						C&oacute;digo Formulaci&oacute;n:<span class="errormsg" id="error_cod_formulacion">*</span>
+						<?=$validator->show("error_cod_formulacion")?>
+					</span>			
+				</div>
+				<span class="Estilo2">
+					<?
+						if(empty($objeto->id_aprobacion_meta))
+						{
+					?>
+							<?=helpers::combo_ue_cp($conn, 
+												'formulacion', 
+												$objeto->id_formulacion,
+												'',
+												'',
+												'id_formulacion',
+												'id_formulacion',
+												'traeFormulacionDesdeXML(this.value);traeMetas(this.value);',
+												"SELECT id_formulacion AS id, id_formulacion AS descripcion FROM puser.formulacion WHERE status = 2 ",
+												'',
+												'',
+												'')
+							?>
+					<?
+						}
+						else
+						{
+					?>
+							<input type="text" style="text-align:right" name="formulacion_id" id="formulacion_id" value="<?=$objeto->id_formulacion?>" size="10" readonly="readonly" />
+					<?
+						}
+					?>
+		  		</span>  	  
+			</td>
+		</tr>
+		<tr>
+			<td width="184" height="30" valign="top">
+				<div align="left">
+					<span class="Estilo2">
+						Escenario:
+					</span>			
+				</div>
+				<span class="Estilo2">
+					<input type="text" name="escenario" id="escenario" value="<?=$objeto->escenario?>" size="30" readonly="readonly" />
+	  			</span>  	  
+		  </td>
+			<td width="150" height="30" valign="top">
+				<div align="left">
+					<span class="Estilo2">
+						A&ntilde;o:				
+					</span>			
+				</div>
+				<span class="Estilo2">
+					<input type="text" style="text-align:right" name="id_escenario" id="id_escenario" value="<?=$objeto->id_escenario?>" size="4" readonly="readonly" />
+				</span>	 
+		  </td>
+			<td width="378" height="30" valign="top">
+				<div align="left">
+					<span class="Estilo2">
+						Status:
+					</span>			
+				</div>
+				<span class="Estilo2">
+					<input type="text" name="status" id="status" value="<?=($objeto->procesado=='3')? 'PROCESAR': ''?>" size="15" readonly="readonly" />
+				</span>	
+  		  </td>
+		</tr>
+		<tr>
+	  		<td width="184" height="30" valign="top">
+				<div align="left">
+					<span class="Estilo2">
+						C&oacute;digo Unidad Ejecutora:				
+					</span>			
+				</div>
+		  		<span class="Estilo2">
+			  		<input type="text" style="text-align:right" name="id_unidad_ejecutora" id="id_unidad_ejecutora" value="<?=$objeto->id_unidad_ejecutora?>" readonly="readonly" />
+		 		</span>
+		  </td>
+		  <td height="30" colspan="2" valign="top">
+				<div align="left">
+					<span class="Estilo2">
+						Unidad Ejecutora:
+					</span>				
+				</div>
+				<span class="Estilo2">
+					<input type="text" name="unidad_ejecutora" id="unidad_ejecutora" value="<?=$objeto->unidad_ejecutora?>" size="40" readonly="readonly" />
+	  			</span>	  
+		  </td>
+		</tr>
+		<tr>
+			<td width="184" height="30" valign="top">
+				<div align="left">
+					<span class="Estilo2">
+						Organismo:				
+					</span>			
+				</div>
+				<span class="Estilo2">
+					<input type="text" name="organismo" id="organismo" value="<?=$objeto->organismo?>" readonly="readonly" size="30" />
+	  			</span>	  
+  		  </td>
+			<td width="150" height="30"valign="top">
+				<div align="left">
+					<span class="Estilo2">
+						Meta:<span class="errormsg" id="error_id_meta">*</span>
+ 			               	<?=$validator->show("error_id_meta")?>			
+					</span>			
+				</div>
+		  		<span class="Estilo2">
+					<?
+						if(empty($objeto->id_aprobacion_meta))
+						{
+					?>
+						<div id="divcombometa" style="width:100%">
+			  				<select style="width:70%">
+								<option>Seleccione...</option>
+							</select>	
+						</div>
+					<?
+						}
+						else
+						{
+					?>
+							<input type="text" style="text-align:right" name="meta_id" id="meta_id" value="<?=$objeto->id_meta?>" size="15" readonly="readonly" />
+					<?
+						}
+					?>
+				</span>
+  	  	  </td>
+			<td height="30" colspan="2" valign="top">
+				<div align="left">
+					<span class="Estilo2">
+						Descripci&oacute;n Meta:
+					</span>				
+				</div>
+				<span class="Estilo2">
+					<input type="text" name="desc_meta" id="desc_meta" value="<?=$objeto->desc_meta?>" size="40" readonly="readonly" />
+	  			</span>	  
+		  </td>	
+		</tr>
+		<tr>
+			<td height="30" colspan="3" valign="top">
+				<div align="left">
+					<span class="Estilo2">
+						Objetivo General:
+					</span>			
+				</div>
+				<span class="Estilo2">
+					<input type="text" name="objetivo" id="objetivo" value="<?=$objeto->objetivo?>" size="120" readonly="readonly" />
+				</span>	  
+			</td>
+		</tr>
+		<br />
+		<br />
+		<tr>
+			<td height="30" colspan="3" valign="top">
+				<div align="left">
+					<span class="Estilo2">
+						Procesar:<span class="errormsg" id="error_procesado">*</span>
+ 			               		 <?=$validator->show("error_procesado")?>
+					</span>
+				</div>
+				<span class="Estilo2">
+					<select id="procesado" name="procesado" <?=($objeto->procesado=='3')? 'disabled="disabled"': ''?>>
+						<option>Seleccione...</option>
+						<option value="3" <?=($objeto->procesado=='3')? 'selected="selected"': ''?>>Procesar</option>
+						<option value="1">Rechazar</option>
+					 </select>
+				</span>			
+			</td>
+		</tr>
+		<br />
+		<?
+			if(empty($objeto->id_aprobacion_meta))
+			{
+		?>
+		<tr>
+			<td height="30" colspan="3" valign="top" align="right">
+				<input name="accion" type="button" value="<?=$boton?>" style="float:right" onclick="<?=$validator->validate() ?>"/>
+			</td>
+		</tr>
+		<?
+			}
+		?>
+	</table>  
+	<input name="id_aprobacion_meta" type="hidden" value="<?=$objeto->id_aprobacion_meta?>" /-->
+	<input name="accion" type="hidden" value="<?=$boton?>" /> 
+	<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+		<img onclick="close_div();" src="images/close_div.gif" />
+	</span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

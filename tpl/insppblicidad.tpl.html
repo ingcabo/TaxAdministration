@@ -1,0 +1,42 @@
+<?php 
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+?>
+<form name="form1" method="post">
+<table width="459" border="0">
+  <tr>
+    <td width="91">Cedula:</td>
+    <td width="358"><input name="cedula" type="text" id="cedula" onchange="this.value = this.value.toUpperCase();" value="<?=$objeto->cedula?>" size="25">
+	<span class="errormsg" id="error_cedula">*</span>
+		<?=$validator->show("error_cedula")?>   </td>
+  </tr>
+  <tr>
+    <td>Nombre:</td>
+    <td width="358"><input name="nombre" type="text" id="nombre" onchange="this.value = this.value.toUpperCase();" value="<?=$objeto->nombre?>" size="50" />
+	<span class="errormsg" id="error_nombre">*</span>
+		<?=$validator->show("error_nombre")?>   </td>
+  </tr>
+  <tr>
+    <td>Apellido:</td>
+    <td><input name="apellido" type="text" id="apellido" onchange="this.value = this.value.toUpperCase();" value="<?=$objeto->apellido?>" size="50" />
+	<span class="errormsg" id="error_apellido">*</span>
+		<?=$validator->show("error_apellido")?>   </td>
+  </tr>
+  <tr>
+    <td>Activo:</td>
+    <td><input type="checkbox" name="status" value="1" <?=compara_checked($objeto->status, 1)?> ></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><input name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" /> 
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

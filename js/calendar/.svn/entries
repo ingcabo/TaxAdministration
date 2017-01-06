@@ -1,0 +1,61 @@
+8
+
+dir
+3019
+svn://192.168.0.253/repositorio/libertador/trunk/js/calendar
+svn://192.168.0.253
+
+
+
+2006-08-14T20:45:25.471334Z
+1
+fcalderon
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+c1473cfb-fa1a-0410-b983-abe8840b5a9e
+
+wizard
+dir
+
+lang
+dir
+
+demo
+dir
+
+doc
+dir
+
+themes
+dir
+
+src
+dir
+
+index.html
+file
+
+
+
+
+2007-11-27T17:22:28.015625Z
+ee5e39679d28ec81e71936a6ecec33bb
+2006-08-14T20:45:25.471334Z
+1
+fcalderon
+
+doxygen
+dir
+

@@ -1,0 +1,128 @@
+<form name="form1" method="post">
+<table border="0" width="100%" align="center">
+<? if($objeto->id){ ?>
+<tr>
+	<td>N&ordm; de Documento:</td>
+	<td colspan="3"><input type="text" name="id" id="id" value="<?=$objeto->id?>" /></td>
+</tr>
+<? } ?>
+<tr>
+	<td width="113" align="left"><span style="text-align:right">Fecha:</span></td>
+	<td colspan="3">
+	<input value="<?=empty($objeto->fecha) ? date("d/m/Y") : muestrafecha($objeto->fecha)?>" readonly name="fecha" size="12 " type="text" />
+	<span class="errormsg" id="error_fecha">*</span>
+		<?=$validator->show("error_fecha")?>	
+	</td>
+<tr>
+	<td>A&ntilde;o:</td>
+	<td width="308" style="width:310px">
+		<input value="<?=$objeto->ano?>" name="ano" id="ano" style="width:50px" type="text" onKeyPress="busca_ano();" />
+		<span class="errormsg" id="error_ano">*</span>
+		<?=$validator->show("error_ano")?>	
+	</td>
+	<td width="108" style="text-align:right">Status:</td>
+	<td width="332" colspan="3">
+		
+		<input type="status" id="status" style="width:150px" value="<?= $objeto->nom_status?>" readonly />
+		
+	</td>
+</tr>
+<tr>
+	<td align="left" valign="top">Motivo:</td>
+	<td  colspan="5" align="left"><textarea name="motivo" id="motivo" style="width:500px"><?=$objeto->motivo?></textarea>
+		<span class="errormsg" id="error_motivo">*</span>
+		<?=$validator->show("error_motivo")?>
+	</td>
+</tr>
+</table>
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="3"><hr /></td>
+</tr>
+</table>
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="3" align="center">
+	<div id="gridboxreg" style=" width:700px; height:150px; z-index:0; display:block" class="gridbox" align="center"></div></td>
+</tr>
+<tr>
+	<td align="left"><input type="hidden" name="requisicion" id="requisicion"></td>
+	<td  colspan="2" align="right">
+	Cantidad Requisiciones: &nbsp;&nbsp;<input type="text" name="cantREG" id="cantREG" style="text-align:right" readonly value="0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+</tr>
+</table>
+
+<? if(empty($objeto->status)){ ?>
+<input style="float:right; margin: 5px" name="botonAgrupar" type="button" value="Agrupar" onClick="Guardar(); actapr(this);" />
+<? } elseif($objeto->status=='05') { ?>
+<input style="float:right; margin: 5px" name="botonGenerar" type="button" value="Generar Solicitudes de Cotizacion" onClick="mostrar_ventana(); " />
+<input style="float:right; margin: 5px" name="botonEliminar" type="button" value="Eliminar" onClick="actapr(this);" />
+
+<? } ?>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value=""  id="accion"/>
+<input type="hidden" name="status" id="status" value="<?=$objeto->status?>" />
+<input type="hidden" name="nrodoc" id="nrodoc" value="<?=$objeto->nrodoc?>" />
+<input type="hidden" name="id_productos" id="id_productos" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onClick="close_div();" src="images/close_div.gif" /></span>
+<br />
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<script type="text/javascript">
+
+buildGridREG();
+//sumaTotal();
+
+CargarGridREG();
+
+
+function buildGridREG(){
+	//PARAMETROS DEL GRID//
+	mygridreg = new dhtmlXGridObject('gridboxreg');
+	mygridreg.selMultiRows = true;
+	mygridreg.setImagePath("js/grid/imgs/");
+	mygridreg.setHeader("N&ordm; Requisici&oacute;n, Unidad Ejecutora,Descripcion,Aplicar");
+	mygridreg.setInitWidths("100,180,300,120");
+	mygridreg.setColAlign("center,center,center,center");
+	mygridreg.setColTypes("ed,coro,ed,ch");
+	mygridreg.setColSorting("str,int,str,int");
+	mygridreg.setColumnColor("white,white,white,white");
+	mygridreg.rowsBufferOutSize = 0;
+	mygridreg.setMultiLine(false);
+	mygridreg.delim=';';
+	mygridreg.selmultirows="true";
+	mygridreg.setOnCheckHandler(checkMarcado);
+	//mygridreg.setOnCheckHandler(checkSustraendo);
+	//mygridret.setOnEnterPressedHandler(calcularMontoRetenciones);
+	<? $ue = new unidades_ejecutoras;
+		$objcp = $ue->get_all($conn);
+	?>
+	<?=helpers::combogrid($objcp, 1, 'id' , 'descripcion', 'Seleccione', 'mygridreg' )?>
+	//INICIO DE GRID//
+	mygridreg.init();
+}
+
+function CargarGridREG(){
+	var JsonAux;
+	mygridreg.clearSelection();
+	mygridreg.clearAll();
+	if("<?=$objeto->id?>"){ 
+		if('<?=$objeto->relacionGLOB?>'){
+			var requisicion = eval( '(' + '<?=$objeto->relacionGLOB?>' + ')');
+			//alert(requisicion);
+			for(iret=0;iret<requisicion.length;iret++){
+				mygridreg.addRow(iret,requisicion[iret]['id_req']+";"+requisicion[iret]['id_ue']+";"+requisicion[iret]['motivo']+";1");
+				
+			}
+			$('cantREG').value = requisicion.length;
+			mygridreg.setEditable(false);
+			//sumaMontoTotalRetenciones();
+		}
+	}
+}
+
+
+ 
+
+</script>

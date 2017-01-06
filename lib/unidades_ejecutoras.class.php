@@ -1,0 +1,236 @@
+<?
+class unidades_ejecutoras{
+
+	// Propiedades
+
+	var $id;
+	var $id_escenario; 
+	var $escenario; 
+	var $descripcion;
+	var $responsable;
+
+	var $total;
+
+	function get($conn, $id, $id_escenario){
+		try{
+			$q = "SELECT * FROM puser.unidades_ejecutoras WHERE id='$id' AND id_escenario = '$id_escenario' ";
+			$r = $conn->Execute($q);
+			$this->id = $r->fields['id'];
+			$this->id_escenario = $r->fields['id_escenario'];
+			$oEscenario = new escenarios;
+			$oEscenario->get($conn, $r->fields['id_escenario']);
+			$this->escenario = $oEscenario;
+			$this->descripcion = $r->fields['descripcion'];
+			$this->responsable = $r->fields['responsable'];
+			return true;
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+	function get_all($conn, $from=0, $max=0,$orden="id_escenario, id"){
+		try{
+			$q = "SELECT * FROM unidades_ejecutoras ";
+			$q.= "ORDER BY $orden ";
+			$r = ($max!=0) ? $conn->SelectLimit($q, $max, $from) : $conn->Execute($q);
+			$collection=array();
+			while(!$r->EOF){
+				$ue = new unidades_ejecutoras;
+				$ue->get($conn, $r->fields['id'], $r->fields['id_escenario']);
+				$coleccion[] = $ue;
+				$r->movenext();
+			}
+			$this->total = $r->RecordCount();
+			return $coleccion;
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+
+	function add($conn, $id, $id_escenario, $descripcion, $responsable){
+		try{
+			$q = "INSERT INTO puser.unidades_ejecutoras ";
+			$q.= "(id, id_escenario, descripcion, responsable) ";
+			$q.= "VALUES ('$id', '$id_escenario', '$descripcion', '$responsable') ";
+			$conn->Execute($q);
+			return REG_ADD_OK;
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+
+	function set($conn, $id_nuevo, $id, $id_escenario_nuevo, $id_escenario, $descripcion, $responsable){
+		try{
+			$q = "UPDATE unidades_ejecutoras SET id = '$id_nuevo', id_escenario='$id_escenario_nuevo', ";
+			$q.= "descripcion = '$descripcion', responsable = '$responsable' ";
+			$q.= "WHERE id='$id' AND id_escenario = '$id_escenario' ";
+			//die($q);
+			$conn->Execute($q);
+			return REG_SET_OK;
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+
+	function del($conn, $id, $id_escenario){
+		try{
+			$q = "DELETE FROM unidades_ejecutoras WHERE id='$id' AND id_escenario = '$id_escenario'";
+			$conn->Execute($q);
+			return REG_DEL_OK;
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+	
+	function del_escenario($conn, $id){
+		try{
+			$q = "DELETE FROM unidades_ejecutoras WHERE id_escenario='$id'";
+			$conn->Execute($q);
+			return true;
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+	
+	function get_all_by_esc($conn, $id_escenario, $id_unidad='' , $from=0, $max=0,$orden="id"){
+		try{
+			//$q = "SELECT id, id||' - '||descripcion AS descripcion FROM unidades_ejecutoras WHERE id_escenario = '$id_escenario' ";
+			$q = "SELECT id, descripcion AS descripcion FROM unidades_ejecutoras WHERE id_escenario = '$id_escenario' ";
+			if ($id_unidad!='' && $id_unidad!= '0' )
+				$q.= "AND id='$id_unidad'";
+			$q.= "ORDER BY $orden ";
+			//die($q);
+			$r = ($max!=0) ? $conn->SelectLimit($q, $max, $from) : $conn->Execute($q);
+			$collection=array();
+			while(!$r->EOF){
+				$ue = new unidades_ejecutoras;
+				//$ue->get($conn, $r->fields['id'], $id_escenario);
+				$ue->id = $r->fields['id'];
+				$ue->descripcion = $r->fields['descripcion'];
+				$coleccion[] = $ue;
+				$r->movenext();
+			}
+			$this->total = $r->RecordCount();
+			return $coleccion;
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+
+	function get_all_escEnEjec($conn, $escEnEjec,$orden="id_escenario, id"){
+		try{
+			$q = "SELECT * FROM unidades_ejecutoras WHERE id_escenario='$escEnEjec' ";
+			$q.= "ORDER BY $orden ";
+			$r = ($max!=0) ? $conn->SelectLimit($q, $max, $from) : $conn->Execute($q);
+			$collection=array();
+			while(!$r->EOF){
+				$ue = new unidades_ejecutoras;
+				$ue->get($conn, $r->fields['id'], $escEnEjec);
+				$coleccion[] = $ue;
+				$r->movenext();
+			}
+			return $coleccion;
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+
+	function buscar($conn, $id, $id_escenario, $descripcion, $responsable, $max=10, 
+						 $from=1, $orden="id_escenario, id"){
+		try{
+			if(empty($id) && empty($id_escenario) && empty($descripcion) && empty($responsable))
+				return false;
+			$q = "SELECT * FROM unidades_ejecutoras ";
+			$q.= "WHERE  1=1 ";
+			$q.= !empty($id) ? "AND id= '$id'  ":"";
+			$q.= !empty($id_escenario) ? "AND id_escenario = '$id_escenario'  ":"";
+			$q.= !empty($descripcion) ? "AND descripcion ILIKE '%$descripcion%'  ":"";
+			$q.= !empty($responsable) ? "AND responsable ILIKE '%$responsable%'  ":"";
+			$q.= "ORDER BY $orden ";
+			//die($q);
+			$r = ($max!=0) ? $conn->SelectLimit($q, $max, $from) : $conn->Execute($q);
+			$collection=array();
+			while(!$r->EOF){
+				$ue = new unidades_ejecutoras;
+				$ue->get($conn, $r->fields['id'], $r->fields['id_escenario']);
+				$coleccion[] = $ue;
+				$r->movenext();
+			}
+			return $coleccion;
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+	
+	function total_registro_busqueda($conn, $id, $id_escenario, $descripcion, $responsable, $orden="id_escenario, id"){
+		if(empty($id) && empty($id_escenario) && empty($descripcion) && empty($responsable))
+			return false;
+		$q = "SELECT * FROM puser.unidades_ejecutoras ";
+		$q.= "WHERE  1=1 ";
+		$q.= !empty($id) ? "AND id = '$id'  ":"";
+		$q.= !empty($id_escenario) ? "AND id_escenario = '$id_escenario'  ":"";
+		$q.= !empty($descripcion) ? "AND descripcion ILIKE '%$descripcion%'  ":"";
+		$q.= !empty($responsable) ? "AND responsable ILIKE '%$responsable%'  ":"";
+		$q.= "ORDER BY $orden ";
+		//die($q);
+		$r = ($max!=0) ? $conn->SelectLimit($q, $max, $from) : $conn->Execute($q);
+		$collection=array();
+		$total = $r->RecordCount();
+
+		return $total;
+	}
+}
+?>

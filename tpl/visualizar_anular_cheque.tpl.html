@@ -1,0 +1,121 @@
+<form name="form1" method="post">
+
+	<table style="text-align: left; width: 100%;" border="0" cellpadding="1" cellspacing="1">
+		<tr>
+			<td>Nro. Cheque</td>
+			<td>
+				<input type="text" name="nrocheque" id="nrocheque" value="<?=$objeto->nro_cheque?>" />
+			</td>
+		</tr>
+		<tr>
+			<td>Nro. Cuenta</td>
+			<td>
+				<input type="text" name="nrocuenta" id="nrocuenta" value="<?=$objeto->nro_cuenta->nro_cuenta?>"/>
+			</td>
+		</tr>
+			<td>Banco</td>
+			<td>
+				<input type="text" name="banco" id="banco" value="<?=$objeto->banco->descripcion?>" style="width:250px" />
+			</td>
+		</tr>
+		<tr>
+			<td>Beneficiario</td>
+			<td>
+				<input type="text" name="beneficiario" id="beneficiario" style="width:250px" value="<?=$objeto->id_proveedor->nombre?>" />
+			</td>
+		</tr>	
+		<tr>
+			<td>Nro. Documento</td>
+			<td>
+				<input type="text" name="nrodoc" id="nrodoc" value="<?=$objeto->nrodoc?>" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><hr /></td>
+		</tr>
+		<tr>
+			<td colspan="2"> Documentos Asociados</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<div id="gridbox" style=" width:728px; height:150px" class="gridbox" align="center"></div>
+			</td>
+		</tr>
+				<tr>
+			<td height="15"></td>
+			<td></td>
+		</tr>	
+		<tr>
+			<td width="360">
+			</td>
+			<td align="center">
+				Total Cheque: 
+				<input type="text" name="monto" id="monto" class="monto" value="0,00" >
+			</td>
+		</tr>
+		<tr>
+			<td height="15"></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right">
+				<input type="submit" name="anular" value="anular" id="anular" />
+				<input type="hidden" name="accion" value="Anular" id="accion" />
+			</td>
+		</tr>
+	</table>
+	
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+	<img onclick="close_div2();" src="images/close_div.gif" />
+</div>
+<script type="text/javascript">
+buildGridSP();
+cargarGrid('<?=$objeto->nrodoc?>');
+function buildGridSP(){
+	//set grid parameters
+	mygrid = new dhtmlXGridObject('gridbox');
+	mygrid.selMultiRows = true;
+	mygrid.setImagePath("js/grid/imgs/");
+	mygrid.setHeader("Orden de Pago, Monto");
+	mygrid.setInitWidths("362,362");
+	mygrid.setColAlign("center,center");
+	mygrid.setColTypes("ro,ro");
+	mygrid.setColSorting("str,str");
+	mygrid.setColumnColor("white,white");
+	mygrid.rowsBufferOutSize = 0;
+	mygrid.setMultiLine(false);
+	mygrid.selmultirows="true";
+	mygrid.delim = ";";
+		
+	//INICIA GRID//
+	mygrid.init();
+}
+
+function cargarGrid(nrodoc){
+	var url = 'json.php';
+	var pars = 'op=relacion_cheque&nrodoc=' + nrodoc;
+	
+	var myAjax = new Ajax.Request(
+		url, 
+		{
+			method: 'get', 
+			parameters: pars,
+			onComplete: function(peticion){
+				var JsonData = eval('(' + peticion.responseText + ')');
+				for(var j=0;j<JsonData.length;j++){
+						
+						mygrid.addRow(j,JsonData[j]['nroref']+";"+muestraFloat(JsonData[j]['monto']));
+						
+						
+				}
+				sumaTotalCheque();
+				
+			}
+		}
+	);
+
+}
+
+
+</script>
+</form>

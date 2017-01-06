@@ -1,0 +1,39 @@
+<?php 
+function compara_checked($campo, $valor){
+	if($campo==$valor){
+	echo "checked";
+	}
+}
+?>
+<form name="form1" method="post">
+<table width="310" border="0">
+  <tr>
+    <td>Ramo:</td>
+    <td><input type="text" name="ramo" value="<?=$objeto->ramo?>"></td>
+  </tr>
+  <tr>
+    <td width="90">Descripci&oacute;n:</td>
+    <td width="204"><input type="text" name="descripcion" value="<?=$objeto->descripcion?>" size="50"></td>
+  </tr>
+  <tr>
+    <td>Tipo Imp: </td>
+    <td><input type="text" name="tipo_imp" value="<?=strtoupper($objeto->tipo_imp)?>" size="4" maxlength="4">
+	</td>
+  </tr>
+  <tr>
+    <td>A&ntilde;o: </td>
+    <td><input type="text" name="anio" value="<?=$objeto->anio?>" maxlength="4" size="5"></td>
+  </tr>
+  <tr>
+    <td>Activo:</td>
+    <td><input type="checkbox" name="status" value="1" <?=compara_checked($objeto->status, 1)?> ></td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td><input name="accion" type="submit" value="<?=$boton?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>

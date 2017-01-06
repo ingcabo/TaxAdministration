@@ -1,0 +1,228 @@
+<form name="form1" method="post">
+<table border="0" width="100%" align="center">
+<tr>
+	<td>N&ordm; de Orden de Compra:</td>
+	<td><input type="text" name="id" id="id" value="<?=$objeto->nrodoc?>" /></td>
+	<td>Fecha:</td>
+	<td><input value="<?=empty($objeto->fecha_recep) ? date("d/m/Y") : muestrafecha($objeto->fecha_recep)?>" readonly name="fecha" size="12 " type="text" /></td>
+</tr>
+<tr>
+	<td>Proveedor:</td>
+	<td><input type="text" name="proveedor" id="proveedor" value="<?=$objeto->nombre_proveedor?>" readonly style="width:250px"></td>
+	<td>Telefono:</td>
+	<td><input type="text" name="tlf_provee" id="tlf_provee" value="<?=$objeto->telefono_proveedor?>" readonly></td>
+</tr>
+<tr>
+	<td>N&ordm; Factura:</td>
+	<td><input type="text" name="nrofact" id="nrofact" size="15" value="<?=$objeto->num_fact?>">
+		<span class="errormsg" id="error_nrofact">*</span>
+		<?=$validator->show("error_nrofact")?>
+	</td>
+	<td>N&ordm; Control:</td>
+	<td><input type="text" name="nrocontrol" id="nrocontrol" size="15" value="<?=$objeto->num_control?>" /></td>
+	<span class="errormsg" id="error_nrocontrol">*</span>
+	<?=$validator->show("error_nrocontrol")?>
+</tr>
+<tr>
+	<td colspan="4"><hr /></td>
+</tr>
+<tr>
+	<td width="88">Unidad Ejecutora:</td>
+	<td width="310">
+	<input type="text" name="unidad_ejecutora" id="unidad_ejecutora" value="<?= $objeto->unidad_ejecutora?>" readonly size="60" />
+	</td>
+	<td width="87" align="left"><span style="text-align:right">Fecha de Requisicion:</span></td>
+	<td colspan="3">
+	<input value="<?=empty($objeto->fecha_requi) ? date("d/m/Y") : muestrafecha($objeto->fecha_requi)?>" readonly name="fecha_requi" size="12 " type="text" />
+	</td>
+<tr>
+	<td>N&ordm; de Requisicion:</td>
+	<td style="width:310px">
+		<input value="<?=$objeto->id_requisicion?>" name="nrorequi" size="15" type="text" readonly />
+		<input type="hidden" name="total_parcial" id="total_parcial" value="<?=$objeto->total_parcial?>" />
+	</td>
+	
+</tr>
+<!--<tr>
+	<td align="left" valign="top">Tipo:</td>
+	<td  colspan="5" align="left">Total: &nbsp;<input type="radio" name="tot_par[]" value="1" <? if($objeto->total_parcial=="1") echo "checked"?>/>&nbsp;&nbsp;&nbsp;Parcial:&nbsp;<input type="radio" name="tot_par[]" value="2" <? if($objeto->total_parcial=="2") echo "checked"?>/>
+	</td>
+</tr>-->
+<tr>
+	<td align="left" valign="top">Comentario:</td>
+	<td  colspan="5" align="left"><textarea name="comentario" id="comentario" style="width:400px"><?=$objeto->comentario?></textarea></td>
+</tr>
+</table>
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="3"><hr /></td>
+</tr>
+</table>
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="3" align="left">
+		Detalle de la Requisici&oacute;n Global:
+	</td>
+</tr>
+<tr>
+	<td colspan="3" align="center">
+	<div id="gridboxreg" style=" width:580px; height:150px; z-index:0; display:block" class="gridbox" align="center"></div></td>
+</tr>
+<tr>
+	<td align="left">&nbsp;</td>
+	<td  colspan="2" align="right">&nbsp;
+	</td>
+</tr>
+</table>
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="3"><hr /></td>
+</tr>
+</table>
+<table border="0" width="100%" align="center">
+<tr>
+	<td colspan="3" align="left">
+		Detalle de las Requisiciones Primarias :
+	</td>
+</tr>
+<tr>
+	<td colspan="3" align="center">
+	<div id="gridboxre" style=" width:675px; height:150px; z-index:0; display:block" class="gridbox" align="center"></div></td>
+</tr>
+<tr>
+	<td align="left">&nbsp;</td>
+	<td  colspan="2" align="right">&nbsp;
+	</td>
+</tr>
+</table>
+
+<?
+ if($objeto->status=="2") { //?>
+
+<input style="float:right; margin: 5px" name="botonRecibir" type="button" value="Recibir" onClick="Guardar(); actapr(this);" /> 
+<? } elseif($objeto->status=="4") {
+	if($objeto->total_parcial =="2") { ?>
+		<input style="float:right; margin: 5px" name="botonActualizar" type="button" value="Actualizar" onClick="Guardar(); actapr(this);" />
+	<? } ?>
+	<input style="float:right; margin: 5px" name="botonReporte" type="button" value="Comprobante de Entrega" onclick="Imprime_reporte();" />
+<? } ?>
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input type="hidden" name="accion" id="accion" />
+<input type="hidden" name="status" id="status" value="<?=$objeto->status?>" />
+<input type="hidden" name="nrodoc" id="nrodoc" value="<?=$objeto->nrodoc?>" />
+<input type="hidden" name="despachado" id="despachado" />
+<input type="hidden" name="id_productos" id="id_productos" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onClick="close_div();" src="images/close_div.gif" /></span>
+<input type="hidden" name="recepcion" id="recepcion" />
+<input type="hidden" name="recepcionDet" id="recepcionDet" />
+<br />
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+<script type="text/javascript">
+
+buildGridregbl();
+CargarGridgbl();
+
+buildGridre();
+CargarGrid();
+//sumaTotal();
+
+
+function buildGridregbl(){
+	//set grid parameters
+	mygridregbl = new dhtmlXGridObject('gridboxreg');
+	mygridregbl.selMultiRows = true;
+	mygridregbl.setImagePath("js/Grid/imgs/");
+	mygridregbl.setHeader("N&ordm; Requisicion Global,Producto,Cantidad Solicitada,Cantidad Recibida, Cantidad Despachada,Cantidad Pendiente");
+	mygridregbl.setInitWidths("80,180,80,80,80,80");
+	mygridregbl.setColAlign("left,left,center,center,center,center");
+	mygridregbl.setColTypes("ro,coro,ro,ro,ed,ro");
+	mygridregbl.setColSorting("str,str,int,int,int,int");
+	mygridregbl.setColumnColor("white,white,white,white,white,white");
+	mygridregbl.rowsBufferOutSize = 0;
+	mygridregbl.delim=';';
+	mygridregbl.setOnEditCellHandler(cambiaDespachoGbl);
+	mygridregbl.setMultiLine(false);
+	mygridregbl.selmultirows="true";
+	<? $prod = new productos;
+		$objcp = $prod->get_all($conn);
+	?>
+	<?=helpers::combogrid($objcp, 1, 'id' , 'descripcion', 'Seleccione', 'mygridregbl' )?>
+	mygridregbl.init();
+	
+}
+
+	function CargarGridgbl(){
+	var JsonAux;
+	mygridregbl.clearSelection();
+	mygridregbl.clearAll();
+	if("<?=$objeto->id?>"){ 
+		if('<?=$objeto->relacionReqGlob?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->relacionReqGlob?>' + ')');
+			for(i=0;i<Relaciones.length;i++){
+				var cd = (Relaciones[i]['cantidad_despachada']!= null) ? Relaciones[i]['cantidad_despachada'] : 0;  
+				var pendiente = Relaciones[i]['cantidad_solic'] - cd;
+				mygridregbl.addRow(Relaciones[i]['id_producto'],Relaciones[i]['id_requisicion']+";"+Relaciones[i]['id_producto']+";"+Relaciones[i]['cantidad_solic']+";"+cd+";"+cd+";"+pendiente.toFixed(2));
+				//productos[i]= Relaciones[i]['id_producto'];
+				carga_vector_global(Relaciones[i]['id_producto'],cd);
+			}
+		}
+		//$('id_productos').value = productos;
+	}
+}
+
+
+function buildGridre(){
+	//set grid parameters
+	mygridre = new dhtmlXGridObject('gridboxre');
+	mygridre.selMultiRows = true;
+	mygridre.setImagePath("js/Grid/imgs/");
+	mygridre.setHeader("N&ordm; de Requisicion,Unidad Ejecutora,Producto,Cantidad Solicitada,Cantidad Recibida,Cantidad Despachada,Pendiente Entregar");
+	mygridre.setInitWidths("65,150,175,70,65,70,65");
+	mygridre.setColAlign("center,left,left,center,center,center,center");
+	mygridre.setColTypes("ro,coro,coro,ro,ro,ed,ro");
+	mygridre.setColSorting("str,str,str,int,int,int,int");
+	mygridre.setColumnColor("white,white,white,white,white,white,white");
+	mygridre.rowsBufferOutSize = 0;
+	mygridre.delim=';';
+	mygridre.setOnEditCellHandler(cambiaDespachoDet);
+	mygridre.setMultiLine(false);
+	mygridre.selmultirows="true";
+	<? $ue = new unidades_ejecutoras;
+		$objcp = $ue->get_all($conn);
+	?>
+	<?=helpers::combogrid($objcp, 1, 'id' , 'descripcion', 'Seleccione', 'mygridre' )?>
+	<? $prod = new productos;
+		$objcp = $prod->get_all($conn);
+	?>
+	<?=helpers::combogrid($objcp, 2, 'id' , 'descripcion', 'Seleccione', 'mygridre' )?>
+	mygridre.init();
+	
+}
+
+function CargarGrid(){
+var JsonAux;
+	mygridre.clearSelection();
+	mygridre.clearAll();
+	if("<?=$objeto->id?>"){ 
+		if('<?=$objeto->relacionProductos?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->relacionProductos?>' + ')');
+			for(i=0;i<Relaciones.length;i++){
+				//alert(Relaciones[i]);
+				var cd = (Relaciones[i][7]!= null) ? Relaciones[i][7] : 0;
+				//CANTIDAD DESPACHADA ANTERIOR
+				var cda = (Relaciones[i][10]!= null) ? Relaciones[i][10] : 0;  
+				var pendiente = Relaciones[i][3] - cd;
+				mygridre.addRow(i,Relaciones[i][9]+";"+Relaciones[i][8]+";"+Relaciones[i][0]+";"+Relaciones[i][3]+";"+cd+";"+cd+";"+pendiente.toFixed(2));
+				//productos[i]= Relaciones[i]['id_producto'];
+				carga_vector_detalle(Relaciones[i][0],cd);
+				carga_vector_reporte(Relaciones[i][8],Relaciones[i][0],cd,cda,Relaciones[i][9],Relaciones[i][3],i);
+			}
+		}
+		
+		//$('id_productos').value = productos;
+	}
+}
+
+</script>

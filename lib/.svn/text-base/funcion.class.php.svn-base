@@ -1,0 +1,190 @@
+<?
+class funcion{
+
+	// Propiedades
+	var $int_cod;
+	var $fun_cod;
+	var $fun_nom;
+	var $fun_hp;
+	var $fun_ord;
+
+	var $total;
+
+	function get($conn, $int_cod){
+		try {
+			$q = "SELECT * FROM rrhh.funciones WHERE int_cod=$int_cod";
+			//die($q);
+			$r = $conn->Execute($q);
+			if(!$r->EOF){
+				$this->int_cod = $r->fields['int_cod'];
+				$this->fun_cod = $r->fields['fun_cod'];
+				$this->fun_nom = $r->fields['fun_nom'];
+				$this->fun_hp = muestrafloat($r->fields['fun_hp']);
+				$this->fun_ord = $r->fields['fun_ord'];
+			}
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+	function get_all($conn, $orden="int_cod", $Tipo, $Valor){
+		try {
+			if(empty($Valor)){
+			$q = "SELECT * FROM rrhh.funciones ";
+			$q.= "ORDER BY $orden ";
+			}
+			elseif($Tipo==0){
+			$q = "SELECT * FROM rrhh.funciones ";
+			$q.= "where fun_ord ILIKE '%$Valor%' ";
+			$q.= "ORDER BY $orden ";
+			}
+			elseif($Tipo==1){
+			$q = "SELECT * FROM rrhh.funciones ";
+			$q.= "where fun_nom ILIKE '%$Valor%' ";
+			$q.= "ORDER BY $orden ";
+			}
+			//die($q);				
+			$r = $conn->Execute($q);
+			$collection=array();
+			while(!$r->EOF){
+				$ue = new funcion;
+				$ue->get($conn, $r->fields['int_cod']);
+				$coleccion[] = $ue;
+				$r->movenext();
+			}
+			$this->total = $r->RecordCount();
+			return $coleccion;
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+
+	function add($conn, $fun_cod, $fun_nom,$fun_hp,$fun_ord){
+		try {
+			$q = "INSERT INTO rrhh.funciones ";
+			if(is_numeric($fun_ord)){
+				$q.= "(fun_cod, fun_nom, fun_hp, fun_ord) ";
+			    $q.= "VALUES ";
+				$q.= "('$fun_cod','$fun_nom',$fun_hp,$fun_ord) ";
+				}
+			else{
+				$q.= "(fun_cod, fun_nom, fun_hp) ";
+			    $q.= "VALUES ";
+				$q.= "('$fun_cod','$fun_nom',$fun_hp) ";
+				}
+			//die($q);
+			$conn->Execute($q);
+			$q = "SELECT MAX(int_cod) AS int_cod ";
+			$q.= "FROM rrhh.funciones ";
+			//die($q);
+			$r = $conn->Execute($q);
+			$ue = new funcion;
+			$ue->reorder($conn, $fun_ord,$r->fields['int_cod']);
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+
+	function set($conn, $int_cod, $fun_cod, $fun_nom,$fun_hp,$fun_ord){
+		try {
+			$q = "UPDATE rrhh.funciones SET fun_cod='$fun_cod',fun_nom='$fun_nom',fun_hp=$fun_hp,fun_ord=$fun_ord ";
+			$q.= "WHERE int_cod=$int_cod";	
+			//die($q);
+			$conn->Execute($q);
+			$ue = new funcion;
+			$ue->reorder($conn, $fun_ord, $int_cod);
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+
+	function del($conn, $int_cod){
+		try {
+			$q = "DELETE FROM rrhh.funciones WHERE int_cod='$int_cod'";
+			$conn->Execute($q);
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+	function reorder($conn, $fun_ord,$int_cod){
+		try {
+			$q = "SELECT int_cod,fun_ord FROM rrhh.funciones WHERE fun_ord=$fun_ord AND int_cod!=$int_cod";
+			$r = $conn->Execute($q);
+			if($r->EOF){
+				return false;
+			}else{
+				$nuevo = $r->fields['fun_ord'] + 1; 
+				$ue = new funcion;
+				$ue->reorder($conn, $nuevo,$int_cod);
+				while(!$r->EOF){
+					$int_cod = $r->fields['int_cod'];
+					$q = "UPDATE rrhh.funciones SET fun_ord=$nuevo";
+					$q.= "WHERE int_cod=$int_cod";
+					$conn->Execute($q);
+					$r->movenext();
+				}
+			}
+			
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+	function getListadoKeys(){
+		try {
+			//PARA LISTADO
+			$listado[0]['F'] = 'fun_cod'; $listado[0]['F2'] = 'fun_cod'; $listado[0]['D'] = 'Codigo'; 
+
+			$listado[1]['F'] = 'fun_nom'; $listado[1]['F2'] = 'fun_nom'; $listado[1]['D'] = 'Nombre'; 
+
+			$listado[2]['F'] = 'fun_hp'; $listado[2]['F2'] = 'fun_hp'; $listado[2]['D'] = 'Honorario Profesional'; 
+
+			$listado[3]['F'] = 'fun_ord'; $listado[3]['F2'] = 'fun_ord'; $listado[3]['D'] = 'Orden'; 
+
+			return $listado;
+		}
+		catch( ADODB_Exception $e ){
+			if($e->getCode()==-1)
+				return ERROR_CATCH_VFK;
+			elseif($e->getCode()==-5)
+				return ERROR_CATCH_VUK;
+			else
+				return ERROR_CATCH_GENERICO;
+		}
+	}
+}
+?>

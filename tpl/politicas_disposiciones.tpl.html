@@ -1,0 +1,72 @@
+
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>Escenario:</td>
+	<td><?=helpers::combo_ue_cp($conn, 
+										'escenarios', 
+										$objeto->id_escenario,
+										'',
+										'',
+										'escenarios',
+										'escenarios',
+										'',
+										"SELECT id AS id, descripcion FROM puser.escenarios",
+										'',
+										'',
+										'')
+				?></td>
+</tr>
+<tr>
+	<td>A&ntilde;o:</td>
+	<td><input onkeypress="return onlyNumbersCI(event)" maxlength="4" name="ano" size="10" type="text" value="<?=$objeto->ano?>"></td>
+</tr>
+<tr>
+	<td>Tipo de Gaceta:</td>
+	<td><?=helpers::combo($conn, 'gacetas', $objeto->id_tipo_gaceta)?></td>
+</tr>
+<tr>
+	<td colspan="2">
+	<div class="tab-page" id="modules-cpanel" style="width:600px"> 
+	<script type="text/javascript">
+	  var tabPane2 = new WebFXTabPane($("modules-cpanel"), 0)
+	</script>
+	<div class="tab-page" id="texto1">
+	  <h1 class="tab">Texto</h1>
+	  <script type="text/javascript">
+	    //tabPane2.addTabPage($("texto1"))
+	  </script>
+		<textarea name="texto1" style="width:100%" rows="10"><?=$objeto->texto1?></textarea>
+	</div>
+	<div class="tab-page" id="texto2">
+	  <h2 class="tab">Texto</h2>
+	  <script type="text/javascript">
+	    //tabPane2.addTabPage($("texto2"))
+	  </script>
+		<textarea name="texto2" style="width:100%" rows="10"><?=$objeto->texto2?></textarea>
+	</div>
+	<div class="tab-page" id="texto3">
+	  <h2 class="tab">Texto</h2>
+	  <script type="text/javascript">
+	    //tabPane2.addTabPage($("texto3"))
+	  </script>
+	  <textarea name="texto3" style="width:100%" rows="10"><?=$objeto->texto3?></textarea>
+	</div>
+	<div class="tab-page" id="texto4">
+	  <h2 class="tab">Texto</h2>
+	  <script type="text/javascript">
+	    //tabPane2.addTabPage($("texto4"))
+	  </script>
+	  <textarea name="texto4" style="width:100%" rows="10"><?=$objeto->texto4?></textarea>
+	</div>
+</div></td>
+</tr>
+<tr>
+	<td style="text-align:right" colspan="2"><input name="accion" type="submit" value="<?=$boton?>" /></td>
+</tr>
+</table>
+	
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+</form>
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>

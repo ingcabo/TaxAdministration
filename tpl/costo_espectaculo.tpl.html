@@ -1,0 +1,46 @@
+	
+<form name="form1" action="" method="post">
+<table width="507" border="0">
+<?=$cod_espectaculo?>
+  <tr>
+    <td>Descripci&oacute;n:</td>
+    <td><input type="text" name="descripcion" id="descripcion" value="<?=$objeto->descripcion?>" size="50" onchange="this.value = this.value.toUpperCase();">
+		<span class="errormsg" id="error_descripcion">*</span>
+		<?=$validator->show("error_descripcion")?>	</td>
+  </tr>
+  <tr>
+    <td>Categoria</td>
+    <td><label>
+      <input name="categoria" type="text" id="categoria" value="<?=$objeto->categoria?>" />
+    </label></td>
+  </tr>
+  <tr>
+    <td>Nac./ Internacional </td>
+    <td><label>
+      <select name="nacionalidad" id="nacionalidad">
+        <option value=".">Seleccione</option>
+        <option value="INTERNACIONAL">Internacional</option>
+        <option value="NACIONAL">Nacional</option>
+      </select>
+    </label></td>
+  </tr>
+  <tr>
+    <td>Valor:</td>
+    <td><input name="valor" type="text" id="valor" onkeypress="return(formatoNumero(this, event));" value="<?=muestrafloat($objeto->valor)?>" size="10" maxlength="5" />
+      <strong>%</strong>
+	  <span class="errormsg" id="error_valor">*</span>
+		<?=$validator->show("error_valor")?>	</td>
+  </tr>
+  <tr>
+  	<td width="128">Status:</td>
+	<td width="369"><input name="status" id="status" type="checkbox" value="1" <?php if ($objeto->status==1){ echo 'checked'; } ?> /></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="right"><input name="accion" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" /></td>
+  </tr>
+</table>
+<input name="id" type="hidden" value="<?=$objeto->id_espectaculo?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></span>
+</form>

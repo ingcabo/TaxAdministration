@@ -1,0 +1,46 @@
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>Estado:</td>
+		<td><?=helpers::superCombo($conn, 'estado', $objeto->id_estado, 'estado','estado','', 'traeMunicipios(this.value,0);')?>
+		<span class="errormsg" id="error_estado">*</span>
+		<?=$validator->show("error_estado")?>	</td>
+</tr>
+<tr>
+	<td>Municipio:</td>
+	<td>
+	<table width="80%" border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td width="70%">
+			<? if(empty($objeto->id_municipio)){ ?>
+				<div id="divcombomunicipios" style="width:100%" align="left">
+					<select style="width:95%">
+						<option>Seleccione</option>
+					</select>
+				</div>
+			<? } else { ?>
+				<?=helpers::superCombo($conn, 'SELECT * FROM puser.municipios WHERE id_estado = '.$objeto->id_estado, $objeto->id_municipio, 'municipios','municipios','width:120px', '')?>
+			<? } ?>
+			</td>
+			<td>
+				<span class="errormsg" id="error_municipios" style="width:10%">*</span>	
+				<?=$validator->show("error_municipios")?>
+			</td>
+		 </tr>
+	</table>
+	</td>
+</tr>
+<tr>
+	<td>Descripcion:</td>
+	<td><input name="descripcion" value="<?=$objeto->descripcion?>" size="40" type="text">
+	<span class="errormsg" id="error_desc">*</span>
+	<?=$validator->show("error_desc")?>	</td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>

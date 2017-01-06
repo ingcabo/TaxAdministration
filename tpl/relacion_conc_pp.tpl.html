@@ -1,0 +1,156 @@
+<?
+//	var_dump($objeto);echo "<br />";
+?>
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>Concepto:</td>
+	<td>
+		<?=helpers::superComboSQL($conn, 
+									'', 
+									$objeto->id_concepto, 
+									'concepto', 
+									'int_cod', 
+									'', 
+									'',
+									'int_cod',
+									'conc_nom',
+									'',
+									'',
+									'SELECT * FROM rrhh.concepto WHERE conc_estatus = 0 ORDER BY conc_nom' ) ?>
+		<span class="errormsg" id="error_esc">*</span>
+		<?=$validator->show("error_esc")?>
+	</td>
+</tr>
+<tr>
+	<td>Escenario:</td>
+	<td>
+		<?=helpers::superComboSQL($conn, 
+									'', 
+									$objeto->id_escenario, 
+									'escenarios', 
+									'id_escenario', 
+									'',
+									'traePartidasDesdeUpdater(this.value);traeCategoriasDesdeUpdater(this.value);',
+									'id',
+									'descripcion',
+									'',
+									'',
+									'SELECT * FROM puser.escenarios WHERE formulacion = TRUE') ?>
+		<span class="errormsg" id="error_esc">*</span>
+		<?=$validator->show("error_esc")?>
+		<div id="cargador_categorias_partidas" style="display:none">
+			&nbsp;<img src="images/loading2.gif" />Cargando...
+		</div>
+	</td>
+</tr>
+<tr>
+	<td>Partida Presupuestaria:</td>
+	<td>
+		<span id="cont_partidas">
+			<?=helpers::superCombo($conn, 
+											"SELECT id, (id || ' - ' || descripcion)::varchar AS descripcion FROM puser.partidas_presupuestarias WHERE id NOT LIKE '30%' AND id_escenario = '$objeto->id_escenario' ORDER BY id",
+											$objeto->id_partida_presupuestaria,
+											'partidas_presupuestarias',
+											'partidas_presupuestarias',
+											'',
+											'',
+											'id',
+											'descripcion',
+											'',
+											80) ?>
+		</span>
+		<span class="errormsg" id="error_parpre">*</span>
+		<?=$validator->show("error_parpre")?>
+	</td>
+</tr>
+<tr>
+	<td width="130">Categor&iacute;a Program&aacute;tica:</td>
+	<td>
+		<span id="cont_categorias">
+			<?=helpers::superCombo($conn, 
+											"SELECT id, (id || ' - ' || descripcion)::varchar AS descripcion FROM categorias_programaticas WHERE id_escenario ='$objeto->id_escenario' ORDER BY id", 
+											$objeto->id_categoria_programatica,
+											'categorias_programaticas',
+											'categorias_programaticas',
+											'',
+											'traeParPreDesdeUpdater(this.value);',
+											'id',
+											'descripcion',
+											'',
+											80) ?>
+		</span>
+		<span class="errormsg" id="error_catpro">*</span>
+		<?=$validator->show("error_catpro")?>
+	</td>
+</tr>
+<tr>
+	<td align="left"><input type="button" value="Agregar" onClick="Agregar()" /></td>
+	<td align="right"><input type="button" value="Eliminar" onClick="Eliminar()" /></td>
+</tr>
+<tr>
+	<td colspan="2"><div id="gridbox" width="660" height="150" class="gridbox"></div></td>
+</tr>
+</table>
+<input style="float:right" name="boton" type="button" value="<?=$boton?>" onclick="Guardar();<?=$validator->validate() ?>" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="Presupuesto" id="Presupuesto" type="hidden" />
+<input name="accion" type="hidden" value="<?=$boton?>" />
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onclick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+
+<script language="javascript">
+buildGrid()
+function buildGrid(){
+	//alert('Esta Aqui');
+	//set grid parameters
+	mygrid = new dhtmlXGridObject('gridbox');
+	mygrid.selMultiRows = true;
+	mygrid.setImagePath("js/Grid/imgs/");
+	mygrid.setHeader("Categoria,Partida");
+	mygrid.setInitWidths("330,330");
+	mygrid.setColAlign("center,center");
+	mygrid.setColTypes("coro,coro");
+	mygrid.setColSorting("int,int");
+	mygrid.setColumnColor("white,white");
+	mygrid.rowsBufferOutSize = 0;
+	mygrid.setMultiLine(false);
+	mygrid.selmultirows="true";
+	CargarCombo();
+
+	//start grid
+	mygrid.init();
+//
+	CargarGrid();
+}
+
+function CargarCombo(){
+	var Categoria= eval(<?=$objeto->BuscarCombosPresupuesto($conn, 'puser.categorias_programaticas')?>);
+	var Partida = eval(<?=$objeto->BuscarCombosPresupuesto($conn, 'puser.partidas_presupuestarias')?>);
+	if(Categoria){
+		for(j=0;j<Categoria.length;j++){
+			mygrid.getCombo(0).put(Categoria[j][0],Categoria[j][1]);
+		}
+	}
+	if(Partida){
+		for(j=0;j<Partida.length;j++){
+			mygrid.getCombo(1).put(Partida[j][0],Partida[j][1]);
+		}
+	}
+}
+function CargarGrid(){
+	mygrid.clearSelection();
+	mygrid.clearAll();
+	if("<?=$objeto->int_cod?>"){ 
+		if('<?=$objeto->json?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->json?>' + ')');
+			for(i=0;i<Relaciones.length;i++){
+				mygrid.addRow(i,Relaciones[i]['id_categoria_programatica']+','+Relaciones[i]['id_partida_presupuestaria'])
+			}
+		}
+	}
+}
+</script>
+

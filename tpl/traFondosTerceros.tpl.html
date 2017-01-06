@@ -1,0 +1,186 @@
+<form name="form1" method="post">
+<? if($objeto->id){ ?>	
+	<script type="text/javascript" language="javascript">
+		ver_ctas();
+	</script>
+<? } ?>
+<table style="text-align: left; width: 100%;"border="0" cellpadding="1" cellspacing="1">
+    <tr>
+      <td><label for="nrodoc">N&ordm; de Cheque:</label></td>
+      <td><input class="nrodoc" id="nrodoc" name="nrodoc" value="<?=$objeto->nrodoc?>"  />
+	  <span class="errormsg" id="error_nrodoc">*</span>
+	  <?=$validator->show("error_nrodoc")?>
+	</td>
+      <td colspan="2">
+	  	<table border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td>
+	  			<label for="fecha">Fecha:&nbsp;&nbsp;</label></td>
+      		<td><input id="fecha" class="campoFecha" readonly="readonly" name="fecha" value="<?=muestraFecha($objeto->fecha)?>"  /></td>
+ 			<td><div align="left" style="vertical-align:top">&nbsp;<a href="#" id="boton_fecha" onClick="return false;"><img  border="0" src="images/calendarA.png" width="20" height="20" />				 </a>  
+				  <script type="text/javascript">
+					new Zapatec.Calendar.setup({
+						firstDay          : 1,
+						weekNumbers       : true,
+						showOthers        : false,
+						showsTime         : false,
+						timeFormat        : "24",
+						step              : 2,
+						range             : [1900.01, 2999.12],
+						electric          : false,
+						singleClick       : true,
+						inputField        : "fecha",
+						button            : "boton_fecha",
+						ifFormat          : "%d/%m/%Y",
+						daFormat          : "%Y/%m/%d",
+						align             : "Br"
+					 });
+				</script>
+      		</div></td>
+    	</tr>
+		</table>
+	</td>
+	</tr>
+	<tr>
+	  	<td><label for="descripcion">Descripci&oacute;n:</label></td>
+      	<td colspan="3"><input id="descripcion" class="textDesc" name="descripcion" value="<?=$objeto->descripcion?>" style="width:500px"  />
+			<span class="errormsg" id="error_descripcion">*</span>
+			<?=$validator->show("error_descripcion")?>
+		</td>
+    </tr>
+	<tr>
+		<td colspan="4"><hr /></td>
+	</tr>
+</table>
+<table align="center" style="text-align: left; width: 100%;"border="0" cellpadding="1" cellspacing="1">
+	<tr>
+		<td colspan="2"><span class="titulo">Cuentas de Retenciones/Aportes:</span></td>
+		<td colspan="2"><div style="display:none;" id="cargador_partidas"><table><tr><td><img alt="Cargando" src="images/loading.gif" align="middle" /> </td><td style="color:#FF0000; font-weight:bold">Cargando Data</td></tr></table></div></td>
+	</tr>
+	<input type="hidden" name="hNroCta" id="hNroCta">
+	<input type="hidden" name="hSaldo" id="hSaldo">
+	<input type="hidden" name="hIdCta" id="hIdCta">
+	<tr>
+		<td colspan="4">
+			<div id="ctasDiv" style="display:inline">
+				<table align="center" style="text-align: left; width: 100%;"border="0" cellpadding="1" cellspacing="1">
+					<tr>
+						<td>Cuentas: </td>
+						<td><input type="text" name="descCta" id="descCta" style="width:220px"><span onclick="mostrar_ventana();" id="buscadorret" style="cursor:pointer;"><img src="images/lupa.gif" alt="Lupa" width="19" height="17" /> Buscar</span></td>
+						<td>Saldo: </td>
+						<td><input type="text" id="saldo" name="saldo" style="text-align:right" onkeypress="return(formatoNumero(this,event));" style="width:100px"> </td>
+					</tr>
+					<tr>
+						<td colspan="2"><input type="button" name="bEliminar" id="bEliminar" onClick="eliminaCta();" value="Eliminar"></td>
+						<td colspan="2" align="right"><input type="button" name="bAgregar" id="bAgregar" onClick="agregarCta();"  value="Agregar"></td>
+					</tr>
+				</table>
+			</div>
+		</tr>
+	</tr>
+	<tr>
+		<td colspan="4" align="center">	<hr /></td>
+	</tr>
+	<tr>
+		<td colspan="4" align="center"><div id="gridboxpp" style=" width:500px; height:150px" class="gridbox" align="center"></div></td>
+	</tr>
+	<tr height="10px">
+		<td colspan="4"><hr /></td>	
+	</tr>
+	<tr>
+		<td colspan="3" align="right">Total a Pagar:  </td>
+		<td><input type="text" name="monto_pagar" id="monto_pagar" style="text-align:right" readonly /></td>
+	</tr>
+	<tr>
+		<td colspan="4" >Motivo de Anulacion</td>
+	</tr>
+	<tr>
+		<td colspan="4">
+			<textarea name="mAnulado" id="mAnulado" cols="70" rows="5"><?=$objeto->motivo?></textarea>
+			<span class="errormsg" id="error_mAnulado">*</span>
+			<?=$validator->show("error_mAnulado")?>
+		</td>
+	</tr>
+</table>
+<input type="hidden" name="id" id="id" value="<?=$objeto->id?>"
+<input type="hidden" name="numcom" id="numcom" value="<?=$NumCom?>" />
+<input type="hidden" name="json_det" id="json_det" />
+<input type="hidden" name="transferencia" id="transferencia" />
+
+<? if(!empty($ctaFondos)){ 
+		if($objeto->status!=2){ ?>
+	    <div align="right">
+	        <? if($boton=='Guardar') { ?>
+	            <input name="boton" id="boton" type="button" style="margin-left:2px;" value="Guardar" onclick="GuardarPP('<?=$ctaFondos?>',1,'<?=$boton?>');" />
+	        <? } else { ?>
+	            <input name="boton" id="boton" type="button" style="margin-left:2px;" value="Anular" onclick="GuardarPP('<?=$ctaFondos?>',2,'Anular');" />
+	        <? } ?>
+	    <input type="hidden" name="accion" id="accion" />
+		<span style="position:absolute;top:4px;right:5px;cursor:pointer;">
+		<img onclick="close_div();" src="images/close_div.gif" /></span>
+	    </div>
+ <? 	} 
+	} ?>
+
+<br />
+<p class="errormsg">(*) Campo requerido</p>
+</form>
+<script language="javascript" type="text/javascript">
+
+	buildGridPP();
+	CargarGridPPInicial('<?=$objeto->id?>')
+
+//GRID DE PARTIDAS PRESUPUESTARIAS//
+function buildGridPP(){
+	//set grid parameters
+	mygridpp = new dhtmlXGridObject('gridboxpp');
+	mygridpp.selMultiRows = true;
+	mygridpp.setImagePath("js/grid/imgs/");
+
+	mygridpp.setHeader("Cuenta Contable a Trans.,Monto");
+	mygridpp.setInitWidths("350,150");
+	mygridpp.setColAlign("left,right");
+	mygridpp.setColTypes("coro,ro");
+	mygridpp.setColSorting("int,int");
+	mygridpp.setColumnColor("white,white");
+	mygridpp.rowsBufferOutSize = 0;
+	mygridpp.setMultiLine(false);
+	mygridpp.selmultirows="true";
+	<? $cont = new plan_cuenta;
+		$objcp = $cont->get_all($conn);
+	?>
+	<?=helpers::combogrid($objcp, 0, 'id' , 'descripcion', 'Seleccione', 'mygridpp' )?>
+	//mygridpp.setOnEnterPressedHandler(calcularMontoCausado);
+	mygridpp.delim=';';
+	//mygridpp.setOnEditCellHandler(validarMontoPP);
+	//INICIA GRID//
+	mygridpp.init();
+	
+	}
+
+//CARGA DEL GRID DE PARTIDA PREUPUESTARIA//
+function CargarGridPPInicial(id){
+	mygridpp.clearSelection();
+	mygridpp.clearAll();
+	//alert('entro '  + <?=$objeto->detTransferencia?>);
+	if("<?=$objeto->id?>"){ 
+		if('<?=$objeto->detTransferencia?>'){
+			var Relaciones = eval( '(' + '<?=$objeto->detTransferencia?>' + ')');
+			var totMonto = 0;
+			for(var j=0;j<Relaciones.length;j++){
+				
+					var monto= parseFloat(Relaciones[j]['monto']);
+					totMonto += monto;
+					monto = monto.toFixed(2);
+					//mygridpp.getCombo(0).put(Relaciones[j]['idCta'],Relaciones[j]['descripcion']);
+					mygridpp.addRow(Relaciones[j]['id_cta'],Relaciones[j]['id_cta']+";"+muestraFloat(monto));
+						
+					
+			}
+			$('monto_pagar').value = muestraFloat(totMonto);
+		}
+	}	
+}
+
+
+</script>

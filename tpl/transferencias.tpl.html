@@ -1,0 +1,116 @@
+<script>usaCampos(<?=$objeto->privPublic?>);</script>
+<form name="form1" method="post">
+<table>
+<tr>
+	<td>Privado: &nbsp;<input type="radio" name="privPublic" id="priv" value="1" onClick="usaCampos(this.value)" <?=($objeto->privPublic=='1' || empty($objeto->privPublic)) ? 'checked="checked"':''?> /></td>
+	<td>Ente &nbsp;<input type="checkbox" name="chbEnte" id="chbEnte" value="1" disabled="disabled" class="tipoEnte" onclick="usaCampos2(this)" <?=($objeto->esEnte=='1') ? 'checked="checked"':''?> /> &nbsp;&nbsp;Tipo: &nbsp;&nbsp;<select name="tipoEnte" id="tipoEnte" disabled="disabled" class="publico">
+    											<option value="0" >Seleccione</option>
+                                                <option value="1" <?=($objeto->tipoEnte =='1') ? 'selected="selected"':''?> >Con Fines Empresariales</option>
+                                                <option value="2" <?=($objeto->tipoEnte =='2') ? 'selected="selected"':''?> >Sin Fines Empresariales</option>
+                                            </select></td>
+</tr>
+<script>usaCampos2(document.getElementById('chbEnte'));</script>
+<tr>
+	<td>Publico: &nbsp;<input type="radio" name="privPublic" id="public" value="2"  onClick="usaCampos(this.value)" <?=($objeto->privPublic=='2') ? 'checked="checked"':''?> />
+    <span class="errormsg" id="error_privPublic">*</span>
+	<?=$validator->show("error_privPublic")?>
+    </td>
+	<td>	</td>
+</tr>
+<tr>
+	<td>Organismo o Instituci&oacute;n:</td>
+	<td><input name="organismo" id="organismo" size="18" type="text" value="<?=$objeto->organismo?>" style="width:248px">
+    <span class="errormsg" id="error_organismo">*</span>
+	<?=$validator->show("error_organismo")?>
+	</td>
+</tr>
+<tr>
+	<td>Ente:</td>
+	<td><?=helpers::superCombo($conn, 'entes',$objeto->idEnte,'entes','entes','width:248px','usaNombre();','id','nomb_ente','','','disabled','Seleccione','publico')?></td>
+</tr>
+<tr>
+	<td>Asignaci&oacute;n Anual:</td>
+	<td><input name="asignacion" id="asignacion" type="text" value="<?=(!empty($objeto->asignacion)) ? muestrafloat($objeto->asignacion) : '0,00' ?>" style="width:248px;text-align:right" onkeypress="return(formatoNumero(this, event));">
+	<span class="errormsg" id="error_asignacion">*</span>
+	<?=$validator->show("error_asignacion")?>
+	</td>
+</tr>
+<tr>
+	<td>Responsable:</td>
+	<td><input name="responsable" id="responsable" type="text" value="<?=$objeto->responsable?>" style="width:248px" disabled="disabled" class="publico">
+	</td>
+</tr>
+<tr>
+	<td>Observaciones:</td>
+	<td><textarea name="observaciones" id="observaciones" cols="43" rows="5"><?=$objeto->observaciones?></textarea>
+	</td>
+</tr>
+<td>Escenario:</td>
+	<td>
+		<?=helpers::superCombo($conn, 
+									'escenarios', 
+									$objeto->id_escenario, 
+									'escenarios', 
+									'escenarios', 
+									'', 
+									'traeCategoriasDesdeUpdater(this.value);',
+									'id',
+									'descripcion',
+									'descripcion',
+                                    150) ?>
+		<span class="errormsg" id="error_escenario">*</span>
+		<?=$validator->show("error_escenario")?>
+	</td>
+</tr>
+<tr>
+	<td width="130">Categor&iacute;a Program&aacute;tica:</td>
+	<td>
+		<span id="cont_categorias">
+			<?=helpers::superCombo($conn, 
+											"SELECT id, (id || ' - ' || descripcion)::varchar AS descripcion FROM categorias_programaticas WHERE id_escenario ='$objeto->id_escenario' ORDER BY id", 
+											$objeto->id_categoria,
+											'categorias_programaticas',
+											'categorias_programaticas',
+											'',
+											'traeParPreDesdeUpdater(this.value);',
+											'id',
+											'descripcion',
+											'',
+											150) ?>
+		</span>
+		<span class="errormsg" id="error_catpro">*</span>
+		<?=$validator->show("error_catpro")?>
+	</td>
+</tr>
+<tr>
+	<td>Partida Presupuestaria:</td>
+	<td>
+		<span id="cont_partidas">
+			<?=helpers::superCombo($conn, 
+											"SELECT id, (id || ' - ' || descripcion)::varchar AS descripcion FROM puser.partidas_presupuestarias WHERE id NOT LIKE '30%' AND id_escenario = '$objeto->id_escenario' ORDER BY id",
+											$objeto->id_partida,
+											'partidas_presupuestarias',
+											'partidas_presupuestarias',
+											'',
+											'',
+											'id',
+											'descripcion',
+											'',
+											150) ?>
+		</span>
+		<span class="errormsg" id="error_parpre">*</span>
+		<?=$validator->show("error_parpre")?>
+	</td>
+</tr>
+</table>
+<div style="text-align:center">
+<input id="boton" name="boton" type="button" value="<?=$boton?>" onClick="guardar(this.value);" />
+<input name="id" type="hidden" value="<?=$objeto->id?>" />
+<input name="accion" id="accion" type="hidden" />
+</div>
+
+<div style="position:absolute; top:4px; right:5px; cursor:pointer;">
+<img onClick="close_div();" src="images/close_div.gif" /></div>
+</form>
+<p class="errormsg">(*) Campo requerido</p>
+
